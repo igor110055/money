@@ -5,31 +5,31 @@
   <tr><td colspan="2" class="thead"><%= timestamps(@deal_record) %></td></tr>
   <tr>
     <td><%= t(:deal_record_account) %>：</td>
-    <td><%= f.text_field(:account,disabled: 'disabled') %></td>
+    <td><%= f.text_field(:account,disabled: false) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_deal_type) %>：</td>
-    <td><%= f.text_field(:deal_type,disabled: 'disabled') %></td>
+    <td><%= f.text_field(:deal_type,disabled: false) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_data_id) %>：</td>
-    <td><%= f.text_field(:data_id,disabled: 'disabled') %></td>
+    <td><%= f.text_field(:data_id,disabled: false) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_symbol) %>：</td>
-    <td><%= f.text_field(:symbol,disabled: 'disabled') %></td>
+    <td><%= f.text_field(:symbol,disabled: false) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_price) %>：</td>
-    <td><%= f.text_field(:price,disabled: 'disabled') %></td>
+    <td><%= f.text_field(:price) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_amount) %>：</td>
-    <td><%= f.text_field(:amount,disabled: 'disabled') %></td>
+    <td><%= f.text_field(:amount) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_fees) %>：</td>
-    <td><%= f.text_field(:fees,disabled: 'disabled') %></td>
+    <td><%= f.text_field(:fees) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_purpose) %>：</td>
@@ -44,16 +44,26 @@
     <td><%= f.text_field(:loss_limit,onclick:select_all) %></td>
   </tr>
   <tr>
-    <td><%= t(:deal_record_order_id) %>：</td>
+    <td>
+      <% if @deal_record.order_id %>
+        <%= look_order_link( @deal_record, t(:deal_record_order_id) ) %>：
+      <% else %>
+        <%= t(:deal_record_order_id) %>：
+      <% end %>
+    </td>
     <td><%= f.text_field(:order_id,onclick:select_all) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_real_profit) %>：</td>
-    <td><%= f.text_field(:real_profit,disabled: 'disabled') %></td>
+    <td><%= f.text_field(:real_profit) %></td>
   </tr>
   <tr>
     <td><%= t(:deal_record_auto_sell) %>：</td>
     <td><%= f.check_box(:auto_sell) %></td>
+  </tr>
+  <tr>
+    <td><%= t(:deal_record_first_sell) %>：</td>
+    <td><%= f.check_box(:first_sell) %></td>
   </tr>
   <tr>
     <td colspan="2" align="right" class="tfoot">
@@ -64,6 +74,7 @@
 <% end %>
 <br/>
 <%= link_back_to_deal_records %>
+| <%= link_to_eth_deal_records %>
 <%= link_to_delete(@deal_record) %>
 <% if @deal_record.order_id and !@deal_record.order_id.empty? %>
 | <%= link_to(t(:cancel_order),controller: :main, action: :del_huobi_orders, order_id: @deal_record.order_id) %>

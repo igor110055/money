@@ -1,0 +1,264 @@
+<%
+# 价差
+rate = 0.1 # 10%
+start_price = @price_now*(1-rate)
+end_price = @price_now*(1+rate)
+# 传入的数字货币代码
+code = "ETH"
+%>
+<h2>ETH <%= t(:set_auto_invest_params) %></h2>
+<%= form_tag set_auto_invest_eth_params_path, method: :post, id: 'set_auto_invest_eth_form' do %>
+  <% n = 0 %>
+  <table width="<%=$default_table_width%>">
+    <tr valign="top">
+      <td><%= n %></td>
+      <td width="140">每隔几秒自动买入一次</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>卖以太坊后获得的币种</td>
+      <td><%= invest_text_setup_link(code,1,"btc usdt") %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>跌破多少价位停止买入</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_rose">
+      <td><%= n %></td>
+      <td>原有参与卖出的以太坊</td>
+      <td><%= show_invest_param_value(3,code) %> <%= invest_params_setup_link(code,3,0.1,2.0,0.1,1) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>单笔买入价格调整参数</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>自动买入的最大仓位值</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>买入以太坊的最大总值</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>单笔买入泰达币最小值</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>单笔买入泰达币最大值</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>更新交易列表记录日期<div class="red_bg">必须设置在三日内<br/>否则抓取不到数据</div></td>
+      <td><%= show_invest_param_value(9,code) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>更新交易列表记录时间</td>
+      <td><%= show_invest_param_value(10,code) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>用于测试的以太坊价格</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>单次卖出的最低获利值</td>
+      <td>无买入记录因而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>单次获利最多卖出笔数</td>
+      <td>无买入记录因而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>时间间隔的倍数最小值</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>时间间隔的倍数最大值</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_rose">
+      <td><%= n %></td>
+      <td>每几秒钟侦测参数变化</td>
+      <td><%= show_invest_param_value(16,code) %> <%= invest_params_setup_link(code,16,1,30,1) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>买入几分钟内的最低价</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_rose">
+      <td><%= n %></td>
+      <td>卖出几分钟内的最高价</td>
+      <td><%= show_invest_param_value(18,code) %> <%= invest_params_setup_link(code,18,0,60*24,10) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>仓位越高买入周期越长</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>是否强制执行停损卖出</td>
+      <td>无买入记录因而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>触底反弹买进的索引值</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_rose">
+      <td><%= n %></td>
+      <td>每隔几秒自动卖出一次</td>
+      <td><%= show_invest_param_value(22,code) %> <%= invest_params_setup_link(code,22,0,3600*2,300) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>赎回多少本金停止卖出</td>
+      <td>此功能已废弃</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>API账号代码</td>
+      <td><%= show_invest_param_value(24,code) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>交易列表上的交易总额</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>交易列表的以太坊总数</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_gold">
+      <td><%= n %></td>
+      <td>多少价位执行强制卖出</td>
+      <td><%= show_invest_param_value(27,code) %> <%= invest_params_setup_link(code,27,start_price,end_price,@price_step,@price_pos,true) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td title="<%= "全部累计已实现损益:未实现获利:\n平均每秒已实现获利:近期累计已实现获利:\n冷钱包总成本:冷钱包总数量" %>">交易列表的已实现损益</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_rose">
+      <td><%= n %></td>
+      <td>保留多少以太仓位不卖<div class="red_bg">原有以太坊须设置正确<br/>否则计算结果会很不准</div></td>
+      <td>
+        <%= show_invest_param_value(29,code) %> <%= invest_params_setup_link(code,29,0,100,1) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>是否强制执行买入操作</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>买入最低价时的最高价</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>成本均价是否越买越低</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>每隔几点购买额度翻倍</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>额度翻倍的最大购买价</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <% trace_rate_amp = 0.0035 %>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>买入最低价时的反弹率</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_rose">
+      <td><%= n %></td>
+      <td>卖出最高价时的回调率</td>
+      <td><%= show_invest_param_value(36,code) %> <%= invest_params_setup_link(code,36,1,1-trace_rate_amp,-0.0001,4) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top">
+      <td><%= n %></td>
+      <td>额度翻倍的最大购买价<br/>根据几分钟平均价调整</td>
+      <td>目前只能卖出而不适用</td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_gold">
+      <td><%= n %></td>
+      <td>卖出最高价时的最低价</td>
+      <td><%= show_invest_param_value(38,code) %> <%= invest_params_setup_link(code,38,start_price,end_price,@price_step,@price_pos) %></td>
+      <% n += 1 %>
+    </tr>
+    <tr valign="top" class="set_aif_bg_rose">
+      <td><%= n %></td>
+      <td>每笔卖出值多少人民币</td>
+      <td><%= show_invest_param_value(39,code) %> <%= invest_params_setup_link(code,39,35,500,5,0,true) %></td>
+      <% n += 1 %>
+    </tr>
+  </table>
+  <p>
+  <div id="params_input" style="width:<%=$default_table_width%>px">
+    <span id="auto_invest_params_span">
+      <%= text_field_tag :auto_invest_params, @invest_params_value %>
+    </span>
+    <%= submit_tag t(:save_auto_invest_params), style: 'font-size: 1.2em' %>
+  </div>
+<% end %>
+<p/>

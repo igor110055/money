@@ -92,12 +92,13 @@ def create_different_currency_properties
   @twd_loan = create(:property, amount: -2000000000.0, currency: currencies(:twd), name: '台币贷款')
   @cny_loan = create(:property, amount: -10000000.0, currency: currencies(:cny), name: '人民币贷款')
   @btc_hidden = create(:property, amount: 13000000.66085678, currency: currencies(:btc), name: '个人比特币', is_hidden: true)
+  @btc_locked = create(:property, amount: 13000000.66085678, currency: currencies(:btc), name: '私人比特币', is_locked: true)
   @btc = create(:property, amount: 14000000.32874321, currency: currencies(:btc), name: '家庭比特币')
   @bch = create(:property, amount: 888000.53561621, currency: currencies(:bch), name: '个人比特现金')
   # 建立p4,p5的利息资料
   l1 = create(:interest, property: @twd_loan, start_date: 30.days.ago, rate: 6.5)
   l2 = create(:interest, property: @cny_loan, start_date: 90.days.ago, rate: 4.5)
-  @ps = [@twd, @cny, @usd, @twd_loan, @cny_loan, @btc_hidden, @btc, @bch]
+  @ps = [@twd, @cny, @usd, @twd_loan, @cny_loan, @btc_hidden, @btc, @bch, @btc_locked]
   @ls = [l1, l2]
 end
 
@@ -111,7 +112,12 @@ def property_total_value_to( target_code, new_target_currency = nil, options = {
     (next if p.negative?) if options[:only_positive]
     (next if p.positive?) if options[:only_negative]
     ex = p.currency.exchange_rate
-    result += p.amount*(to_ex.to_f/ex.to_f)
+    value = p.amount*(to_ex.to_f/ex.to_f)
+    if p.amount < 0 and lixi = p.lixi(target_code).to_i
+      result += value + lixi
+    else
+      result += value
+    end
   end
   return result.to_i
 end

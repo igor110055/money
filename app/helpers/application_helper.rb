@@ -3,11 +3,11 @@ module ApplicationHelper
   include ActsAsTaggableOn::TagsHelper
 
   # 为哪些模型自动建立返回列表的链接以及执行返回列表的指令 eq. link_back_to_xxx, go_xxx
-  $models = %w(property currency interest item portfolio record deal_record open_order)
+  $models = %w(property currency interest item portfolio record deal_record open_order trial_list)
   # 为哪些类型的通知自动产生方法
   $flashs = %w(notice warning)
   # 建立从列表中快速更新某个值的方法
-  $quick_update_attrs = ["property:amount","item:price,amount"]
+  $quick_update_attrs = ["property:amount","item:price,amount","currency:exchange_rate"]
   # 资产组合的模式属性
   $modes = %w(none matchall any)
   # 记录数值的模型名称
@@ -29,7 +29,7 @@ module ApplicationHelper
 
   # 网站Logo图示
   def site_logo
-    raw image_tag($site_logo, id: "site_logo", alt: site_name, align: "absmiddle")
+    raw image_tag($site_logo, width: $site_logo_width, height: $site_logo_height, id: "site_logo", alt: site_name, align: "absmiddle")
   end
 
   # 判断是否已登入
@@ -39,18 +39,26 @@ module ApplicationHelper
 
   # 判断是否已登入
   def admin?
-    session[:admin] == true
+    if session and session[:admin]
+      return session[:admin] == true
+    else
+      return false
+    end
   end
 
   # 默认的数字显示格式
-  def to_n( number, pos=2 )
+  def to_n( number, pos=2, opt={} )
     if number and number.class == String
       if number.strip!
         number.sub!("<_io.TextIOWrapper name='<stdout>' mode='w' encoding='UTF-8'>",'')
       end
     end
     if number.class != Array and number = number.to_f
-      return number > 0 ? format("%.#{pos}f",number.floor(pos)) : format("%.#{pos}f",number.ceil(pos))
+      if opt[:round]
+        return format("%.#{pos}f",number)
+      else
+        return number > 0 ? format("%.#{pos}f",number.floor(pos)) : format("%.#{pos}f",number.ceil(pos))
+      end
     else
       return format("%.#{pos}f",0)
     end
@@ -59,7 +67,7 @@ module ApplicationHelper
   # 默认的金额显示格式
   def to_amount( number, is_digital = false )
     if is_digital
-      return to_n( number, 8 )
+      return format("%.8f",number)
     else
       return to_n( number, 2 )
     end
@@ -72,6 +80,22 @@ module ApplicationHelper
     else
       time.strftime("%y%m%d-%H%M%S")
     end
+  end
+
+  # 默认的日期显示格式
+  def to_d( date, simple = false, six_num = false )
+    if simple
+      date.strftime("%y-%m-%d")
+    elsif six_num
+      date.strftime("%y%m%d")
+    else
+      date.to_s(:db)
+    end
+  end
+
+  # 默认的时间显示格式
+  def to_time( time )
+    time.strftime("%Y-%m-%d %H:%M:%S")
   end
 
   # 点击后立刻选取所有文字
@@ -197,6 +221,114 @@ module ApplicationHelper
     link_to t(:check_open_orders), {controller: :open_orders, action: :check_open_order}, {id:'check_open_orders'}
   end
 
+  # K线图链接
+  def kline_chart_link( text = to_n(get_btc_price), symbol = "btcusdt" )
+    link_to text, {controller: :main, action: :kline_chart, symbol: symbol}, {target: :blank, title: "¥#{(text.to_f*$usdt_to_cny).to_i}" }
+  end
+
+  # K线图链接
+  def line_chart_link( currency, opt={} )
+    if !currency.symbol_code.empty?
+      text = opt[:show] == 'name' ? currency.name : currency.symbol_code
+      return raw(link_to text, {controller: :main, action: :line_chart, symbol: currency.symbol_code.downcase}, {target: :blank})
+    elsif opt[:name]
+      return currency.name
+    else
+      return ''
+    end
+  end
+
+  # 显示交易所资产的链接
+  def huobi_assets_link
+    link_to t(:huobi_assets), properties_path(tags:get_huobi_acc_id)
+  end
+
+  # 定投记录链接
+  def invest_log_link( code = "BTC" )
+    if code == "BTC"
+      link_to code+t(:invest_log), invest_log_path
+    elsif code == "ETH"
+      link_to code+t(:invest_log), invest_eth_log_path
+    end
+  end
+
+  # 清空定投记录链接
+  def clear_invest_log_link
+    link_to t(:clear_invest_log), delete_invest_log_path(path: request.fullpath)
+  end
+
+  # 撤消全部下单并清空记录链接
+  def clear_open_orders_link
+    link_to t(:clear_open_orders), clear_open_orders_path, { id: 'clear_open_orders' }
+  end
+
+  # 50:50的数学模型测试
+  def model_trade_single_link
+    link_to t(:model_trade_single), mtrade_log_path
+  end
+
+  # 50:50的数学模型测试
+  def model_trade_link
+    link_to t(:model_trade_set), mtrades_log_path
+  end
+
+  # 储存报价数据
+  def save_kdata_link
+    link_to t(:save_kdata), save_kdata_path
+  end
+
+  # 设置定投参数表单链接
+  def set_auto_invest_form_link( code = "BTC" )
+    if code == "BTC"
+      link_to code+t(:set_auto_invest_params), set_auto_invest_form_path, { id: 'set_auto_invest_form' }
+    elsif code == "ETH"
+      link_to code+t(:set_auto_invest_params), set_auto_invest_eth_form_path, { id: 'set_auto_invest_eth_form' }
+    end
+  end
+
+  # 更新系统参数表单链接
+  def system_params_form_link
+    link_to t(:update_system_params), system_params_form_path, { id: 'system_params_form' }
+  end
+
+  # 火币测试链接
+  def test_huobi_link
+    link_to t(:test_huobi), '/test_huobi.json', { id: 'test_huobi' }
+  end
+
+  # 与资产更新相关的链接
+  def update_btc_huobi_portfolios_link
+    raw( update_huobi_assets_link + \
+    ' | ' + update_btc_exchange_rates_link + ' | ' + update_all_portfolios_link + ' | ')
+  end
+
+  # 清空未卖出的交易记录
+  def clear_deal_records_link
+    link_to t(:clear_deal_records), clear_deal_records_path
+  end
+
+  # 卖到回本
+  def sell_to_back_link
+    sell_max_cny = get_invest_params(23).to_i
+    btc_and_usdt_to_cny = DealRecord.btc_and_usdt_to_cny.to_i
+    net_profit_cny = btc_and_usdt_to_cny - sell_max_cny
+    if DealRecord.unsell_count > 0 and net_profit_cny > 0
+      link_to t(:sell_to_back)+"¥#{sell_max_cny}(+#{net_profit_cny})", sell_to_back_path
+    else
+      t(:operate_money)+"(#{btc_and_usdt_to_cny})"
+    end
+  end
+
+  # 仓位试算表链接
+  def level_trial_list_link
+    link_to t(:level_trial_list), controller: :main, action: :level_trial_list
+  end
+
+  # 涨跌试算表链接
+  def rise_fall_list_link
+    link_to t(:rise_fall_list), controller: :main, action: :rise_fall_list
+  end
+
   # 资产标签云
   def get_tag_cloud
     @tags = Property.tag_counts_on(:tags)
@@ -261,6 +393,48 @@ module ApplicationHelper
         </tr>"
   end
 
+  # 重新读取资产净值
+  def reload_net_value( admin = admin? )
+    @properties_net_value_twd = Property.net_value :twd, admin_hash(admin)
+    @properties_net_value_cny = Property.net_value :cny, admin_hash(admin)
+  end
+
+  # 显示资产净值链接
+  def show_net_value_link
+    reload_net_value
+    twd2cny = Property.new.twd_to_cny
+    total_flow_assets_twd = Property.total_flow_assets_twd.to_i # 总的流动性资产总值
+    total_flow_assets_cny = (total_flow_assets_twd*twd2cny).to_i
+    flow_assets_twd = Property.flow_assets_twd.to_i # 流动性资产总值(135/170)
+    tag_value_twd = Property.tag_value_twd($trial_cost_month_from_tag).to_i # 冷钱包目前的值
+    btc_value_twd = Property.btc_value_twd.to_i # 比特币资产总值
+    investable_fund_twd = Property.total_investable_fund_records_twd.to_i # 可买币资产总值
+    total_loan_lixi_twd = Property.total_loan_lixi.to_i # 总的所有贷款含利息
+    loan_lixi_twd = Property.loan_lixi.to_i # 所有贷款含利息(135/170)
+    if admin?
+      flow_subtract_loan_twd = total_flow_assets_twd - total_loan_lixi_twd # 总的流动性扣除贷款
+      remain_months = (tag_value_twd*twd2cny/$trial_cost_month_grow_limit).to_i
+    else
+      flow_subtract_loan_twd = flow_assets_twd - loan_lixi_twd # 流动性扣除贷款(135/170)
+      remain_months = (flow_assets_twd*twd2cny/$trial_cost_month_grow_limit).to_i
+    end
+    flow_subtract_loan_cny = (flow_subtract_loan_twd*twd2cny).to_i
+    if admin?
+      main_info = "<span id=\"properties_net_value_twd\" title=\"总资产扣除贷款：#{@properties_net_value_twd.to_i}\n#{t(:cny)}资产净值：#{@properties_net_value_cny.to_i}\n流动性资产总值：#{flow_assets_twd}\n比特币资产总值：#{btc_value_twd}\n所有贷款含利息：#{total_loan_lixi_twd}\n流动性扣除贷款：#{flow_subtract_loan_twd}\">\
+      #{link_to(@properties_net_value_twd.to_i/10000, records_path(num:2,chart:1), target: :blank)}(¥#{@properties_net_value_cny.to_i/10000})</span>"
+      addon_info = " |<span id=\"properties_net_value_cny\" title=\"流动性资产总值：#{total_flow_assets_twd}(¥#{total_flow_assets_cny})\">\
+      #{link_to(total_flow_assets_twd/10000,'/properties?extags=&mode=a&pid=13&portfolio_name=流动性资产总值&tags=比特币+以太坊+可投资金')}(¥#{total_flow_assets_cny/10000})</span> | <span title=\"流动性资产扣除贷款的净值：#{flow_subtract_loan_twd}(¥#{flow_subtract_loan_cny})|#{t(:begin_profit_price)}:#{Property.begin_profit_price.to_i}\">\
+      #{flow_subtract_loan_twd/10000}(¥#{flow_subtract_loan_cny/10000})</span> ｜ <span id=\"net_growth_ave_month\" title=\"#{$net_start_date}起资产净值增加几万/月(台币｜人民币)\">#{to_n(@properties_net_growth_ave_month/10000.0,1)}|#{to_n(@properties_net_growth_ave_month_cny/10000.0,1)}</span>|<span title=\"#{Property.cal_year_profit}\">#{link_to(to_n((Property.cal_year_profit_p-1)*100,1)+'%',trial_lists_path)}</span>"
+      flow_assets_info = "#{(tag_value_twd*twd2cny).to_i}|#{tag_value_twd}"
+    else
+      main_info = "<span id=\"flow_subtract_loan_twd\" title=\"减去贷款后的流动性资产总值\">¥#{link_to((flow_subtract_loan_twd*twd2cny).to_i, records_path(num:2,chart:1), target: :blank)}</span>"
+      addon_info = ''
+      flow_assets_info = "#{(flow_assets_twd*twd2cny).to_i}|#{flow_assets_twd}"
+    end
+    month_growth_rate =
+    raw "#{main_info}#{addon_info}|<span title=\"#{$trial_cost_month_from_tag}资产总值(¥#{flow_assets_info})可用于生活#{remain_months}月(每月花费¥#{$trial_cost_month_grow_limit}|#{($trial_cost_month_grow_limit/twd2cny).to_i})\">#{link_to(to_n(remain_months/12.0,1),flow_assets_path)}年</span>"
+  end
+
   # Fusioncharts属性大全: http://wenku.baidu.com/link?url=JUwX7IJwCbYMnaagerDtahulirJSr5ASDToWeehAqjQPfmRqFmm8wb5qeaS6BsS7w2_hb6rCPmeig2DBl8wzwb2cD1O0TCMfCpwalnoEDWa
   def show_fusion_chart
     raw "<div id=\"chartContainer\"></div><p>
@@ -269,10 +443,10 @@ module ApplicationHelper
         var myChart = new FusionCharts({
           \"type\": \"line\",
           \"renderAt\": \"chartContainer\",
-          \"width\": \"95%\",
+          \"width\": \"100%\",
           \"height\": \"450\",
           \"dataFormat\": \"xml\",
-          \"dataSource\": \"<chart yAxisMinValue='#{@bottom_value}' yAxisMaxvalue='#{@top_value}' animation='0' caption='#{@caption}' xaxisname='　' yaxisname='' formatNumberScale='0' formatNumber ='0' palettecolors='#CC0000' bgColor='#F0E68C' canvasBgColor='#F0E68C' valuefontcolor='#000000' showValues='0' borderalpha='0' canvasborderalpha='0' theme='fint' useplotgradientcolor='0' plotborderalpha='0' placevaluesinside='0' rotatevalues='1'  captionpadding='12' showaxislines='0' axislinealpha='0' divlinealpha='0' lineThickness='3' drawAnchors='0'>#{@chart_data}</chart>\"
+          \"dataSource\": \"<chart yAxisMinValue='#{@bottom_value}' yAxisMaxvalue='#{@top_value}' animation='0' caption='#{@caption}' xaxisname='　' yaxisname='' formatNumberScale='0' formatNumber ='0' palettecolors='#CC0000' bgColor='#F0E68C' canvasBgColor='#F0E68C' valuefontcolor='#000000' showValues='0' borderalpha='0' canvasborderalpha='0' theme='fint' useplotgradientcolor='0' plotborderalpha='0' placevaluesinside='0' rotatevalues='1'  captionpadding='5' showaxislines='0' axislinealpha='0' divlinealpha='0' lineThickness='3' drawAnchors='1'>#{@chart_data}</chart>\"
         });
       myChart.render();
     });
@@ -286,7 +460,7 @@ module ApplicationHelper
 
   # 显示火币时间讯息使用
   def get_timestamp
-    timestamp = `python ./py/timestamp.py`
+    timestamp = `python py/timestamp.py`
     puts "timestamp = #{timestamp}"
     return timestamp.to_i
   end
@@ -343,17 +517,23 @@ module ApplicationHelper
   end
 
   # 火币下单链接
-  def order_link( amount = nil )
-    link_to t(:huobi_order), controller: :main, action: :place_order_form, amount: amount
+  def order_link( amount = nil, text = t(:huobi_order) )
+    link_to text, controller: :main, action: :place_order_form, amount: amount
   end
 
   # 建立查看火币下单链接
-  def look_order_link( dr, len = 11 )
-    link_to(dr.order_id[-11+(11-len)..-1], {controller: :main, action: :look_order, account: dr.account, id: dr.order_id},{target: :blank}) if dr.order_id and !dr.order_id.empty?
+  def look_order_link( dr, text )
+    if dr.order_id and !dr.order_id.empty?
+      link_to(text, {controller: :main, action: :look_order, account: dr.account, id: dr.order_id},{target: :blank})
+    else
+      text
+    end
   end
 
   def symbol_title(symbol)
-    symbol.upcase.sub("USDT","/USDT").sub("HUSD","/HUSD")
+    s = symbol.upcase.sub("USDT","/USDT").sub("HUSD","/HUSD")
+    s = s[1..-1] if s[0] == "/"
+    return s
   end
 
   def period_title(period)
@@ -362,7 +542,360 @@ module ApplicationHelper
 
   # 取得最新的比特币报价
   def btc_price
+    begin
+      if $auto_update_btc_price > 0
+        root = JSON.parse(`python py/huobi_price.py symbol=btcusdt period=1min size=1 from=0 to=0`)
+        if root["data"] and root["data"][0]
+          return format("%.2f",root["data"][0]["close"]).to_f
+        else
+          return btc_price_local
+        end
+      else
+        return btc_price_local
+      end
+    rescue
+      return btc_price_local
+    end
+  end
+
+  def btc_price_local
     Currency.find_by_code('BTC').to_usd.floor(2)
+  end
+
+  # 显示切换分钟链接
+  def period_link_for_chart(action)
+    result = ""
+    result += "<span class='sub_text'>#{link_to t(:deal_record_index), controller: :deal_records}</span>"
+    %w[1min 5min 15min 30min 60min 4hour 1day 1week 1mon].each do |period|
+    result += "<span class='sub_text'>#{link_to period_title(period), action: action, symbol: params[:symbol], period: period}</span>"
+    end
+    swap_action = action == :kline_chart ? :line_chart : :kline_chart
+    swap_label = swap_action == :kline_chart ? t(:see_kline) : t(:see_line)
+    result += "<span class='sub_text'>#{link_to swap_label, action: swap_action, symbol: params[:symbol], period: params[:period]}</span>"
+    return raw(result)
+  end
+
+  # 获取未卖出的交易笔数
+  def get_unsell_deal_records_count
+    DealRecord.unsell_count
+  end
+
+  # 根据code回传文档路径
+  def get_invest_params_path( code = "BTC" )
+    if code == "BTC"
+      return $auto_invest_params_path
+    elsif code == "ETH"
+      return $auto_invest_eth_params_path
+    end
+  end
+
+  # 获取定投参数的值
+  def get_invest_params( index, code = "BTC" )
+    File.read(get_invest_params_path(code)).split(' ')[index]
+  end
+
+  # 储存定投参数的值
+  def set_invest_params( code, index, value )
+    begin
+      params_values = File.read(get_invest_params_path(code)).split(' ')
+      params_values[index.to_i] = value.to_s
+      write_invest_params params_values.join(' '), code
+      return true
+    rescue
+      return false
+    end
+  end
+
+  # 写入定投参数
+  def write_to_file( file_path, text )
+    begin
+      File.open(file_path, 'w+') do |f|
+        f.write(text)
+      end
+      return true
+    rescue
+      return false
+    end
+  end
+
+  # 写入定投参数
+  def write_invest_params( text, code = "BTC" )
+    write_to_file( get_invest_params_path(code), text )
+  end
+
+  # 读取火币APP的账号ID
+  def get_huobi_acc_id
+    get_invest_params(24)
+  end
+
+  # 显示定投参数的设定值链接(数字版)
+  def invest_params_setup_link( code, index, min, max, step = 1, pos = 0, add_zero_value = false )
+    result = ''
+    (min..max).step(step).each do |n|
+      value = to_n(n.floor(pos),pos)
+      style = (!@already_show and value == get_invest_params(index,code)) ? 'invest_param_select' : ''
+      result += link_to(value, setup_invest_param_path(i:index,v:value,c:code), class: style) + ' '
+    end
+    if add_zero_value
+      value = '0'
+      style = (!@already_show and value == get_invest_params(index,code)) ? 'invest_param_select' : ''
+      result = link_to(value, setup_invest_param_path(i:index,v:value,c:code), class: style) + ' ' + raw(result)
+    end
+    @already_show = false
+    return raw(result)
+  end
+
+  # 显示定投参数的设定值链接(文字版)
+  def invest_text_setup_link( code, index, text )
+    result = ''
+    text.split(' ').each do |value|
+      style = (!@already_show and value == get_invest_params(index,code)) ? 'invest_param_select' : ''
+      result += link_to(value, setup_invest_param_path(i:index,v:value,c:code), class: style) + ' '
+    end
+    @already_show = false
+    return raw(result)
+  end
+
+  # 登出系统的链接
+  def logout_link
+    link_to t(:logout), logout_path, { id: 'logout' }
+  end
+
+  # 用于收支试算函数
+  def cal_btc_capital
+    @btc_capital = (@btc_price*@btc_amount*$usdt_to_cny).to_i
+  end
+
+  # 用于收支试算函数
+  def btc_capital_twd
+    (@btc_capital*@cny2twd).to_i
+  end
+
+  # 检查最新的比特币报价是否已达成数据库储存的理财目标
+  def check_trial_reached( trial_date )
+    today = Date.today
+    if rs = TrialList.find_by_trial_date(trial_date)
+      goal_price = rs.end_price
+      goal_balance = rs.end_balance_twd
+      # 計算理財目標的达标价
+      reach_goal_price = (rs.end_balance - @investable_fund_records_cny)/(@btc_amount_now*$usdt_to_cny)
+      return goal_price, @begin_price_for_trial - goal_price, goal_balance, @flow_assets_twd - goal_balance, reach_goal_price
+    else
+      return 0, 0, 0, 0, 0
+    end
+  end
+
+  # 理财目标显示的笔数
+  def trial_records_number( show_all = false )
+    (params[:show_all] == '1' or show_all) ? 12*$trial_save_years : 12*$trial_total_years
+  end
+
+  # 显示无定投参数选项的精确值
+  def show_invest_param_value( index, code = "BTC" )
+    value = get_invest_params(index,code)
+    @already_show = true
+    raw "<span class=\"invest_param_select\">#{value}</span>"
+  end
+
+  # 从标签设定值取出相应的资产数据集
+  def get_properties_from_tags( include_tags, exclude_tags = nil, mode = 'n' )
+    case mode
+      when 'n' # none
+        options = {}
+      when 'm' # match_all
+        options = {match_all: true}
+      when 'a' # any
+        options = {any: true}
+    end
+    # 依照包含标签选取
+    if include_tags and !include_tags.empty?
+      result = Property.tagged_with(include_tags.strip.split(' '),options)
+      if exclude_tags and !exclude_tags.empty?
+        # 依照排除标签排除
+        result = result.tagged_with(exclude_tags.strip.split(' '),exclude: true)
+      end
+      return result.sort_by{|p| p.amount_to}.reverse
+    end
+    return nil
+  end
+
+  # 显示最近几个小时的获利标题
+  def show_num_h_profit( scale = :hour )
+    diff_sec = (Time.now - $send_to_trezor_time).to_i
+    if scale == :hour
+      return raw("<span title='#{diff_sec/(60*60*24)}天'>#{diff_sec/(60*60)}小时</span>")
+    else
+      return raw("<span title='#{diff_sec/(60*60)}小时'>#{diff_sec/(60*60*24)}天</span>")
+    end
+  end
+
+  # 根据135/170读取实际冷钱包里的比特币数量
+  def trezor_acc_btc_amount
+    Property.find($btc_amount_property_id).amount
+  end
+
+  # 由系统参数获取要计算的比特币数量
+  def get_btc_amounts
+    begin
+      amount = trezor_acc_btc_amount
+      if $trial_btc_amount_admin > 0 # 如果指定了数值就用指定的
+        return [$trial_btc_amount_admin,amount]
+      else  # 如果没有指定就回传实际值
+        return [amount,amount]
+      end
+    rescue
+      return 0
+    end
+  end
+
+  # 理财目标的月末目标能连接到流动性资产总值一览表
+  def link_to_flow_assets_list( currency = :TWD, twd_to_cny = 0 )
+    if currency == :TWD
+      text = @flow_assets_twd.to_i
+    elsif currency == :CNY
+      text = (@flow_assets_twd*twd_to_cny).to_i
+    end
+    link_to text, {controller: :properties, tags: $link_to_flow_assets_list_tags, mode: $link_to_flow_assets_list_mode}, {title: @flow_assets_twd.to_i}
+  end
+
+  # 链接到ETH交易列表
+  def link_to_eth_deal_records
+    link_to t(:deal_record_index_eth), deal_records_eth_path
+  end
+
+  # 显示资产时是否包含显示隐藏资产
+  def admin_hash( admin, new_options = {} )
+    options = admin ? {include_hidden: true} : {include_hidden: false}
+    return options.merge new_options
+  end
+
+  # 如果没有负号，在前面显示+号
+  def add_plus(s_or_i)
+    str = s_or_i.to_s
+    if !str.index("-")
+      return "+"+str
+    else
+      return str
+    end
+  end
+
+  # 在数字前面补0显示
+  def add_zero( num, pos = 3 )
+    if num.to_i > 0
+      result = num.to_s
+      case pos
+        when 5
+          if num.to_i < 10000 and num.to_i >=1000
+            result = "0"+result
+          elsif num.to_i < 1000 and num.to_i >=100
+            result = "00"+result
+          elsif num.to_i < 100 and num.to_i >=10
+            result = "000"+result
+          elsif num.to_i < 10
+            result = "0000"+result
+          end
+        when 4
+          if num.to_i < 1000 and num.to_i >=100
+            result = "0"+result
+          elsif num.to_i < 100 and num.to_i >=10
+            result = "00"+result
+          elsif num.to_i < 10
+            result = "000"+result
+          end
+        when 3
+          if num.to_i < 100 and num.to_i >=10
+            result = "0"+result
+          elsif num.to_i < 10
+            result = "00"+result
+          end
+        when 2
+          if num.to_i < 100 and num.to_i >=10
+          elsif num.to_i < 10
+            result = "0"+result
+          end
+      end
+      return result
+    else
+      return "0"*pos
+    end
+  end
+
+  # 将价格取整数
+  def get_int_price( price, pos = 100 )
+    ((price/pos).to_i+1)*pos
+  end
+
+  # 取得比特币现价
+  def get_btc_price
+    if rate = eval("$BTC_exchange_rate")
+      return 1.0/rate
+    else
+      return 1.0/Currency.find_by_code('BTC').exchange_rate
+    end
+  end
+
+  # 取得以太坊现价
+  def get_eth_price
+    if rate = eval("$ETH_exchange_rate")
+      return 1.0/rate
+    else
+      return 1.0/Currency.find_by_code('ETH').exchange_rate
+    end
+  end
+
+  # USDT >> TWD
+  def usdt_to_twd
+    DealRecord.new.usdt_to_twd
+  end
+
+  # 设定模型总测的页面内容
+  def set_mt_page_content( text, link_path, message )
+    link_str = helpers.link_to(raw(text+" <small>(点此重新执行测试)</small>"),link_path)
+    @text = "<div id='mt_title'>#{link_str}</div>\n#{message}"
+  end
+
+  # 计算保持仓位所需卖出的币数
+  def sell_amount_to_keep_level( a, b, k, p ) # a:原有资金 b:原有币数 k:基准仓位 p:现价
+    (((1-k)*p*b-k*a)/p)
+  end
+
+  # 计算保持仓位所需买入的币数
+  def buy_amount_to_keep_level( a, b, k, p, f ) # a:原有资金 b:原有币数 k:基准仓位 p:现价 f:手续费率
+    (k*(p*b+a)-p*b)/(p*(1-f*(1-k)))
+  end
+
+  # 计算两时间间隔天数
+  def day_diff( from_time, to_time = 0, include_seconds = false )
+      from_time = from_time.to_time if from_time.respond_to?(:to_time)
+      to_time = to_time.to_time if to_time.respond_to?(:to_time)
+      begin
+        return (((to_time - from_time).abs)/86400).round
+      rescue
+        return 0
+      end
+  end
+
+  def eth2bi
+    get_invest_params(1,'ETH')
+  end
+
+  # 根据智投参数决定读取哪种报价
+  def eth_symbol
+     "eth#{eth2bi}"
+  end
+
+  # 让title属性换行
+  def show_br( text = nil )
+    if text
+      return raw('&#10;') if !text.empty?
+    else
+      return raw('&#10;')
+    end
+  end
+
+  # 设定一次性首页
+  def set_as_home_url( url )
+    session[:home_url] = url
   end
 
 end

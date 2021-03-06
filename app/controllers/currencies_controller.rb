@@ -1,6 +1,6 @@
 class CurrenciesController < ApplicationController
 
-  before_action :set_currency, only: [:edit, :update, :destroy, :delete]
+  before_action :set_currency, only: [:edit, :update, :update_exchange_rate_from_to_usd, :destroy, :delete]
 
   # 货币列表
   def index
@@ -39,24 +39,20 @@ class CurrenciesController < ApplicationController
 
   # 更新所有货币的汇率值
   def update_all_exchange_rates
-    count1 = update_digital_exchange_rates
-    count2 = update_legal_exchange_rates
-    update_portfolios_and_records if count1 + count2 > 0
+    update_exchange_rates
     go_back
   end
 
-  # 更新比特币的汇率值
+  # 更新比特币及以太坊的汇率值
   def update_btc_exchange_rates
-    put_notice t(:get_price_error) if !update_btc_price
+    put_notice t(:get_price_error) if not (update_btc_price and update_eth_price)
     go_back
   end
 
   # 更新所有数字货币的汇率值
   def update_all_digital_exchange_rates
     begin
-      if update_digital_exchange_rates > 0
-        update_portfolios_and_records
-      else
+      if !(update_digital_exchange_rates > 0)
         put_notice t(:get_price_error)
       end
     rescue Net::OpenTimeout
@@ -67,7 +63,7 @@ class CurrenciesController < ApplicationController
 
   # 更新所有法币的汇率值
   def update_all_legal_exchange_rates
-    update_portfolios_and_records if update_legal_exchange_rates > 0
+    update_legal_exchange_rates
     go_back
   end
 
@@ -81,6 +77,12 @@ class CurrenciesController < ApplicationController
   # 删除货币
   def delete
     destroy
+  end
+
+  # 通过输入框直接更新比特币价格
+  def update_exchange_rate_from_to_usd
+    params["new_exchange_rate_#{params[:id]}"] = (1/params["new_exchange_rate_#{params[:id]}"].to_f).to_s
+    update_currency_exchange_rate
   end
 
   private

@@ -1,0 +1,114 @@
+<%
+  # 设置数据显示的小数点位数
+  pos = 1
+  # 获得所有宏观统计数据
+  p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit, total_unsell_profit, ave_hour_profit, total_real_p_24h, trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay_twd, p_ex_twd, p_mine_earn_twd = Property.invest_to_btc( admin? )
+  @p_btc = p_btc
+  @p_eth = p_eth
+  @btc_p = btc_p
+  @eth_p = eth_p
+  @p_trezor_twd = p_trezor_twd.to_i
+  @p_alipay_twd = p_alipay_twd.to_i
+  @p_ex_twd = p_ex_twd.to_i
+  @p_mine_earn_twd = p_mine_earn_twd.to_i
+  @p_mine_cost_cny = ($mine_ori_cost+$mine_other_cost).to_i
+
+  # 买卖比若超过(低于)所设定的值则会以高亮显示
+  def buysell_class
+    if @buy_sell_rate.to_f >= $buysell_high_rate
+      return "buysell_high"
+    elsif @buy_sell_rate.to_f <= $buysell_low_rate
+      return "buysell_low"
+    else
+      return ""
+    end
+  end
+
+  # 仓位变化大于某个值则高亮显示以提示买卖时机
+  def level_diff_class
+    if @btc_p >= $btc_base_level + $highlight_level_diff
+      return "buysell_high"
+    elsif @btc_p <= $btc_base_level - $highlight_level_diff
+      return "buysell_low"
+    else
+      return ""
+    end
+  end
+
+  # 点击交易列表里的仓位值会带入下单页并自动计算价格与买卖数量
+  def show_btc_p_link_order
+    link_to "#{to_n(@btc_p,2)}%", controller: :main, action: :place_order_form, keep_level: 1
+  end
+
+  # 比特币持有数相当于多少人民币
+  def btc_eq_cny
+    (@p_btc*get_btc_price*$usdt_to_cny).to_i
+  end
+
+  # 以太坊持有数相当于多少人民币
+  def eth_eq_cny
+    (@p_eth*get_eth_price*$usdt_to_cny).to_i
+  end
+
+  # 比特币持有数相当于多少台币
+  def btc_eq_twd
+    (btc_eq_cny*@cny2twd).to_i
+  end
+
+  # 以太坊持有数相当于多少台币
+  def eth_eq_twd
+    (eth_eq_cny*@cny2twd).to_i
+  end
+
+  # 冷钱包资产兑换人民币
+  def p_trezor_cny
+    (@p_trezor_twd*@twd2cny).to_i
+  end
+
+  # 支付宝资产兑换人民币
+  def p_alipay_cny
+    (@p_alipay_twd*@twd2cny).to_i
+  end
+
+  # 交易所资产兑换人民币
+  def p_ex_cny
+    (@p_ex_twd*@twd2cny).to_i
+  end
+
+  # 矿场资产兑换人民币
+  def p_mine_earn_cny
+    (@p_mine_earn_twd*@twd2cny).to_i
+  end
+
+  # 矿机资产兑换人民币
+  def p_mine_cost_twd
+    (@p_mine_cost_cny*@cny2twd).to_i
+  end
+%>
+<h3>
+  <%= title_html+' ☞' if title_html and admin? %>
+  <% if admin? %>
+  <% # 显示宏观统计数据 %>
+    <% if @buy_sell_rate.to_f > 0 %>
+      <%= raw("<span title=\"买卖多空比(#{$default_chart_period})\" class=\"#{buysell_class}\">多空:#{to_n(@buy_sell_rate,pos)}</span>") %>
+    <% end %>
+    <%= raw("<span title=\"#{p_btc}:#{btc_eq_twd}(¥#{btc_eq_cny})\">BTC:#{to_n(p_btc,2)}(#{to_n(btc_p,pos)}%) </span><span title=\"#{p_eth}:#{eth_eq_twd}(¥#{eth_eq_cny})\">ETH:#{to_n(p_eth,2)}(#{to_n(eth_p,pos)}%)</span> <span title=\"可投资金额(¥#{investable_cny.to_i})\">可投:#{(investable_cny*@cny2twd).to_i}(#{to_n(capital_p,pos)}%)</span> <span title=\"BTC+ETH总值(¥#{((btc_eq_twd+eth_eq_twd)*@twd2cny).to_i})\">持仓:#{btc_eq_twd+eth_eq_twd}</span><span title=\"BTC全部均价\">(#{total_ave_cost.to_i})</span> \
+      <span title=\"冷钱包(¥#{p_trezor_cny}|#{@p_trezor_twd})占总流动资产比例(#{to_n(trezor_p,4)}%)\">冷钱包:#{to_n(trezor_p,pos)}%</span> \
+      <span title=\"支付宝(¥#{p_alipay_cny}|#{@p_alipay_twd})占总流动资产比例(#{to_n(alipay_p,4)}%)\">支付宝:#{to_n(alipay_p,pos)}%</span> \
+      <span title=\"交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)\">交易所:#{to_n(ex_p,pos)}%</span> \
+      <span title=\"矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)\">矿场:#{to_n(mine_earn_p,pos)}%</span> \
+      <span title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机:#{to_n(mine_p,pos)}%</span> \
+      <span title=\"矿机可投资上限(#{to_n($mine_buy_limit*100)}%)可购买额度(¥#{to_n(mine_buy_cny)})\">额度:#{mine_buy_cny.to_i}</span> \
+      ") %>
+    <% end %>
+</h3>
+<!--
+  <span title=\"比特币占总流动资产比例(#{to_n(btc_p,3)}%), 每百分点等于#{one_btc2cny.to_i}人民币\" class=\"#{level_diff_class}\">#{to_n(btc_p,2)}%</span> \
+  <span title=\"以太坊占总流动资产比例(#{to_n(eth_p,3)}%), 每百分点等于#{one_btc2cny.to_i}人民币\" class=\"#{level_diff_class}\">#{to_n(eth_p,2)}%</span> \
+  <span title=\"冷钱包均价:全部均价:如果满仓均价:交易记录均价\">\
+    #{trezor_ave_cost.to_i}:#{total_ave_cost.to_i}:#{sim_ave_cost.to_i}:#{real_ave_cost.to_i}\
+  </span>
+  <span title=\"累计已实现损益\">#{total_real_profit}</span> \
+  <span title=\"近期已实现损益:未实现总损益\">#{total_real_p_24h.to_i}:#{total_unsell_profit.to_i}</span> \
+  <span title=\"交易记录的总体利率\">#{add_plus(to_n(price_p,1))}%</span> \
+//-->

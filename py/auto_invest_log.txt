@@ -1,0 +1,31 @@
+----------------------------------------------------------------------
+2020-08-10 05:14:05 Invest Between: 3000.00 ~ AUTO
+Price Now: 11661.73 1440_Min: 11524.38 60_Max: 11683.67(1.38%)
+Send Order(76036318934088) successfully
+USDT Trade Now: 1879.6323 (13046.73 CNY)
+BTC Now: 0.00809332 (655.1 CNY) Total: 13701.8 CNY Level: 4.78%
+4 Huobi Assets Updated, Send Order Process Completed
+4 Deal Records Auto Sold and Combined, Sold Profit: 33.2840 CNY
+Time Line Updated to: 2020-08-10 05:14:15 And Clear Records!
+----------------------------------------------------------------------
+2020-08-10 11:10:38 Invest Between: 3000.00 ~ AUTO
+Price Now: 12010.00 1440_Min: 11524.38 0_Max: 12010.00(4.21%)
+Send Order(76042643985995) successfully
+USDT Trade Now: 12699.6738 (88149.81 CNY)
+BTC Now: 0.30089732 (25083.4 CNY) Total: 113233.2 CNY Level: 22.15%
+4 Huobi Assets Updated, Send Order Process Completed
+300 Deal Records Auto Sold and Combined, Sold Profit: 30934.5685 CNY
+Time Line Updated to: 2020-08-10 11:10:48 And Clear Records!
+----------------------------------------------------------------------
+2020-08-10 11:21:51 Invest Between: 3000.00 ~ AUTO
+Price Now: 12017.82 1440_Min: 11524.38 0_Max: 12027.81(4.37%)
+Send Order(76042694188115) successfully
+USDT Trade Now: 13577.6661 (94244.05 CNY)
+BTC Now: 0.22769332 (18993.3 CNY) Total: 113237.4 CNY Level: 16.77%
+4 Huobi Assets Updated, Send Order Process Completed
+100 Deal Records Auto Sold and Combined, Sold Profit: 1554.4361 CNY
+Time Line Updated to: 2020-08-10 11:22:01 And Clear Records!
+----------------------------------------------------------------------
+2020-08-10 13:33:11:11935.24 注意！由于卖出后仓位小于保留的仓位值(0%)，因此程序无法执行自动卖出，请调低保留的仓位值或卖出总量以便程序可以执行自动卖出 >_<
+----------------------------------------------------------------------
+2020-08-10 13:41:20:11940.82 目前保留的仓位值已调整到0%或卖出总量减少到可卖出的范围内，程序可以执行自动卖出了 ^_^

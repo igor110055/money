@@ -15,19 +15,27 @@
   <tr><td colspan="2" class="thead"><%= Time.now.to_s(:db) %></td></tr>
   <tr>
     <td><%= t(:order_level) %>：</td>
-    <td align="center"><%= "#{@btc_level}% (#{@btc_amount})" %></td>
+    <td align="center"><u class="su"><%= "#{@btc_level}% (#{@btc_amount})" %></u></td>
   </tr>
   <tr>
     <td><%= t(:order_usdt) %>：</td>
-    <td align="center"><%= "#{@usdt_amount}U (¥#{@cny_amount})" %></td>
+    <td align="center"><u class="du"><%= "#{@usdt_amount}U (¥#{@cny_amount})" %></u></td>
   </tr>
   <tr>
     <td><%= t(:usdt_trade) %>：</td>
-    <td align="center"><%= @usdt_available %> USDT</td>
+    <td align="center"><u class="su"><%= @usdt_available %>(<%= to_n((@usdt_available.to_f-@usdt_amount.to_f).abs,1)%>) U</u></td>
   </tr>
   <tr>
     <td><%= t(:usdt_trade) %>：</td>
-    <td align="center"><%= @btc_available %> BTC</td>
+    <td align="center"><u class="du"><%= @btc_available %> BTC</u></td>
+  </tr>
+  <tr>
+    <td><%= t(:ave_cost) %>：</td>
+    <td align="center"><%= @ave_cost %> USDT</td>
+  </tr>
+  <tr>
+    <td><%= t(:profit_now) %>：</td>
+    <td align="center"><%= @profit_cny %> CNY</td>
   </tr>
   <tr>
     <td><%= t(:deal_record_deal_type) %>：</td>
@@ -44,6 +52,10 @@
   <tr>
     <td><%= t(:order_amount) %>：</td>
     <td><%= text_field_tag(:amount, @amount) %></td>
+  </tr>
+  <tr>
+    <td>额度：</td>
+    <td><%= to_n(@price*@amount)+' USDT' if @price and @amount %></td>
   </tr>
   <tr>
     <td colspan="2" align="right" class="tfoot">

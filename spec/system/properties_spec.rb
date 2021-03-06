@@ -13,11 +13,6 @@ RSpec.describe '系统测试(Properties)', type: :system do
       visit properties_path
     end
 
-    specify '#108[系统层]能在资产列表中显示包含利息的资产总净值' do
-      expect(page).to have_selector '#properties_net_value_twd' , \
-        text: (property_total_value_to(:twd) + property_total_lixi_to(:twd)).to_i
-    end
-
     specify '#110[系统层]资产列表增加一栏位显示资产的利息值' do
       @ls.each {|l| expect(page).to have_content l.property.lixi.to_i}
     end
@@ -27,6 +22,13 @@ RSpec.describe '系统测试(Properties)', type: :system do
       fill_in "new_amount_#{p.id}", with: '57114.3849'
       find("#property_#{p.id}").click
       expect(page.html).to include '57114.38'
+    end
+
+    specify '#188更新资产金额时能自动将逗号去掉' do
+      p = @ps[0]
+      fill_in "new_amount_#{p.id}", with: '1,157,114.3849'
+      find("#property_#{p.id}").click
+      expect(page.html).to include '1157114.38'
     end
 
     specify '#114[系统层]资产列表能显示以人民币计算的资产总净值' do
@@ -62,7 +64,7 @@ RSpec.describe '系统测试(Properties)', type: :system do
     end
 
     specify '#143[系统层]资产列表能显示3月底以来资产净值平均月增减额度' do
-      expect(page).to have_selector '#net_growth_ave_month', text: Property.net_growth_ave_month.to_i
+      expect(page).to have_selector '#net_growth_ave_month'
     end
 
     specify '#150[系统层]若资产为数字货币默认金额显示小数点8位否则显示2位' do
@@ -79,6 +81,10 @@ RSpec.describe '系统测试(Properties)', type: :system do
       expect(page.html).to include @btc.amount.to_s
       expect(page).to have_content legal_rate
       expect(page).to have_content digital_price
+    end
+
+    specify '#252不可删除的资产名称旁边有一个🔒图示以提醒该资产项目不可被删除' do
+      expect(page).to have_content '🔒', count: 1
     end
 
   end
@@ -138,7 +144,7 @@ RSpec.describe '系统测试(Properties)', type: :system do
 
   end
 
-  describe '修改与删除资产' do
+  describe '修改资产' do
 
     let!(:property) { create(:property) }
 
@@ -163,10 +169,17 @@ RSpec.describe '系统测试(Properties)', type: :system do
         expect(page).to have_selector '.alert-notice'
       end
 
-      specify '能通过表单删除一笔资产记录' do
-        find('#delete_property').click
-        expect(page).not_to have_content property.name
+      specify '#188更新资产金额时能自动将逗号去掉' do
+        fill_in 'property[amount]', with: '1,205,412.00'
+        find('#update_property').click
+        expect(page.html).to include '1205412'
         expect(page).to have_selector '.alert-notice'
+      end
+
+      specify '#251若资产项目有不可删除的属性则在该资产编辑页面里不显示删除链接' do
+        locked_p = create(:property, :usd_locked)
+        visit edit_property_path(locked_p)
+        expect(page).not_to have_selector '#delete_property'
       end
 
     end
@@ -230,6 +243,14 @@ RSpec.describe '系统测试(Properties)', type: :system do
       expect(page).not_to have_content Property.net_value(:twd, include_hidden: false).to_i
     end
 
+    specify '以管理员登入才能通过表单删除一笔资产记录' do
+      p = @ps[0]
+      click_on p.name
+      find('#delete_property').click
+      expect(page).not_to have_content p.name
+      expect(page).to have_selector '.alert-notice'
+    end
+
     specify '#122[系统层]以管理员登入才可以将资产设为隐藏的资产' do
       p = @ps[0]
       p.is_hidden = false
@@ -243,6 +264,22 @@ RSpec.describe '系统测试(Properties)', type: :system do
       find('#login').click
       visit properties_path
       expect(page).not_to have_content p.name
+    end
+
+    specify '#251以管理员登入才可以将资产设为不可删除的资产' do
+      p = @ps[0]
+      p.is_locked = false
+      click_on p.name
+      find('#property_is_locked').click
+      find('#update_property').click
+      within '#site_nav' do
+        find('#logout').click
+      end
+      fill_in 'pincode', with: "#{$pincode}"
+      find('#login').click
+      visit edit_property_path(p)
+      expect(page).not_to have_selector '#property_is_locked'
+      expect(page).not_to have_selector '#delete_property'
     end
 
     specify '#126[系统层]一般登入与管理员看到的资产占比是不同的' do
@@ -283,7 +320,7 @@ RSpec.describe '系统测试(Properties)', type: :system do
 
     specify '#156[系统层]通过资产组合更新了资产标签后应返回该资产组合而不是首页' do
       create_properties_with_tags
-      visit '/?tags=MYCASH'
+      visit '/properties?tags=MYCASH'
       click_on @twd_cash.name
       fill_in 'property[amount]', with: 10000.0
       find('#update_property').click

@@ -1,21 +1,28 @@
 <% if login? %>
-  <nav id="<%= id %>">
+  <div id="<%= id %>">
     <small>
+      <%= link_back_to_trial_lists %> |
       <%= link_back_to_properties %> |
       <% if admin? %>
-        <%= link_to t(:portfolio_index), portfolios_path %> |
-      <% end %>
-      <%= link_to t(:currency_index), currencies_path %> |
-      <%= link_to t(:item_index), items_path %> |
-      <%= link_to t(:interest_index), interests_path %> |
-      <% if admin? %>
+        <%= link_back_to_portfolios %> |
+        <%= system_params_form_link %> |
+        <%= huobi_assets_link %> |
         <%= order_list_link %> |
-        <%= link_to t(:deal_record_index), deal_records_path %> |
+        <%= link_back_to_currencies %> |
+        <%= link_back_to_items %> |
+        <%= link_back_to_interests %> |
+        <%= link_back_to_deal_records %> |
+        <%= set_auto_invest_form_link("BTC") %> |
+        <%= invest_log_link("BTC") %> |
+        <%= link_to_eth_deal_records %> |
+        <%= set_auto_invest_form_link("ETH") %> |
+        <%= invest_log_link("ETH") %> |
+        <%= clear_invest_log_link %> |
+        <%= update_btc_exchange_rates_link %> |
+        <%= rise_fall_list_link %> |
         <%= link_to t(:record_index), records_path %> |
-        <%= update_all_data_link %> |
-        <%= order_link %> |
       <% end %>
-      <%= link_to t(:logout), logout_path, { id: 'logout' } %>
+      <%= logout_link %>
     </small>
-  </nav>
+  </div>
 <% end %>

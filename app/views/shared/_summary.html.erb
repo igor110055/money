@@ -1,5 +1,9 @@
-<%= t(:positive_property) %>：<%= @properties_value_twd.to_i %>&nbsp;&nbsp;
-<%= t(:negative_property) %>：<%= @properties_loan_twd.to_i %>&nbsp;&nbsp;
-<%= t(:lixi) %>：<%= @properties_lixi_twd.to_i %>&nbsp;&nbsp;
-<%= t(:total_properties_amount) %>：<span id="properties_net_value_twd"><%= link_to @properties_net_value_twd.to_i, chart_path, target: :blank %></span> (<span id="properties_net_value_cny"><%= @properties_net_value_cny.to_i %></span> <%= t(:cny) %>)&nbsp;&nbsp;
-<%= t(:increase_or_decrease) %>：<span id="net_growth_ave_month"><%= @properties_net_growth_ave_month.to_i %></span>/月
+<%= t(:positive_property) %>：<%= @properties_value_twd.to_i %>|¥<%= @properties_value_cny.to_i %>&nbsp;
+<%= t(:negative_property) %>(<%= t(:lixi) %>)：<%= @properties_loan_twd.abs.to_i %>|¥<%= @properties_loan_cny.abs.to_i %>&nbsp;
+<%= t(:total_properties_amount) %>：<%= (@properties_value_twd+@properties_loan_twd).to_i %>|¥<%= (@properties_value_cny+@properties_loan_cny).to_i %>&nbsp;
+<% if admin? %>
+  最新：
+<% else %>
+  流动性资产总净值：
+<% end %>
+<%= show_net_value_link %>&nbsp;

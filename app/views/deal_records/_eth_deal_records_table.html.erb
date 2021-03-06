@@ -1,0 +1,192 @@
+<%
+  # 初始化所有变量
+  table_width_ratio = 1.0 # 表格宽度按比例调整
+  n = 1 # 数据集索引初始值
+  amount_pos = 8 # 默认的以太坊总和显示位数
+  total_price = total_amount = total_fees = total_get_usdt = total_cny_amount = \
+  total_cny_amount_now = total_earn_or_loss = 0.0
+
+  # 比特币现价
+  btc_now = get_btc_price
+  # 以太坊现价
+  eth_now = get_eth_price
+  # 交易所内剩余的以太坊
+  @eth_amount_ex = DealRecord.eth_amount
+  # 原有参与卖出的以太坊
+  @ori_eth_amount = get_invest_params(3,'ETH').to_f
+  # 保留多少以太仓位不卖
+  @keep_eth_level = get_invest_params(29,'ETH').to_i
+  # 卖出最高价时的最低价
+  @min_price_when_sell = get_invest_params(38,'ETH').to_f
+  # 目标币种
+  @target_bi = eth2bi
+  price_pos = @target_bi == 'btc' ? 6 : 2 # 价格显示的小数点位数
+  get_pos = @target_bi == 'btc' ? 8 : 4 # 实得币数显示的小数点位数
+
+  # 显示以太坊剩余仓位状态
+  def show_eth_level_status
+    raw "<span title='#{get_huobi_acc_id}交易所内以太坊剩余仓位'>#{(@eth_amount_ex/@ori_eth_amount*100).to_i}</span>/<span title='保留多少以太仓位不卖'>#{@keep_eth_level}</span>"
+  end
+
+  # 显示当前的卖出策略
+  def show_sell_strategy
+    code = "ETH"
+    every_minute = get_invest_params(22,code).to_i/60
+    sell_over_price = get_invest_params(27,code).to_i
+    sell_when_minutes = get_invest_params(18,code).to_i
+    sell_cny = get_invest_params(39,code).to_i
+    result = ">=#{sell_over_price}|每#{every_minute}分" if sell_over_price > 0
+    result = "#{sell_when_minutes}高|每#{every_minute}分|¥#{sell_cny}" if sell_when_minutes > 0
+    result = "<u>#{result}</u>" if DealRecord.enable_to_sell? code
+    return raw(result)
+  end
+
+  # 列表种类参数
+  def list_page_params
+    {
+      show_all: params[:show_all], show_sell: params[:show_sell], \
+      show_unsell: params[:show_unsell], make_balance_count: params[:make_balance_count], \
+      make_trezor_count: params[:make_trezor_count], show_first: params[:show_first], \
+      show_balance: params[:show_balance], show_trezor: params[:show_trezor]
+    }
+  end
+
+  # 多种列表能选择按照下单时间成交价成交量排序
+  def order_list_params( field_name )
+    { order_field: field_name }.merge list_page_params
+  end
+
+  # 点击转出后开启新视窗
+  def build_switch_params( action, id )
+      { action: action, id: id }.merge list_page_params
+  end
+
+  # 交易所ETH余额等于多少人民币
+  def ex_remain_cny
+    (@eth_amount_ex*get_eth_price*$usdt_to_cny).to_i
+  end
+
+  # 是否为BTC报价
+  def btc?
+    @target_bi == 'btc' ? true : false
+  end
+
+%>
+<table width="<%=$default_table_width*table_width_ratio%>">
+  <tr class="thead">
+    <td width="15"><%= link_to '🏠', set_eth_as_home_path %></td>
+    <td width="320">
+      <% # 下单时间 %>
+      <%= link_to t(:deal_record_created), order_list_params('created_at') %>
+      | 卖出条件: <%= show_sell_strategy %>
+    </td>
+    <td>
+      <% # 成交价 %>
+      <%= link_to t(:deal_record_price), order_list_params('price') %>
+    </td>
+    <td>
+      <% # 成交量 %>
+      <%= link_to t(:deal_record_amount)+'(ETH)', order_list_params('amount') %>
+    </td>
+    <td>手续费(<%=@target_bi.upcase%>)</td>
+    <td>实得币(<%=@target_bi.upcase%>)</td>
+    <td>
+      <% # 值人民币 %>
+      <%= t(:exchange_to_cny) %>
+    </td>
+    <td>
+      <% # 更新时间 %>
+      <%= "更新时间" %>
+    </td>
+    <td>
+      <% # 功能操作 %>
+      <%= "功能操作" %>
+    </td>
+  </tr>
+<% @eth_deal_records.each do |dr| %>
+  <tr <%= change_row_color %>>
+    <td align="right">
+      <% # 显示优卖功能链接 %>
+      <span <%= raw "class='switch_first_sell'" if dr.first_sell %>>
+        <%= link_to n, build_switch_params(:switch_first_sell, dr) %>
+      </span>
+    </td>
+    <td align="center">
+      <% # 显示下单时间 %>
+      <%= link_edit_to(dr,to_t(dr.created_at,true)) %>
+    </td>
+    <td align="right">
+      <% # 成交价 %>
+      <%= price = to_n(dr.price,price_pos) %>
+    </td>
+    <td align="right">
+      <% # 成交量 %>
+      <% amount_fee = to_n(dr.amount-dr.fees,amount_pos) %>
+      <%= amount = to_n(dr.amount,amount_pos) %>
+    </td>
+    <% # 手续费 %>
+    <td align="right"><%= to_n(dr.fees,amount_pos) %></td>
+    <% # 实得币 %>
+    <td align="right"><%= get_usdt = to_n(dr.price*dr.amount-dr.fees,get_pos) %></td>
+    <td align="right">
+      <% # 值人民币 %>
+      <%= cny_amount = to_n(dr.cny_amount(btc?),1) %>
+    </td>
+    <td align="right">
+      <% # 更新时间 %>
+      <%= updated_at_str = to_time(dr.updated_at) %>
+    </td>
+    <td align="right">
+      <%= link_to '单笔删除', delete_eth_deal_record_path(id:dr.id) %>
+    | <%= link_to '全部删除', clear_eth_deal_records_path %>
+    <% if @target_bi == "usdt" %>
+      | <%= link_to '删后加币', delete_eth_deal_record_then_add_usdt_path(id:dr.id) %>
+      | <%= link_to '全删加币', clear_eths_deal_record_then_add_usdt_path %>
+    <% end %>
+    </td>
+  </tr>
+  <%
+    # 求和以显示数据加总或求平均
+    n += 1
+    total_price += price.to_f * amount.to_f
+    total_amount += amount.to_f
+    total_fees += dr.fees
+    total_get_usdt += get_usdt.to_f
+    total_cny_amount += cny_amount.to_f
+  end # 结束 @deal_records.each
+  # 成交均价
+  @total_ave_cost_price = total_amount > 0 ? (total_price/total_amount).floor(4) : ''
+%>
+  <tr class="thead">
+    <td colspan="2">
+      <% # 显示现价与k线图链接 %>
+      <%= kline_chart_link(to_n(btc_now,2)) %> | <%= kline_chart_link to_n(@eth_price), "ethusdt" %> | <%= kline_chart_link to_n(@ethbtc_price,6), "ethbtc" %> | 卖出最低价: <%= @min_price_when_sell %>
+    </td>
+    <td align="right">
+      <% # 显示成交均价 %>
+      <%= to_n(@total_ave_cost_price.to_f,6) %>
+    </td>
+    <td align="right">
+      <% # 成交量总和 %>
+      <%= to_n(total_amount,8) %>
+    </td>
+    <td align="right">
+      <% # 手续费总和 %>
+      <%= to_n(total_fees,8) %>
+    </td>
+    <td align="right">
+      <% # 实得币总和 %>
+      <%= to_n(total_get_usdt,8) %>
+    </td>
+    <td align="right">
+      <% # 值人民币总和 %>
+      <%= to_n(total_cny_amount,1) %>
+    </td>
+    <td align="right" colspan="2">
+      <% # 显示交易所ETH余额 %>
+      <span title="<%=get_huobi_acc_id%>交易所ETH余额">ETH: <%= to_n(@eth_amount_ex,8) %></span>(¥<%=ex_remain_cny%>可卖|<%=show_eth_level_status%>) |
+      <% # 显示资产净值与走势图链接 %>
+      <%= show_net_value_link %>
+    </td>
+  </tr>
+</table>

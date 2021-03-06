@@ -1,17 +1,17 @@
 <h2><%= t(:portfolio_index) %></h2>
 
-<table>
+<table width="<%=$default_table_width%>">
   <tr class="thead">
     <td width="15"></td>
     <td><%= t(:portfolio_name) %></td>
     <td><%= t(:exchange_to_twd) %></td>
     <td><%= t(:exchange_to_cny) %></td>
     <td><%= t(:property_proportion) %></td>
+    <td><%= t(:chart) %></td>
     <td><%= t(:portfolio_include_tags) %></td>
     <td><%= t(:portfolio_exclude_tags) %></td>
     <td><%= t(:updated_time) %></td>
     <td><%= t(:edit) %></td>
-    <td><%= t(:chart) %></td>
   </tr>
 <% n = 1 %>
 <% @portfolios.each do |portfolio| %>
@@ -21,11 +21,11 @@
     <td align="right"><%= to_n(portfolio.twd_amount,0) %></td>
     <td align="right"><%= to_n(portfolio.cny_amount,0) %></td>
     <td align="right"><%= to_n(portfolio.proportion) %></td>
+    <td align="center"><%= chart_link(portfolio) %></td>
     <td><%= portfolio.include_tags %></td>
     <td><%= portfolio.exclude_tags %></td>
     <td><%= to_t(portfolio.updated_at) %></td>
     <td align="center"><%= link_edit_to_image(portfolio) %></td>
-    <td align="center"><%= chart_link(portfolio) %></td>
   </tr>
   <% n += 1 %>
 <% end %>
@@ -34,5 +34,6 @@
 <br/>
 <%= link_back_to_properties %>
 | <%= link_to t(:new_portfolio), new_portfolio_path, { id: 'add_new_portfolio' } %>
-| <%= update_all_portfolios_link %>
+| <%= update_btc_huobi_portfolios_link %>
+<%= update_all_exchange_rates_link %>
 <p>

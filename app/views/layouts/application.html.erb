@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= site_name %></title>
+    <title><%= get_huobi_acc_id+":"+site_name if admin? %></title>
+    <% if @auto_refresh_sec and @auto_refresh_sec > 0 %>
+    <meta http-equiv="refresh" content="<%=@auto_refresh_sec%>">
+    <% end %>
+    <% # 为了修正图表无法读取最新净值的错误 %>
+    <% if @show_net_chart %>
+    <meta http-equiv="Refresh" content="0;url=<%=net_chart_path%>" />
+    <% end %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
@@ -11,7 +18,7 @@
   </head>
 
   <body>
-    <%= render 'layouts/header' %>
+    <%= render 'layouts/header' if !@no_header %>
     <%= render 'layouts/flash' %>
     <%= yield %>
     <%= render 'layouts/footer' %>

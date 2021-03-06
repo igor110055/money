@@ -11,6 +11,25 @@ cn:
   xiang: 项
   compose: 成员
   edit: 编辑
+  keep: 保留
+  trial_list_index: 理财目标
+  set_to_trezor: 转出到钱包
+  all_to_trezor: 本表全转出
+  all_to_balance: 本表全消帐
+  set_from_trezor: 转到未卖记录
+  trezor_records: 钱包记录
+  make_trezor_count: 凑钱包
+  make_balance_count: 凑消帐
+  make_balance_records: 消帐记录
+  switch_from_balance: 转到未卖记录
+  switch_to_balance: 转到消帐记录
+  btc_ave_price: 所有比特币均价
+  begin_profit_price: 开始获利的现价
+  level_trial_list: 仓位试算
+  rise_fall_list: 涨跌试算
+  model_trade_set: 模型集测
+  model_trade_single: 模型单测
+  save_kdata: 储存报价
   home_title: 我的首页
   back_to_home: 返回首页
   hello: 您好！欢迎来到我的网站 ^_^
@@ -33,7 +52,8 @@ cn:
   positive_property: 资产
   negative_property: 负债
   property_is_hidden: 设为隐藏
-  property_index: 资产负债表
+  property_is_locked: 不可删除
+  property_index: 资产列表
   back_to: 返回
   edit_property: 编辑资产
   update_property: 更新资产
@@ -61,9 +81,10 @@ cn:
   update_currency: 更新货币
   updated_time: 更新时间
   exchange_to_twd: 等值台币
-  exchange_to_cny: 等值人民币
-  now_to_cny: 现值人民币
-  earn_or_loss: 浮动盈亏
+  exchange_to_cny: 值人民币
+  exchange_to_btc: 值比特币
+  now_to_cny: 现值
+  earn_or_loss: 盈亏
   total_properties_amount: 资产总净值
   twd: 新台币
   cny: 人民币
@@ -74,9 +95,13 @@ cn:
   interest_rate_type_err: 利率值必须是数字且不能为负！
   interest_index: 利息列表
   interest_start_date: 利息起算日
-  interest_rate: 年化利率(%)
+  interest_rate: 年利率
   interest_amount: 利息金额
+  interest_amount_year: 年付息
+  interest_amount_month: 月付息
+  interest_amount_day: 日付息
   interest_currency: 利息币别
+  interest_benjin: 本金
   new_interest: 新建利息
   delete_interest: 删除这笔利息
   delete_interest_confirm: 您确定要删除这笔利息记录吗？
@@ -136,14 +161,14 @@ cn:
   delete_portfolio_confirm: 您确定要删除这笔组合吗？
   edit_portfolio: 编辑资产组合
   update_portfolio: 更新资产组合
-  update_all_portfolios: 更新资产组合
+  update_all_portfolios: 更新组合
   portfolio_index: 资产组合
-  new_portfolio: 新建资产组合
+  new_portfolio: 新建组合
   portfolio_created_ok: 资产组合新建成功！
   portfolio_updated_ok: 资产组合更新成功！
   portfolio_destroyed_ok: 资产组合删除成功！
   portfolios_updated_ok: 所有资产组合已更新！
-  rate_or_price: 汇率/价格
+  rate_or_price: 汇率
   created_at: 创建
   updated_at: 更新
   record_class_name_blank_err: 数值记录模型名称不能为空白
@@ -159,7 +184,7 @@ cn:
   delete_record: 删除这笔记录
   delete_record_confirm: 您确定要删除这笔记录吗？
   all_records_updated_ok: 所有数值记录已更新！
-  update_all_data: 更新主要资料
+  update_all_data: 更新资料
   update_all_data_ok: 所有资料已更新！
   record_created_ok: 记录新建成功！
   record_updated_ok: 记录更新成功！
@@ -184,28 +209,31 @@ cn:
   deal_record_fees: 手续费用
   deal_record_purpose: 投资目的
   deal_record_created: 下单时间
-  deal_record_earn_limit: 止盈(¥)
-  deal_record_loss_limit: 止损(¥)
+  deal_record_earn_limit: 止盈
+  deal_record_loss_limit: 止损
   deal_record_earn_short: 止盈价
   deal_record_loss_short: 止损价
   deal_record_order_id: 下单编号
-  deal_record_real_profit: 已实现损益(¥)
+  deal_record_real_profit: 已实现损益
+  deal_record_first_sell: 标示为优先卖出
   price_now: 现价
-  deal_record_auto_sell: 自动卖出
+  deal_record_auto_sell: 标示为已经卖出
   edit_deal_record: 编辑交易记录
-  update_deal_record: 更新交易记录
+  update_deal_record: 更新记录
   new_deal_record: 新建交易记录
-  deal_record_index: 交易列表
+  deal_record_index: BTC交易列表
+  deal_record_index_eth: ETH交易列表
   delete_deal_record: 删除这笔交易记录
   deal_record_price_type_err: 成交价格必须为大于零的数字！
   deal_record_amount_type_err: 成交数量必须为大于零的数字！
   deal_record_earn_limit_type_err: 止盈额度必须为正数！
   deal_record_loss_limit_type_err: 止损额度必须为正数！
   huobi_deal_records_created_ok: 火币交易记录已新建！
-  clear_deal_records: 清空交易记录
-  clear_deal_records_ok: 交易记录已全部清空！
+  clear_deal_records: 清空未卖
+  clear_deal_records_ok: 未卖出的交易记录已全部清空！
   update_huobi_records: 更新记录与实现损益
-  update_huobi_assets: 更新火币资产讯息
+  huobi_assets: 火币资产
+  update_huobi_assets: 更新火币
   property_clear_amount_ok: 金额已归零！
   place_order_to_huobi: 火币下单
   info_confirm: 确认页
@@ -214,9 +242,9 @@ cn:
   order_done: 已成交
   order_undone: 未成交
   update_btc_price_ok: 比特币价格已更新！
-  update_btc_exchange_rates: 更新比特币报价
+  update_btc_exchange_rates: 更新币价
   update_btc: 更新比特币
-  profit_p: 获利率(%)
+  profit_p: 利率
   cancel_order: 取消这笔下单
   cancel_order_ok: 取消下单成功！
   get_price_error: 取得报价时遇到错误！
@@ -237,12 +265,70 @@ cn:
   open_order_type: 买卖别
   delete_open_order: 撤消下单
   check_open_orders: 同步火币下单
-  clear_open_orders: 撤消全部下单并清空记录
+  clear_open_orders: 撤消全部下单
   clear_open_orders_ok: 下单记录已清空！
   destroy_open_order_ok: 下单记录已删除！
   delete_open_order_ok: 已成功撤消下单！
   delete_open_order_error: 撤消下单未成功！
   usdt_trade: 可用
+  invest_log: 智投日志
+  clear_invest_log: 清空日志
+  delete_invest_log_ok: 智投日志已清空！
+  delete_two_invest_log_ok: BTC与ETH智投日志已清理完毕！
+  clear_invest_log_and_keep: 智投日志已清空至保留
+  swap_chart: 切换图表
+  see_kline: 看K线图
+  see_line: 看折线图
+  set_auto_invest_params: 智投参数
+  save_auto_invest_params: 储存智投参数
+  set_auto_invest_params_ok: 参数更新成功！
+  set_auto_invest_params_error: 智投参数储存时发生错误！
+  show_all_deal_records: 全部记录
+  show_sell_deal_records: 卖出记录
+  show_unsell_deal_records: 未卖
+  show_first_sell_deal_records: 优卖
+  zip_sell_deal_records: 压缩记录
+  zip_sell_records_ok: 压缩卖出记录成功！
+  send_sell_deal_records: 收割获利
+  send_sell_deal_records_ok: 执行收割成功！
+  send_sell_deal_records_error: 执行失败！尚未达到可收割的获利值
+  send_stop_loss: 卖出
+  send_stop_loss_ok: 强制卖出已执行！
+  send_stop_loss_error: 强制卖出失败！(尚未到达可卖出时间或其他原因)
+  send_force_buy_ok: 强制买入已执行！
+  send_force_buy_error: 强制买入失败！(尚未到达可买入时间或其他原因)
+  update_system_params: 系统参数
+  save_system_params: 储存系统参数
+  update_system_params_ok: 系统参数更新成功！
+  update_system_params_error: 系统参数更新时发生错误！
+  test_huobi: 测试火币
+  ave_cost: 均价
+  profit_now: 损益
+  trial_list: 理财目标
+  myage: 岁
+  date_diff: 天数
+  date: 日期
+  month_cost: 支出
+  month_sell: 卖出
+  begin_price: 月初价
+  goal_price: 目标价
+  reach_goal_price: 达标价
+  begin_amount: 月初量
+  begin_balance: 月初值
+  month_grow_rate: 增长
+  end_price: 月末价
+  end_amount: 月末量
+  end_balance: 月末值
+  balance_now: 目前值
+  goal_balance: 月末目标
+  sell_to_back: 卖至回本
+  sell_to_back_ok: 卖到回本下单已执行！
+  save_trials_to_db: 将试算结果存入数据库
+  save_trials_to_db_ok: 已将试算结果存入数据库！
+  have_reached: 距离目标
+  sell_all: 全部卖出
+  month_growth_rate: 月增长率
+  operate_money: 短线资金
   copyright: 版权所有
   contact_email: 联系邮箱
   activerecord:

@@ -1,0 +1,515 @@
+----------------------------------------------------------------------
+2020-11-02 10:27:54 Invest Between: 13200.00 ~ AUTO
+Test Price: 13620.00 Now: 13696.66 180_Min: 13649.99 0_Max: 13697.12(0.35%)
+Price Now Update to: 13620.00
+*** Double Buy Every 100 Calculated ***
+BTC Level: 11.00% (FORCE_BUY:False) for AccId: 170(6582761)
+Total  USDT: 461.7077 USDT (3054.84 CNY)
+Invest Cost: 70.0000 USDT (463.15 CNY)
+Buy Amount: 0.005140 BTC (463.15 CNY)
+Get Amount: 0.00512922 BTC (463.15 CNY)
+Next Time: 2020-11-02 10:57:54 (30.00 M | 0.50 H)
+Zero Time: 2020-11-02 13:45:46 (3.30 H | 0.14 D)
+Sim Order Price: 13622.72, Amount: 0.005140, Type: buy-limit
+Sim BTC Level: 24.50%(+13.50%)
+----------------------------------------------------------------------
+2020-11-02 10:28:46 Invest Between: 13200.00 ~ AUTO
+Test Price: 13840.00 Now: 13702.78 180_Min: 13649.99 0_Max: 13703.95(0.40%)
+Price Now Update to: 13840.00
+*** Double Buy Every 100 Calculated ***
+BTC Level: 11.16% (FORCE_BUY:False) for AccId: 170(6582761)
+Total  USDT: 461.7077 USDT (3054.84 CNY)
+Invest Cost: 24.2000 USDT (160.12 CNY)
+Buy Amount: 0.001749 BTC (160.12 CNY)
+Get Amount: 0.00174506 BTC (160.12 CNY)
+Next Time: 2020-11-02 10:58:56 (30.15 M | 0.50 H)
+Zero Time: 2020-11-02 20:04:00 (9.59 H | 0.40 D)
+Sim Order Price: 13842.77, Amount: 0.001749, Type: buy-limit
+Sim BTC Level: 15.82%(+4.66%)
+2020-11-02 13:18:30:13646.91 180min:13646.90 sp:0 buy:True sell:True over_max:False rp(13646.90:13657.82):False lower:True
+2020-11-02 13:18:35:13645.01 180min:13645.00 sp:0 buy:True sell:True over_max:False rp(13645.00:13655.92):False lower:True
+2020-11-02 13:18:41:13643.88 180min:13643.88 sp:0 buy:True sell:True over_max:False rp(13643.88:13654.80):False lower:True
+2020-11-02 13:18:46:13643.01 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:18:51:13643.00 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:18:56:13647.78 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:19:01:13647.78 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:19:06:13647.78 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:19:11:13647.78 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:19:17:13647.77 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:19:22:13647.78 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:19:27:13652.59 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):False lower:True
+2020-11-02 13:19:32:13654.68 180min:13643.00 sp:0 buy:True sell:True over_max:False rp(13643.00:13653.91):True lower:True
+----------------------------------------------------------------------
+2020-11-02 13:19:32 Invest Between: 13200.00 ~ AUTO
+Price Now: 13654.68 180_Min: 13643.00 0_Max: 13654.69(0.09%)
+*** Double Buy Every 100 Calculated ***
+BTC Level: 11.02% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 461.7077 USDT (3054.84 CNY)
+Invest Cost: 70.0000 USDT (463.15 CNY)
+Buy Amount: 0.005126 BTC (463.15 CNY)
+Get Amount: 0.00511619 BTC (463.15 CNY)
+Next Time: 2020-11-02 13:49:41 (30.15 M | 0.50 H)
+Zero Time: 2020-11-02 16:38:24 (3.31 H | 0.14 D)
+Send Order(136639192930234) successfully
+1 Deal Records added
+USDT Trade Now: 391.7137 (2591.73 CNY)
+BTC Now: 0.00930536 (840.9 CNY) Total: 3432.6 CNY Level: 24.50%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-02 16:26:01:13662.19 180min:13662.18 sp:0 buy:True sell:True over_max:False rp(13662.18:13673.11):False lower:True
+2020-11-02 16:26:06:13653.85 180min:13653.85 sp:0 buy:True sell:True over_max:False rp(13653.85:13664.77):False lower:True
+2020-11-02 16:26:11:13663.00 180min:13651.00 sp:0 buy:True sell:True over_max:False rp(13651.00:13661.92):False lower:True
+2020-11-02 16:26:17:13660.87 180min:13651.00 sp:0 buy:True sell:True over_max:False rp(13651.00:13661.92):False lower:True
+2020-11-02 16:26:22:13662.31 180min:13651.00 sp:0 buy:True sell:True over_max:False rp(13651.00:13661.92):True lower:True
+----------------------------------------------------------------------
+2020-11-02 16:26:22 Invest Between: 13200.00 ~ AUTO
+Price Now: 13663.92 180_Min: 13651.00 0_Max: 13668.98(0.13%)
+*** Double Buy Every 100 Calculated ***
+BTC Level: 24.51% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 391.7137 USDT (2591.73 CNY)
+Invest Cost: 70.0000 USDT (463.15 CNY)
+Buy Amount: 0.005123 BTC (463.15 CNY)
+Get Amount: 0.00511273 BTC (463.15 CNY)
+Next Time: 2020-11-02 16:56:31 (30.15 M | 0.50 H)
+Zero Time: 2020-11-02 19:15:05 (2.81 H | 0.12 D)
+Send Order(137461201908422) successfully
+1 Deal Records added
+USDT Trade Now: 321.7107 (2128.56 CNY)
+BTC Now: 0.01441811 (1303.7 CNY) Total: 3432.3 CNY Level: 37.98%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-02 16:59:37:13458.36 300min:13458.36 sp:0 buy:True sell:True over_max:False rp(13458.36:13469.13):False lower:True
+2020-11-02 16:59:43:13443.60 300min:13440.00 sp:0 buy:True sell:True over_max:False rp(13440.00:13450.75):False lower:True
+2020-11-02 16:59:48:13447.35 300min:13440.00 sp:0 buy:True sell:True over_max:False rp(13440.00:13450.75):False lower:True
+2020-11-02 16:59:53:13447.41 300min:13440.00 sp:0 buy:True sell:True over_max:False rp(13440.00:13450.75):False lower:True
+2020-11-02 16:59:58:13449.82 300min:13440.00 sp:0 buy:True sell:True over_max:False rp(13440.00:13450.75):False lower:True
+2020-11-02 17:00:04:13433.98 300min:13433.98 sp:0 buy:True sell:True over_max:False rp(13433.98:13444.73):False lower:True
+2020-11-02 17:00:09:13433.22 300min:13432.63 sp:0 buy:True sell:True over_max:False rp(13432.63:13443.38):False lower:True
+2020-11-02 17:00:14:13436.87 300min:13425.00 sp:0 buy:True sell:True over_max:False rp(13425.00:13435.74):False lower:True
+2020-11-02 17:00:20:13452.40 300min:13425.00 sp:0 buy:True sell:True over_max:False rp(13425.00:13435.74):True lower:True
+----------------------------------------------------------------------
+2020-11-02 17:00:20 Invest Between: 13200.00 ~ AUTO
+Price Now: 13455.74 300_Min: 13425.00 0_Max: 13459.80(0.26%)
+*** Double Buy Every 100 Calculated ***
+BTC Level: 37.62% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 321.7107 USDT (2128.56 CNY)
+Invest Cost: 50.0000 USDT (330.82 CNY)
+Buy Amount: 0.003716 BTC (330.82 CNY)
+Get Amount: 0.00370845 BTC (330.82 CNY)
+Next Time: 2020-11-02 17:20:29 (20.15 M | 0.34 H)
+Zero Time: 2020-11-02 19:09:59 (2.16 H | 0.09 D)
+Send Order(137461562521816) successfully
+1 Deal Records added
+USDT Trade Now: 271.7321 (1797.89 CNY)
+BTC Now: 0.01812668 (1614.1 CNY) Total: 3412.0 CNY Level: 47.31%
+7 Huobi Assets Updated, Send Order Process Completed
+----------------------------------------------------------------------
+2020-11-02 18:14:11 Invest Between: 13200.00 ~ AUTO
+Test Price: 13450.00 Now: 13520.01 300_Min: 13425.00 0_Max: 13523.79(0.74%)
+Price Now Update to: 13450.00
+*** Double Buy Every 100 Calculated ***
+BTC Level: 47.29% (FORCE_BUY:False) for AccId: 170(6582761)
+Total  USDT: 271.7321 USDT (1797.89 CNY)
+Invest Cost: 60.0000 USDT (396.98 CNY)
+Buy Amount: 0.004461 BTC (396.98 CNY)
+Get Amount: 0.00445204 BTC (396.98 CNY)
+Next Time: 2020-11-02 18:34:11 (20.00 M | 0.33 H)
+Zero Time: 2020-11-02 19:44:46 (1.51 H | 0.06 D)
+Sim Order Price: 13452.69, Amount: 0.004461, Type: buy-limit
+Sim BTC Level: 58.94%(+11.64%)
+----------------------------------------------------------------------
+2020-11-02 18:14:38 Invest Between: 13200.00 ~ AUTO
+Test Price: 13500.00 Now: 13520.01 300_Min: 13425.00 0_Max: 13523.79(0.74%)
+Price Now Update to: 13500.00
+*** Double Buy Every 100 Calculated ***
+BTC Level: 47.38% (FORCE_BUY:False) for AccId: 170(6582761)
+Total  USDT: 271.7321 USDT (1797.89 CNY)
+Invest Cost: 60.0000 USDT (396.98 CNY)
+Buy Amount: 0.004444 BTC (396.98 CNY)
+Get Amount: 0.00443556 BTC (396.98 CNY)
+Next Time: 2020-11-02 18:34:48 (20.15 M | 0.34 H)
+Zero Time: 2020-11-02 19:45:54 (1.52 H | 0.06 D)
+Sim Order Price: 13502.70, Amount: 0.004444, Type: buy-limit
+Sim BTC Level: 59.01%(+11.62%)
+----------------------------------------------------------------------
+2020-11-02 18:15:21 Invest Between: 13200.00 ~ AUTO
+Test Price: 13500.00 Now: 13516.41 300_Min: 13425.00 0_Max: 13516.41(0.68%)
+Price Now Update to: 13500.00
+*** Double Buy Every 150 Calculated ***
+BTC Level: 47.38% (FORCE_BUY:False) for AccId: 170(6582761)
+Total  USDT: 271.7321 USDT (1797.89 CNY)
+Invest Cost: 44.0000 USDT (291.12 CNY)
+Buy Amount: 0.003259 BTC (291.12 CNY)
+Get Amount: 0.00325274 BTC (291.12 CNY)
+Next Time: 2020-11-02 18:35:30 (20.15 M | 0.34 H)
+Zero Time: 2020-11-02 20:19:47 (2.07 H | 0.09 D)
+Sim Order Price: 13502.70, Amount: 0.003259, Type: buy-limit
+Sim BTC Level: 55.91%(+8.52%)
+2020-11-02 19:25:46:13395.00 300min:13395.00 sp:0 buy:True sell:True over_max:False rp(13395.00:13405.72):False lower:True
+2020-11-02 19:25:51:13392.20 300min:13392.20 sp:0 buy:True sell:True over_max:False rp(13392.20:13402.91):False lower:True
+2020-11-02 19:25:56:13388.03 300min:13386.00 sp:0 buy:True sell:True over_max:False rp(13386.00:13396.71):False lower:True
+2020-11-02 19:26:01:13386.01 300min:13386.00 sp:0 buy:True sell:True over_max:False rp(13386.00:13396.71):False lower:True
+2020-11-02 19:26:06:13388.96 300min:13386.00 sp:0 buy:True sell:True over_max:False rp(13386.00:13396.71):False lower:True
+2020-11-02 19:26:11:13396.77 300min:13386.00 sp:0 buy:True sell:True over_max:False rp(13386.00:13396.71):True lower:True
+----------------------------------------------------------------------
+2020-11-02 19:26:12 Invest Between: 13200.00 ~ AUTO
+Price Now: 13396.77 300_Min: 13386.00 0_Max: 13397.09(0.08%)
+*** Double Buy Every 150 Calculated ***
+BTC Level: 47.19% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 271.7321 USDT (1797.89 CNY)
+Invest Cost: 60.0000 USDT (396.98 CNY)
+Buy Amount: 0.004479 BTC (396.98 CNY)
+Get Amount: 0.00446973 BTC (396.98 CNY)
+Next Time: 2020-11-02 19:46:21 (20.15 M | 0.34 H)
+Zero Time: 2020-11-02 20:57:27 (1.52 H | 0.06 D)
+Send Order(137522523055814) successfully
+1 Deal Records added
+USDT Trade Now: 211.7280 (1400.88 CNY)
+BTC Now: 0.02259672 (2003.3 CNY) Total: 3404.2 CNY Level: 58.85%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-02 19:46:23:13432.60 300min:13356.82 sp:0 buy:True sell:True over_max:False rp(13356.82:13367.51):True lower:True
+----------------------------------------------------------------------
+2020-11-02 19:46:23 Invest Between: 13200.00 ~ AUTO
+Price Now: 13431.77 300_Min: 13356.82 0_Max: 13433.24(0.57%)
+*** Double Buy Every 150 Calculated ***
+BTC Level: 58.91% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 211.7280 USDT (1400.88 CNY)
+Invest Cost: 5.6312 USDT (37.26 CNY)
+Buy Amount: 0.000419 BTC (37.26 CNY)
+Get Amount: 0.00041840 BTC (37.26 CNY)
+Next Time: 2020-11-02 20:06:32 (20.15 M | 0.34 H)
+Zero Time: 2020-11-03 08:24:00 (12.63 H | 0.53 D)
+Send Order(137522749445152) successfully
+1 Deal Records added
+USDT Trade Now: 206.1000 (1363.64 CNY)
+BTC Now: 0.02301489 (2045.7 CNY) Total: 3409.4 CNY Level: 60.00%
+7 Huobi Assets Updated, Send Order Process Completed
+----------------------------------------------------------------------
+2020-11-02 19:54:21 Invest Between: 13000.00 ~ AUTO
+Test Price: 13400.00 Now: 13420.05 480_Min: 13356.82 0_Max: 13420.06(0.47%)
+Price Now Update to: 13400.00
+*** Double Buy Every 100 Calculated ***
+BTC Level: 59.94% (FORCE_BUY:False) for AccId: 170(6582761)
+Total  USDT: 206.1000 USDT (1363.64 CNY)
+Invest Cost: 20.0000 USDT (132.33 CNY)
+Buy Amount: 0.001493 BTC (132.33 CNY)
+Get Amount: 0.00148955 BTC (132.33 CNY)
+Next Time: 2020-11-02 20:24:30 (30.15 M | 0.50 H)
+Zero Time: 2020-11-03 01:05:03 (5.18 H | 0.22 D)
+Sim Order Price: 13402.68, Amount: 0.001493, Type: buy-limit
+Sim BTC Level: 63.83%(+3.89%)
+2020-11-02 20:08:37:13350.01 180min:13350.00 sp:0 buy:True sell:True over_max:False rp(13350.00:13360.68):False lower:True
+2020-11-02 20:08:42:13358.06 180min:13350.00 sp:0 buy:True sell:True over_max:False rp(13350.00:13360.68):False lower:True
+2020-11-02 20:08:47:13359.89 180min:13350.00 sp:0 buy:True sell:True over_max:False rp(13350.00:13360.68):False lower:True
+2020-11-02 20:08:53:13359.90 180min:13350.00 sp:0 buy:True sell:True over_max:False rp(13350.00:13360.68):False lower:True
+2020-11-02 20:08:58:13367.70 180min:13350.00 sp:0 buy:True sell:True over_max:False rp(13350.00:13360.68):True lower:True
+----------------------------------------------------------------------
+2020-11-02 20:08:58 Invest Between: 13000.00 ~ AUTO
+Price Now: 13367.70 180_Min: 13350.00 0_Max: 13368.00(0.13%)
+*** Double Buy Every 100 Calculated ***
+BTC Level: 59.88% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 206.1000 USDT (1363.64 CNY)
+Invest Cost: 26.4600 USDT (175.07 CNY)
+Buy Amount: 0.001979 BTC (175.07 CNY)
+Get Amount: 0.00197544 BTC (175.07 CNY)
+Next Time: 2020-11-02 20:28:58 (20.00 M | 0.33 H)
+Zero Time: 2020-11-02 22:44:45 (2.60 H | 0.11 D)
+Send Order(137523227715132) successfully
+1 Deal Records added
+USDT Trade Now: 179.6453 (1188.60 CNY)
+BTC Now: 0.02498993 (2210.7 CNY) Total: 3399.3 CNY Level: 65.03%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-02 20:29:02:13425.34 180min:13339.99 sp:0 buy:True sell:True over_max:False rp(13339.99:13350.66):True lower:True
+----------------------------------------------------------------------
+2020-11-02 20:29:02 Invest Between: 13000.00 ~ AUTO
+Price Now: 13425.34 180_Min: 13339.99 0_Max: 13428.35(0.66%)
+*** Double Buy Every 100 Calculated ***
+BTC Level: 65.13% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 179.6453 USDT (1188.60 CNY)
+Invest Cost: 17.4700 USDT (115.59 CNY)
+Buy Amount: 0.001301 BTC (115.59 CNY)
+Get Amount: 0.00129867 BTC (115.59 CNY)
+Next Time: 2020-11-02 20:49:02 (20.00 M | 0.33 H)
+Zero Time: 2020-11-02 23:54:42 (3.43 H | 0.14 D)
+Send Order(137523621999926) successfully
+1 Deal Records added
+USDT Trade Now: 162.1790 (1073.04 CNY)
+BTC Now: 0.02628833 (2335.6 CNY) Total: 3408.6 CNY Level: 68.52%
+7 Huobi Assets Updated, Send Order Process Completed
+----------------------------------------------------------------------
+2020-11-02 20:51:36 Invest Between: 13000.00 ~ AUTO
+Test Price: 13280.00 Now: 13287.99 240_Min: 13192.98 0_Max: 13288.69(0.73%)
+Price Now Update to: 13280.00
+*** Double Buy Every 200 Calculated ***
+BTC Level: 68.28% (FORCE_BUY:False) for AccId: 170(6582761)
+Total  USDT: 162.1790 USDT (1073.04 CNY)
+Invest Cost: 16.0000 USDT (105.86 CNY)
+Buy Amount: 0.001205 BTC (105.86 CNY)
+Get Amount: 0.00120241 BTC (105.86 CNY)
+Next Time: 2020-11-02 21:21:46 (30.15 M | 0.50 H)
+Zero Time: 2020-11-03 01:57:13 (5.09 H | 0.21 D)
+Sim Order Price: 13282.66, Amount: 0.001205, Type: buy-limit
+Sim BTC Level: 71.41%(+3.13%)
+----------------------------------------------------------------------
+2020-11-02 20:52:40 Invest Between: 13000.00 ~ AUTO
+Test Price: 13280.00 Now: 13293.34 240_Min: 13192.98 0_Max: 13295.97(0.78%)
+Price Now Update to: 13280.00
+*** Double Buy Every 200 Calculated ***
+BTC Level: 68.28% (FORCE_BUY:False) for AccId: 170(6582761)
+Total  USDT: 162.1790 USDT (1073.04 CNY)
+Invest Cost: 11.2000 USDT (74.10 CNY)
+Buy Amount: 0.000843 BTC (74.10 CNY)
+Get Amount: 0.00084169 BTC (74.10 CNY)
+Next Time: 2020-11-02 21:22:40 (30.00 M | 0.50 H)
+Zero Time: 2020-11-03 04:07:04 (7.24 H | 0.30 D)
+Sim Order Price: 13282.66, Amount: 0.000843, Type: buy-limit
+Sim BTC Level: 70.48%(+2.19%)
+2020-11-03 06:50:56:13547.15 60min:13547.15 sp:0 buy:True sell:True over_max:False rp(13547.15:13557.99):False lower:True
+2020-11-03 06:51:01:13567.94 60min:13546.26 sp:0 buy:True sell:True over_max:False rp(13546.26:13557.10):False lower:True
+2020-11-03 06:51:07:13573.41 60min:13546.26 sp:0 buy:True sell:True over_max:False rp(13546.26:13557.10):True lower:True
+----------------------------------------------------------------------
+2020-11-03 06:51:07 Invest Between: 13000.00 ~ AUTO
+Price Now: 13573.41 60_Min: 13546.26 0_Max: 13576.00(0.22%)
+*** Double Buy Every 200 Calculated ***
+BTC Level: 68.75% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 162.1790 USDT (1073.04 CNY)
+Invest Cost: 15.8600 USDT (104.94 CNY)
+Buy Amount: 0.001168 BTC (104.94 CNY)
+Get Amount: 0.00116612 BTC (104.94 CNY)
+Next Time: 2020-11-03 07:01:16 (10.15 M | 0.17 H)
+Zero Time: 2020-11-03 08:34:54 (1.73 H | 0.07 D)
+Send Order(137533654589092) successfully
+1 Deal Records added
+USDT Trade Now: 146.3259 (968.15 CNY)
+BTC Now: 0.02745399 (2466.1 CNY) Total: 3434.2 CNY Level: 71.81%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-03 07:52:30:13555.41 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:52:35:13557.11 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:52:40:13559.29 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:52:45:13559.28 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:52:51:13558.02 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:52:56:13558.02 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:53:01:13558.00 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:53:06:13558.00 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:53:11:13558.01 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:53:16:13565.09 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):False lower:True
+2020-11-03 07:53:21:13569.82 60min:13555.41 sp:0 buy:True sell:True over_max:False rp(13555.41:13566.25):True lower:True
+----------------------------------------------------------------------
+2020-11-03 07:53:22 Invest Between: 13000.00 ~ AUTO
+Price Now: 13569.82 60_Min: 13555.41 0_Max: 13569.82(0.11%)
+*** Double Buy Every 200 Calculated ***
+BTC Level: 71.80% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 146.3259 USDT (968.15 CNY)
+Invest Cost: 16.1100 USDT (106.59 CNY)
+Buy Amount: 0.001187 BTC (106.59 CNY)
+Get Amount: 0.00118482 BTC (106.59 CNY)
+Next Time: 2020-11-03 08:03:31 (10.15 M | 0.17 H)
+Zero Time: 2020-11-03 09:25:33 (1.54 H | 0.06 D)
+Send Order(137534996910099) successfully
+1 Deal Records added
+USDT Trade Now: 130.2185 (861.58 CNY)
+BTC Now: 0.02863862 (2571.8 CNY) Total: 3433.4 CNY Level: 74.91%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-03 08:03:32:13506.99 60min:13501.39 sp:0 buy:True sell:True over_max:False rp(13501.39:13512.19):False lower:True
+2020-11-03 08:03:38:13509.66 60min:13501.39 sp:0 buy:True sell:True over_max:False rp(13501.39:13512.19):False lower:True
+2020-11-03 08:03:43:13518.34 60min:13501.39 sp:0 buy:True sell:True over_max:False rp(13501.39:13512.19):True lower:True
+----------------------------------------------------------------------
+2020-11-03 08:03:43 Invest Between: 13000.00 ~ AUTO
+Price Now: 13518.34 60_Min: 13501.39 0_Max: 13533.85(0.24%)
+*** Double Buy Every 200 Calculated ***
+BTC Level: 74.83% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 130.2185 USDT (861.58 CNY)
+Invest Cost: 19.7200 USDT (130.48 CNY)
+Buy Amount: 0.001459 BTC (130.48 CNY)
+Get Amount: 0.00145584 BTC (130.48 CNY)
+Next Time: 2020-11-03 08:13:52 (10.15 M | 0.17 H)
+Zero Time: 2020-11-03 09:10:44 (1.12 H | 0.05 D)
+Send Order(137535122674531) successfully
+1 Deal Records added
+USDT Trade Now: 110.4952 (731.08 CNY)
+BTC Now: 0.03009470 (2692.3 CNY) Total: 3423.4 CNY Level: 78.64%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-03 08:13:57:13496.16 60min:13465.99 sp:0 buy:True sell:True over_max:False rp(13465.99:13476.76):True lower:True
+----------------------------------------------------------------------
+2020-11-03 08:13:57 Invest Between: 13000.00 ~ AUTO
+Price Now: 13496.16 60_Min: 13465.99 0_Max: 13503.86(0.28%)
+*** Double Buy Every 200 Calculated ***
+BTC Level: 78.61% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 110.4952 USDT (731.08 CNY)
+Invest Cost: 21.2700 USDT (140.73 CNY)
+Buy Amount: 0.001576 BTC (140.73 CNY)
+Get Amount: 0.00157285 BTC (140.73 CNY)
+Next Time: 2020-11-03 08:24:06 (10.15 M | 0.17 H)
+Zero Time: 2020-11-03 09:06:40 (0.88 H | 0.04 D)
+Send Order(137535021900649) successfully
+2 Deal Records added
+USDT Trade Now: 89.2253 (590.35 CNY)
+BTC Now: 0.03166755 (2828.3 CNY) Total: 3418.7 CNY Level: 82.73%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-03 08:25:41:13465.84 60min:13465.82 sp:0 buy:True sell:True over_max:False rp(13465.82:13476.59):False lower:True
+2020-11-03 08:25:46:13464.01 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:25:51:13462.59 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:25:57:13464.67 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:26:02:13463.61 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:26:07:13464.52 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:26:12:13464.65 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:26:17:13466.41 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:26:22:13460.91 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:26:27:13459.78 60min:13458.26 sp:0 buy:True sell:True over_max:False rp(13458.26:13469.03):False lower:True
+2020-11-03 08:26:33:13457.01 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:26:38:13457.00 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:26:43:13461.38 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:26:48:13462.91 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:26:53:13458.55 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:26:58:13459.71 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:03:13459.72 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:08:13460.00 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:14:13459.99 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:19:13460.00 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:24:13460.00 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:29:13459.99 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:34:13460.00 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:39:13464.67 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):False lower:True
+2020-11-03 08:27:45:13468.06 60min:13457.00 sp:0 buy:True sell:True over_max:False rp(13457.00:13467.77):True lower:True
+----------------------------------------------------------------------
+2020-11-03 08:27:45 Invest Between: 13000.00 ~ AUTO
+Price Now: 13468.06 60_Min: 13457.00 0_Max: 13468.06(0.08%)
+*** Double Buy Every 200 Calculated ***
+BTC Level: 82.70% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 89.2253 USDT (590.35 CNY)
+Invest Cost: 23.2400 USDT (153.76 CNY)
+Buy Amount: 0.001726 BTC (153.76 CNY)
+Get Amount: 0.00172211 BTC (153.76 CNY)
+Next Time: 2020-11-03 08:37:45 (10.00 M | 0.17 H)
+Zero Time: 2020-11-03 09:06:08 (0.64 H | 0.03 D)
+Send Order(137535256761080) successfully
+3 Deal Records added
+USDT Trade Now: 65.9787 (436.54 CNY)
+BTC Now: 0.03339009 (2976.0 CNY) Total: 3412.5 CNY Level: 87.21%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-03 09:41:01:13545.94 20min:13545.70 sp:0 buy:True sell:True over_max:False rp(13545.70:13556.54):False lower:True
+2020-11-03 09:41:06:13540.12 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:11:13539.09 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:16:13543.57 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:21:13542.94 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:27:13542.93 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:32:13542.19 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:37:13542.00 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:42:13541.65 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:47:13541.21 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:52:13541.99 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:41:57:13541.68 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:03:13540.91 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:08:13541.19 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:13:13543.52 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:18:13543.53 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:23:13543.52 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:28:13542.20 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:33:13542.78 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:38:13542.78 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:44:13542.43 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:49:13543.75 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:54:13541.85 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:42:59:13540.71 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:43:04:13539.75 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:43:09:13539.47 20min:13539.00 sp:0 buy:True sell:True over_max:False rp(13539.00:13549.83):False lower:True
+2020-11-03 09:43:15:13538.68 20min:13538.68 sp:0 buy:True sell:True over_max:False rp(13538.68:13549.51):False lower:True
+2020-11-03 09:43:20:13534.15 20min:13534.15 sp:0 buy:True sell:True over_max:False rp(13534.15:13544.98):False lower:True
+2020-11-03 09:43:25:13533.26 20min:13533.26 sp:0 buy:True sell:True over_max:False rp(13533.26:13544.09):False lower:True
+2020-11-03 09:43:30:13532.07 20min:13532.07 sp:0 buy:True sell:True over_max:False rp(13532.07:13542.90):False lower:True
+2020-11-03 09:43:35:13530.46 20min:13530.46 sp:0 buy:True sell:True over_max:False rp(13530.46:13541.28):False lower:True
+2020-11-03 09:43:40:13528.65 20min:13528.65 sp:0 buy:True sell:True over_max:False rp(13528.65:13539.47):False lower:True
+2020-11-03 09:43:45:13528.01 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:43:51:13529.30 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:43:56:13528.00 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:01:13531.09 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:06:13535.00 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:11:13538.27 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:16:13538.27 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:21:13538.27 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:27:13538.30 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:32:13538.31 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:37:13535.31 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:42:13535.28 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:47:13535.11 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:52:13533.71 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:44:57:13533.52 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:45:03:13537.11 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:45:08:13535.86 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:45:13:13537.07 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:45:18:13538.43 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 09:45:23:13540.50 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):True lower:True
+----------------------------------------------------------------------
+2020-11-03 09:45:23 Invest Between: 13000.00 ~ AUTO
+Price Now: 13540.50 20_Min: 13528.00 0_Max: 13541.99(0.10%)
+*** Double Buy Every 100 Calculated ***
+BTC Level: 87.27% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 65.9787 USDT (436.54 CNY)
+Invest Cost: 40.0000 USDT (264.66 CNY)
+Buy Amount: 0.002954 BTC (264.66 CNY)
+Get Amount: 0.00294819 BTC (264.66 CNY)
+Next Time: 2020-11-03 09:55:24 (10.00 M | 0.17 H)
+Zero Time: 2020-11-03 10:01:53 (0.27 H | 0.01 D)
+Send Order(137536817181466) successfully
+1 Deal Records added
+USDT Trade Now: 25.9801 (171.89 CNY)
+BTC Now: 0.03633819 (3256.2 CNY) Total: 3428.1 CNY Level: 94.99%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-03 10:33:31:13567.44 20min:13567.44 sp:0 buy:True sell:True over_max:False rp(13567.44:13578.29):False lower:True
+2020-11-03 10:33:36:13563.08 20min:13563.07 sp:0 buy:True sell:True over_max:False rp(13563.07:13573.92):False lower:True
+2020-11-03 10:33:41:13555.71 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):False lower:True
+2020-11-03 10:33:47:13557.48 20min:13528.00 sp:0 buy:True sell:True over_max:False rp(13528.00:13538.82):True lower:True
+----------------------------------------------------------------------
+2020-11-03 10:33:47 Invest Between: 13000.00 ~ AUTO
+Price Now: 13557.49 20_Min: 13528.00 0_Max: 13582.95(0.41%)
+*** Double Buy Every 100 Calculated ***
+BTC Level: 94.99% (FORCE_BUY:True) for AccId: 170(6582761)
+Total  USDT: 25.9801 USDT (171.89 CNY)
+Invest Cost: 25.0000 USDT (165.41 CNY)
+Buy Amount: 0.001844 BTC (165.41 CNY)
+Get Amount: 0.00184031 BTC (165.41 CNY)
+Next Time: 2020-11-03 10:43:47 (10.00 M | 0.17 H)
+Zero Time: 2020-11-03 10:44:10 (0.17 H | 0.01 D)
+Send Order(137537303599289) successfully
+1 Deal Records added
+USDT Trade Now: 0.9801 (6.48 CNY)
+BTC Now: 0.03817850 (3425.4 CNY) Total: 3431.8 CNY Level: 99.81%
+7 Huobi Assets Updated, Send Order Process Completed
+2020-11-03 10:43:49:13498.13 20min:13465.00 sp:0 buy:True sell:True over_max:False rp(13465.00:13475.77):True lower:True
+2020-11-03 10:48:19:13464.38 20min:13464.38 sp:0 buy:True sell:True over_max:False rp(13464.38:13475.15):False lower:True
+2020-11-03 10:48:24:13464.00 20min:13463.65 sp:0 buy:True sell:True over_max:False rp(13463.65:13474.42):False lower:True
+2020-11-03 10:48:29:13460.01 20min:13460.00 sp:0 buy:True sell:True over_max:False rp(13460.00:13470.77):False lower:True
+2020-11-03 10:48:35:13462.42 20min:13460.00 sp:0 buy:True sell:True over_max:False rp(13460.00:13470.77):False lower:True
+2020-11-03 10:48:40:13460.13 20min:13460.00 sp:0 buy:True sell:True over_max:False rp(13460.00:13470.77):False lower:True
+2020-11-03 10:48:45:13457.29 20min:13457.28 sp:0 buy:True sell:True over_max:False rp(13457.28:13468.05):False lower:True
+2020-11-03 10:48:50:13455.01 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:48:55:13456.94 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:00:13459.25 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:05:13460.00 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:11:13462.76 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:16:13463.33 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:21:13462.00 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:26:13460.60 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:31:13459.98 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:36:13458.72 20min:13455.00 sp:0 buy:True sell:True over_max:False rp(13455.00:13465.76):False lower:True
+2020-11-03 10:49:42:13453.54 20min:13453.53 sp:0 buy:True sell:True over_max:False rp(13453.53:13464.29):False lower:True
+2020-11-03 10:49:47:13453.31 20min:13451.00 sp:0 buy:True sell:True over_max:False rp(13451.00:13461.76):False lower:True
+2020-11-03 10:49:52:13457.96 20min:13451.00 sp:0 buy:True sell:True over_max:False rp(13451.00:13461.76):False lower:True
+2020-11-03 10:49:57:13457.80 20min:13451.00 sp:0 buy:True sell:True over_max:False rp(13451.00:13461.76):False lower:True
+2020-11-03 10:50:02:13462.28 20min:13451.00 sp:0 buy:True sell:True over_max:False rp(13451.00:13461.76):True lower:True
+2020-11-03 10:57:22:13386.99 20min:13386.99 sp:0 buy:True sell:True over_max:False rp(13386.99:13397.70):False lower:True
+2020-11-03 10:57:27:13397.78 20min:13383.73 sp:0 buy:True sell:True over_max:False rp(13383.73:13394.44):False lower:True
+2020-11-03 10:57:32:13398.10 20min:13383.73 sp:0 buy:True sell:True over_max:False rp(13383.73:13394.44):True lower:True
+2020-11-03 11:11:14:13378.72 20min:13378.68 sp:0 buy:True sell:True over_max:False rp(13378.68:13389.38):False lower:True
+2020-11-03 11:11:19:13374.94 20min:13373.78 sp:0 buy:True sell:True over_max:False rp(13373.78:13384.48):False lower:True
+2020-11-03 11:11:24:13370.56 20min:13369.00 sp:0 buy:True sell:True over_max:False rp(13369.00:13379.70):False lower:True
+2020-11-03 11:11:30:13384.68 20min:13369.00 sp:0 buy:True sell:True over_max:False rp(13369.00:13379.70):True lower:True
+2020-11-03 11:11:36:13369.33 20min:13369.00 sp:0 buy:True sell:True over_max:False rp(13369.00:13379.70):False lower:True
+2020-11-03 11:11:41:13372.72 20min:13363.90 sp:0 buy:True sell:True over_max:False rp(13363.90:13374.59):False lower:True
+2020-11-03 11:11:47:13371.76 20min:13363.90 sp:0 buy:True sell:True over_max:False rp(13363.90:13374.59):False lower:True
+2020-11-03 11:11:52:13365.26 20min:13361.00 sp:0 buy:True sell:True over_max:False rp(13361.00:13371.69):False lower:True
+2020-11-03 11:11:57:13360.61 20min:13350.00 sp:0 buy:True sell:True over_max:False rp(13350.00:13360.68):False lower:True
+2020-11-03 11:12:02:13342.77 20min:13340.00 sp:0 buy:True sell:True over_max:False rp(13340.00:13350.67):False lower:True
+2020-11-03 11:12:07:13333.01 20min:13333.00 sp:0 buy:True sell:True over_max:False rp(13333.00:13343.67):False lower:True
+2020-11-03 11:12:12:13332.99 20min:13332.63 sp:0 buy:True sell:True over_max:False rp(13332.63:13343.30):False lower:True
+2020-11-03 11:12:18:13331.16 20min:13331.00 sp:0 buy:True sell:True over_max:False rp(13331.00:13341.66):False lower:True
+2020-11-03 11:12:23:13335.31 20min:13331.00 sp:0 buy:True sell:True over_max:False rp(13331.00:13341.66):False lower:True
+2020-11-03 11:12:28:13344.24 20min:13331.00 sp:0 buy:True sell:True over_max:False rp(13331.00:13341.66):True lower:True

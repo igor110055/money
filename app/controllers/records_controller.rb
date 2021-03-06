@@ -1,10 +1,12 @@
 class RecordsController < ApplicationController
 
-  before_action :check_admin, except: [:update_all_record_values]
+  # before_action :check_admin, except: [:update_all_record_values]
   before_action :set_record, only: [:edit, :update, :destroy, :delete]
 
   def index
-    @records = Record.order('updated_at desc').limit(300)
+    params[:num] ||= 300
+    @show_net_chart = true if params[:chart]
+    @records = Record.order('updated_at desc').limit(params[:num])
   end
 
   def new

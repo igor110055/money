@@ -1,6 +1,12 @@
 <span id="site_title">
-  <a href="<%= root_path %>">
-    <h1><%= site_logo %><%= site_name %></h1>
-  </a>
+    <h1 style="width: <%= $default_table_width %>px">
+      <%= site_logo %>
+      <% if admin? %>
+        <%= link_to get_huobi_acc_id, $host2 %>
+        <% link_name = "trial_lists" %>
+        <a href="<%= session[:home_url] %>"><%= site_name %></a>
+        <%= link_to raw($site_slogon), "#{$host2}#{link_name}" %>
+      <% end %>
+    </h1>
 </span>
 <%= render 'layouts/site_nav', id: 'site_nav' %>

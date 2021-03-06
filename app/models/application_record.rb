@@ -54,6 +54,20 @@ class ApplicationRecord < ActiveRecord::Base
     all.each {|i| self.record(self.name, i.id, i.record_value)}
   end
 
+  # 获取定投参数的值
+  def self.get_invest_params( index, code = "BTC" )
+    if code == "BTC"
+      File.read($auto_invest_params_path).split(' ')[index]
+    elsif code == "ETH"
+      File.read($auto_invest_eth_params_path).split(' ')[index]
+    end
+  end
+
+  # 读取火币APP的账号ID
+  def self.get_huobi_acc_id
+    get_invest_params(24)
+  end
+
   # 更新某笔数据的记录资料
   def update_records
     Property.record(self.class.name, id, record_value)
@@ -70,9 +84,19 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   # 将资产金额从自身的币别转换成其他币别(默认为新台币)
-  def amount_to( target_code = :twd, self_rate = self.currency.exchange_rate.to_f )
+  def amount_to( target_code = :twd, btc_price = get_btc_price, to_date = Date.today )
+    self_rate = self.currency.exchange_rate.to_f
     if trate = target_rate(target_code)
-      return amount*(trate.to_f/self_rate)
+      if (target_code == :cny or target_code == :twd) and self.currency.code == 'BTC'
+        result = amount*btc_price*eval("usdt_to_#{target_code.to_s}")
+      else
+        result = amount*(trate.to_f/self_rate)
+      end
+      if amount < 0 and lixi = self.lixi(target_code,to_date).to_i
+        return result + lixi
+      else
+        return result
+      end
     else
       return amount
     end
@@ -80,7 +104,46 @@ class ApplicationRecord < ActiveRecord::Base
 
   # USDT换成人民币
   def usdt_to_cny
-    target_rate(:cny).to_f/target_rate(:usdt)
+    return $usdt_to_cny
+  end
+
+  # USDT换成新台币
+  def usdt_to_twd
+    usdt_to_cny * cny_to_twd
+  end
+
+  # 新台币换成人民币
+  def twd_to_cny
+    target_rate(:cny).to_f/target_rate(:twd)
+  end
+
+  # 新台币换成USDT
+  def twd_to_usdt
+    target_rate(:usdt).to_f/target_rate(:twd)
+  end
+
+  # 人民币换成新台币
+  def cny_to_twd
+    target_rate(:twd).to_f/target_rate(:cny)
+  end
+
+  # 比特币换成人民币
+  def btc_to_cny( btc_price = nil )
+    if !btc_price
+      target_rate(:cny).to_f/target_rate(:btc)
+    else
+      target_rate(:cny).to_f/(1.0/btc_price)
+    end
+  end
+
+  # 人民币换成比特币
+  def cny_to_btc
+    target_rate(:btc).to_f/target_rate(:cny)
+  end
+
+  # 新台币换成比特币
+  def twd_to_btc
+    target_rate(:btc).to_f/target_rate(:twd)
   end
 
 end

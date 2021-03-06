@@ -1,21 +1,24 @@
 class PropertiesController < ApplicationController
 
   before_action :set_property, only: [:edit, :update, :update_amount, :destroy, :delete]
-  #after_action :update_all_portfolio_attributes, only: [:create, :update, :update_amount, :destroy]
+  after_action :update_all_portfolio_attributes, only: [:create, :destroy]
 
   # 资产负债列表
   def index
     tags = params[:tags]
     extags = params[:extags]
-    if admin? and tags
+    if tags
       if mode = params[:mode] and !mode.empty?
         @properties = get_properties_from_tags(tags,extags,mode)
-        # 点击查看资产组合能记录等值台币等值人民币与资产占比讯息(因执行auto_update_all_data.rb而暂停)
-        # if @properties.size > 0 and pid = params[:pid] and pid.to_i > 0
-        #   update_portfolio_attributes( pid, @properties )
-        # end
-      elsif tags
-        # 由tag_cloud来的单一标签
+        # 对于非管理员账号不能显示隐藏项目
+        if !admin?
+          temp = []
+          @properties.each do |r|
+            temp << r if !r.is_hidden
+          end
+          @properties = temp
+        end
+      elsif tags  # 由tag_cloud来的单一标签
         @properties = Property.tagged_with(tags.strip)
       end
       # 计算资产总值以供显示占比使用
@@ -24,6 +27,11 @@ class PropertiesController < ApplicationController
     else
       @properties = Property.all_sort admin?
     end
+  end
+
+  # 显示火币短线资产
+  def huobi_assets
+    redirect_to action: :index, tags: get_huobi_acc_id
   end
 
   # 新建资产表单
@@ -52,8 +60,9 @@ class PropertiesController < ApplicationController
 
   # 储存更新资产
   def update
+    params[:property][:amount].gsub!(',','')
     if @property.update_attributes(property_params)
-      put_notice t(:property_updated_ok) + add_id(@property)
+      put_notice t(:property_updated_ok) + add_id(@property) + add_amount(@property)
       session[:path] ? go_back : go_properties
     else
       render action: :edit
@@ -77,6 +86,11 @@ class PropertiesController < ApplicationController
     destroy
   end
 
+  # 跳转至显示流动性资产总值画面
+  def show_flow_assets
+    redirect_to action: :index, mode: 'a', pid: 13, portfolio_name: '流动性资产总值', tags: '比特币 以太坊 可投资金'
+  end
+
   private
 
     # 取出特定的某笔数据
@@ -92,7 +106,7 @@ class PropertiesController < ApplicationController
     def property_params
       if admin?
         params[:property][:tag_list].gsub!(' ',',') if !params[:property][:tag_list].nil?
-        params.require(:property).permit(:name,:amount,:currency_id,:is_hidden,:tag_list)
+        params.require(:property).permit(:name,:amount,:currency_id,:is_hidden,:is_locked,:tag_list)
       else
         params.require(:property).permit(:name,:amount,:currency_id)
       end

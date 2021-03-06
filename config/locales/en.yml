@@ -5,12 +5,25 @@ en:
   login_err_msg: Your PIN code is not correct!
   logout: Logout
   home: Home
-  bi: ' '
+  bi: 'record(s)'
   look: Look
   edit: Edit
   chart: Chart
   xiang: ' '
   compose: Compose
+  keep: Keep
+  trial_list_index: Trial List Index
+  set_to_trezor: To Trezor
+  all_to_trezor: All To Trezor
+  all_to_balance: All To Balance
+  set_from_trezor: From Trezor
+  trezor_records: Trezor Records
+  make_trezor_count: Make Trezor Count
+  make_balance_count: Make Balance Count
+  make_balance_records: Make Balance Records
+  switch_from_balance: From Balance
+  switch_to_balance: To Balance
+  btc_ave_price: BTC Ave
   home_title: My Homepage
   back_to_home: Home
   hello: Hello! Welcome to my site ^_^
@@ -33,6 +46,7 @@ en:
   positive_property: Property
   negative_property: Loan
   property_is_hidden: Set as Hidden Property
+  property_is_locked: Set as Locked Property
   property_index: Balance Sheet
   back_to: Back To
   edit_property: Edit Property
@@ -76,7 +90,11 @@ en:
   interest_start_date: Start Date
   interest_rate: Year Rate(%)
   interest_amount: Interest Amount
+  interest_amount_year: Interest Amount Year
+  interest_amount_month: Interest Amount Month
+  interest_amount_day: Interest Amount Day
   interest_currency: Interest Currency
+  interest_benjin: Capital
   new_interest: Add New Interest
   delete_interest: Delete This Interest
   delete_interest_confirm: Are you SURE?
@@ -189,6 +207,7 @@ en:
   deal_record_real_profit: Realized Profit
   price_now: Price Now
   deal_record_auto_sell: Auto Sell
+  deal_record_first_sell: First Sell
   edit_deal_record: Edit Deal Record
   update_deal_record: Update Deal Record
   new_deal_record: Add New Deal Record
@@ -202,6 +221,7 @@ en:
   clear_deal_records: Clear Deal Records
   clear_deal_records_ok: Deal Records was successfully cleared!
   update_huobi_records: Update Huobi Deal Records
+  huobi_assets: Huobi Assets
   update_huobi_assets: Update Huobi Assets
   property_clear_amount_ok: Amount have cleared!
   place_order_to_huobi: Place Order To Huobi
@@ -240,6 +260,59 @@ en:
   delete_open_order_ok: Open orders was delete successfully!
   delete_open_order_error: Cancel open order error!
   usdt_trade: Available
+  invest_log: Invest Log
+  clear_invest_log: Clear Invest Log
+  delete_invest_log_ok: Invest log was clear successfully!
+  clear_invest_log_and_keep: Invest log was clear to keep
+  swap_chart: Swap Chart
+  see_kline: See KLine
+  see_line: See Line
+  set_auto_invest_params: Setup Auto Invest Params
+  save_auto_invest_params: Save Auto Invest Params
+  set_auto_invest_params_ok: Auto Invest Params updated successfully!
+  set_auto_invest_params_error: Auto Invest Params updated Error!
+  show_all_deal_records: Show All Deal Records
+  show_sell_deal_records: Show Sell Deal Records
+  show_unsell_deal_records: Show Unsell Deal Records
+  show_first_sell_deal_records: Show First Sell Records
+  zip_sell_deal_records: Zip Sell Deal Records
+  zip_sell_records_ok: Zip Sell Deal Records successfully!
+  send_sell_deal_records: Send Sell Deal Records
+  send_sell_deal_records_ok: Send Sell Deal Records successfully!
+  send_sell_deal_records_error: Send Sell Deal Records Error!
+  send_stop_loss: Send Stop Loss
+  send_stop_loss_ok: Send Stop Loss successfully!
+  send_stop_loss_error: Send Stop Loss Error!
+  send_force_buy_ok: Send Force Buy successfully!
+  send_force_buy_error: Send Force Buy Error!
+  update_system_params: Update System Params
+  save_system_params: Save System Params
+  update_system_params_ok: System Params updated successfully!
+  update_system_params_error: System Params updated Error!
+  test_huobi: Test Huobi
+  ave_cost: Ave Cost
+  profit_now: Profit Now
+  trial_list: Trial List
+  myage: Age
+  date_diff: Diff
+  date: Date
+  month_cost: Month Cost
+  month_sell: Month Sell
+  begin_price: BPrice
+  begin_amount: BAmount
+  begin_balance: Begin
+  month_grow_rate: Grow Rate
+  end_price: EPrice
+  end_amount: EAmount
+  end_balance: End
+  sell_to_back: Sell to Back
+  sell_to_back_ok: Sell to Back Executed successfully!
+  save_trials_to_db: Save Trials To DB
+  save_trials_to_db_ok: Save Trials To DB successfully!
+  have_reached: Reached
+  sell_all: Sell All
+  month_growth_rate: Month Growth Rate
+  operate_money: Operate Money
   copyright: Copyright
   contact_email: Contact Email
   activerecord:

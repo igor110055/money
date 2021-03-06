@@ -4,7 +4,7 @@ body {
  font-family: verdana, arial, helvetica, sans-serif;
  margin-top: -0.2em;
  margin-bottom: 2.0em;
- margin-left: 2.0em;
+ margin-left: 0.2em;
 }
 a {
   color: #000;
@@ -28,7 +28,6 @@ h1 {
 }
 h2 {
   font-size: 1.5em;
-  margin-top: 2.0em;
   letter-spacing: 0.05em;
 }
 table {
@@ -55,29 +54,75 @@ hr {
 small {
   font-size: 0.7em;
 }
+pre {
+  font-size: 1.2em;
+}
 
 #site_logo {
-  width: 50px;
-  height: 45px;
-  border: 0px #000 solid;
-  margin-right:0.5em;
+  box-shadow: 4px 4px 4px rgba(0,0,0,.5);
+  margin-right:0.7em;
 }
 #site_title a:hover {
   color: #900;
   text-decoration:none;
+  background-color:transparent;
+}
+#mt_title {
+  font-size: 1.5em;
+  letter-spacing: 0.05em;
+  margin: 1em 0em;
+}
+#mt_title a:hover {
+  color: #900;
+  text-decoration:none;
+  background-color:transparent;
+}
+.buysell_high a, .buysell_low a, .buysell_high a:visited, .buysell_low a:visited {
+  color: white;
 }
 #login_form {
   margin-top: 1em;
 }
-#site_nav, #site_nav2 {
-  position: absolute;
-  right: 1em;
-  margin-top: -1.5em;
+#site_nav {
+  margin-top: 0.2em;
   small {
     font-size: 0.85em;
   }
 }
-
+#site_nav2 {
+  // position: absolute;
+  // right: 1em;
+  margin-top: 0.5em;
+  small {
+    font-size: 0.85em;
+  }
+}
+#tag_clouds {
+  margin-top: 2.5em;
+}
+#auto_invest_params_span {
+  margin: 1em;
+  input {
+    width: 1150px;
+    padding: 0.15em;
+    font-size: 1.1em;
+  }
+}
+#update_system_params_span {
+  margin: 1em;
+  textarea {
+    padding: 0.12em;
+    font-size: 1.1em;
+  }
+}
+#copyright {
+  text-align: center;
+  margin-top: 3em;
+}
+#func_link {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
 .sub_title {
   font-size: 0.8em;
 }
@@ -87,19 +132,30 @@ small {
   font-weight: bold;
   padding: 0.2em;
   margin: 0.8em 0em;
-  margin-top: 2.7em;
-  margin-bottom: -1.5em;
+  margin-top: 1.2em;
+  margin-bottom: 1.2em;
 }
 .alert-warning, #error_explanation {
   background-color: #900;
   color: white;
   font-weight: bold;
   padding: 0.4em;
-  margin-bottom: 0.5em;
+  margin-top: 1.2em;
+  margin-bottom: 1.2em;
   ol {
     margin: -0.3em 1.5em;
     line-height: 1.7em;
   }
+}
+.trial_goal_reach, .buysell_high, .buy_limit_ave {
+  background-color: red;
+  color: white;
+  padding: 2px;
+}
+.trial_goal_unreach, .buysell_low {
+  background-color: #090;
+  color: white;
+  padding: 2px;
 }
 .thead {
   background-color: #F7DCB4;
@@ -118,6 +174,13 @@ small {
   border: 0px;
   text-align:right;
   width: 130px;
+  font-family: Verdana;
+  font-size: 0.9em;
+}
+.exchange_rate_input {
+  border: 0px;
+  text-align:right;
+  width: 90px;
   font-family: Verdana;
   font-size: 0.9em;
 }
@@ -143,4 +206,39 @@ small {
 }
 .green_bg a {
   color: white;
+}
+.sub_text {
+  padding: 0.2em;
+}
+.su {
+  text-decoration: none;
+  border-bottom: 2px solid red;
+}
+.du {
+  text-decoration: none;
+  border-bottom: 2px solid green;
+}
+.invest_param_select {
+  background-color: #8B0000;
+  color: white;
+  padding: 2px;
+}
+a.invest_param_select:visited {
+  color: white;
+}
+.set_aif_bg_rose {
+  background-color: #FFE4E1;
+}
+.set_aif_bg_gold {
+  background-color: #FFD700;
+}
+.switch_first_sell a {
+  color: red;
+  font-weight: bold;
+}
+.end_balance {
+  background-color: #F5F5DC;
+}
+.balance_now {
+  background-color: #FFF0F5;
 }

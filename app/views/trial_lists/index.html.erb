@@ -1,0 +1,18 @@
+<%= render 'shared/title_with_statistics', title_html: link_to(t(:trial_list), trial_lists_path(show_all:1)) %>
+<%
+  # 如果点击存入数据库，则清空数据表单
+  if params[:exe_save_trials_to_db] == 'yes'
+    TrialList.delete_all
+    rs_trial = (0..trial_records_number(true))
+    render 'table', exe_save_trials_to_db: 'yes', rs_trial: rs_trial
+  else
+    rs_trial = (0..trial_records_number) %>
+    <%= render 'table', exe_save_trials_to_db: nil, rs_trial: rs_trial %> <%
+  end
+%>
+<p>
+  <% # 与资产更新相关的链接 %>
+  <%= update_btc_huobi_portfolios_link %>
+  <% # 更新汇率的链接 %>
+  <%= update_all_exchange_rates_link %>
+</p>
