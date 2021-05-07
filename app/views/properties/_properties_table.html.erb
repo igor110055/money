@@ -26,7 +26,7 @@
     <% amount_twd = property.amount_to
        amount_cny = property.amount_to(:cny) %>
     <td align="center"><%= line_chart_link(property.currency,show:'name',name:true) %></td>
-    <td align="right"><%= property.currency.rate_or_price %></td>
+    <td align="right"><%= to_n(property.currency.rate_or_price,4) %></td>
     <td align="right"><%= amount_twd.to_i %></td>
     <td align="right"><%= amount_cny.to_i %></td>
     <td align="right"><%= amount_btc=to_n(property.amount_to(:btc),6) %></td>

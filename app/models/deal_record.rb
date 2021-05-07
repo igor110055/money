@@ -198,7 +198,7 @@ class DealRecord < ApplicationRecord
 
   # 获取已卖出的交易记录
   def self.sell_records( code = "BTC" )
-    if code == "BTC"
+    if code == "BTC" or code == "SBTC"
       where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1 and real_profit != 0")
     elsif code == "ETH"
       where("#{eth_sell_conditions} account = '#{self.get_huobi_acc_id}'")
@@ -250,13 +250,18 @@ class DealRecord < ApplicationRecord
     where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").delete_all
   end
 
+  # 清空BTC交易记录
+  def self.clear_btc_records
+    where("deal_type = 'sell-limit' and symbol = 'btcusdt' and auto_sell = 0").delete_all
+  end
+
   # 清空ETH交易记录
   def self.clear_eth_records
     where("deal_type = 'sell-limit' and symbol = '#{self.new.eth_symbol}'").delete_all
   end
 
   def self.real_sell_records( code = "BTC" )
-    if code == "BTC"
+    if code == "BTC" or code == "SBTC"
       sell_records(code).where.not(order_id: [nil, ""])
     elsif code == "ETH"
       sell_records(code)
@@ -305,13 +310,13 @@ class DealRecord < ApplicationRecord
   def self.over_sell_time_sec( code = "BTC" )
     begin
       sell_sec = get_invest_params(22,code).to_i
-      rs = real_sell_records(code)
-      if rs.size > 1
-        last_sell_time = rs.order("updated_at desc").first.updated_at
-      else
+      # rs = real_sell_records(code)
+      # if rs.size > 1
+      #   last_sell_time = rs.order("updated_at desc").first.updated_at
+      # else
         # 如果已将卖出记录删除，则从智投参数里读取
         last_sell_time = (get_invest_params(9,code)+' '+get_invest_params(10,code)).to_time
-      end
+      # end
       pass_sec = (Time.now - last_sell_time).to_i
       return pass_sec - sell_sec # 如果到达可卖时间，则回传超过几秒
     rescue

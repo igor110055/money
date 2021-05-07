@@ -22,6 +22,12 @@ def get_eth_params_path(local=False):
     else:
         return "/home/jie/sites/money/py/auto_invest_eth_params.txt"
 
+def get_doge_params_path(local=False):
+    if local == True:
+        return "/Users/lin/sites/money/py/auto_invest_doge_params_local.txt"
+    else:
+        return "/home/jie/sites/money/py/auto_invest_doge_params.txt"
+
 def get_other_params_path(local=False):
     if local == True:
         return "/Users/lin/sites/money2/py/auto_invest_params_local.txt"

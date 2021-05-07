@@ -5,9 +5,9 @@ from HuobiServices import *
 # 更新火币所有账号的资产余额
 def update_all_huobi_assets():
     count = 0
-    # for acc in accounts:
-    # acc_id, phone = acc.split(':')
-    amounts = {'usdt': 0, 'btc': 0, 'eth': 0, 'atom': 0, 'ht': 0}
+    # 更新火币资产与更新价格的范围
+    SYMBOLS = [['usdt', 'usdthusd'], ['btc', 'btcusdt'], ['eth', 'ethusdt'], ['doge', 'dogeusdt'], ['ht', 'htusdt']]
+    amounts = {'usdt': 0, 'btc': 0, 'eth': 0, 'doge': 0, 'ht': 0}
     # 1.读取火币资产数据
     # for item in get_balance(int(acc_id))['data']['list']:
     for item in get_balance(ACCOUNT_ID)['data']['list']:

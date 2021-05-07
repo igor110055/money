@@ -30,8 +30,6 @@
   total_real_profit = DealRecord.total_real_profit.to_i
   # 平均每秒的已实现损益值
   real_p_sec = DealRecord.real_profit_ave_sec($send_to_trezor_time)
-  # 资产净值变化值, 资产净值变化率
-  net_value_change, net_value_change_rate = Record.net_value_change_from($send_to_trezor_time)
   # 是否已经达到可以再次买入的时间
   enable_to_buy = DealRecord.enable_to_buy?
 
@@ -166,7 +164,7 @@
       <% # 更新时间 %>
       <%= link_to t(:updated_time), order_list_params('updated_at') %> |
       <% # 资产净值变化值 %>
-      <%= show_num_h_profit(:day) %>资产变化: <%= add_plus(net_value_change) %>(<%=net_value_change_rate%>%)
+      <%= show_net_value_change_text %>
     </td>
   </tr>
 <% @deal_records.each do |dr| %>

@@ -22,6 +22,10 @@
     <td><%= f.text_field(:exchange_rate, onclick: select_all) %></td>
   </tr>
   <tr>
+    <td>自动更新报价：</td>
+    <td><%= f.check_box(:auto_update_price) %></td>
+  </tr>
+  <tr>
     <td colspan="2" align="right" class="tfoot">
       <%= f.submit( submit,id: submit_id) %></td></tr>
 </table>

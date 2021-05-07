@@ -63,9 +63,9 @@ class ApplicationController < ActionController::Base
 
   # 更新主要资料
   def update_all_data
-    put_notice `python py/update_all.py`
-    update_legal_exchange_rates
-    update_portfolios_and_records
+    # 废弃不用了 2021.4.21
+    # update_legal_exchange_rates
+    # update_portfolios_and_records
     go_back
   end
 
@@ -83,7 +83,7 @@ class ApplicationController < ActionController::Base
   end
 
   # 从火币网取得某一数字货币的最新报价
-  def get_huobi_price( symbol, fmt = "%.2f" )
+  def get_huobi_price( symbol, fmt = "%.4f" )
     begin
       root = JSON.parse(`python py/huobi_price.py symbol=#{symbol} period=1min size=1 from=0 to=0`)
       if root["data"] and root["data"][0]
@@ -102,13 +102,13 @@ class ApplicationController < ActionController::Base
   end
 
   # 更新所有数字货币的汇率值
-  def update_digital_exchange_rates
+  def update_digital_exchange_rates( show_notice = false )
     # 必须先更新USDT的汇率，其他的报价换算成美元才能准确
     usdt = Currency.usdt
     cny_exchange_rate = get_exchange_rate(:usd,'CNY')
     usdt_price = $usdt_to_cny/cny_exchange_rate
     update_exchange_rate(usdt.code,(1/usdt_price).floor(8))
-    count = 1
+    count = 0
     if usdt_price = get_huobi_price(usdt.symbol) and usdt_price > 0
       count += 1
       Currency.digitals.each do |c|
@@ -119,7 +119,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
-    put_notice "#{count} #{t(:n_digital_exchange_rates_updated_ok)}" if count > 0
+    put_notice "#{count} #{t(:n_digital_exchange_rates_updated_ok)}" if count > 0 and show_notice
     return count
   end
 
@@ -339,10 +339,10 @@ class ApplicationController < ActionController::Base
     end
     set_fusion_chart_max_and_min_value
     t2c = Property.new.twd_to_cny
-    if @newest_value < 100
+    if @newest_value < 100 and @before_newest_value > 0
       @newest_value_diff = @newest_value - @before_newest_value
       @newest_value_rate = @newest_value_diff/@before_newest_value*100
-    else
+    elsif @before_newest_value > 0
       @newest_value_diff = (@newest_value - @before_newest_value).to_i
       @newest_value_rate = @newest_value_diff/@before_newest_value*100
       @before_newest_value = @before_newest_value.to_i
@@ -362,6 +362,14 @@ class ApplicationController < ActionController::Base
   def chart
     build_fusion_chart_data(self.class.name.sub('Controller','').singularize,params[:id])
     render template: 'shared/chart'
+  end
+
+  # 执行自动更新报价
+  def exe_auto_update_prices
+    Currency.where("auto_update_price = 1").each do |c|
+      price = get_huobi_price(c.symbol)
+      Currency.find_by_code(c.code).update_price(price) if price > 0
+    end
   end
 
   # 更新比特币报价
@@ -589,7 +597,7 @@ class ApplicationController < ActionController::Base
 
   # 读取火币APP的账号ID
   def get_huobi_acc_id
-    get_invest_params(24)
+    return $huobi_acc_id
   end
 
   # 设定是否自动刷新页面
@@ -628,11 +636,10 @@ class ApplicationController < ActionController::Base
 
   # 更新火币资产
   def update_huobi_assets_core
-    update_btc_price
-    update_eth_price
+    exe_auto_update_prices
     exe_update_huobi_assets
-    update_deal_cost_amount
-    update_total_real_profit
+    # update_deal_cost_amount
+    # update_total_real_profit
   end
 
   # 取得价格与汇率等报价讯息
@@ -641,6 +648,7 @@ class ApplicationController < ActionController::Base
     @eth_price = get_eth_price
     @begin_price_for_trial = @btc_price
     @flow_assets_twd = Property.flow_assets_twd
+    @flow_assets_btc = Property.flow_assets_btc
     @btc_amount, @trezor_btc_amount = get_btc_amounts
     @btc_amount_now = Property.btc_amount_of_flow_assets
     @usdt_to_twd = usdt_to_twd

@@ -104,8 +104,8 @@ module ApplicationHelper
   end
 
   # 移动鼠标能改变表格列的背景颜色
-  def change_row_color( rgb='#FFCF00' )
-    raw "onMouseOver=\"this.style.background='#{rgb}'\"  onMouseOut=\"this.style.background='#FFFFFF'\""
+  def change_row_color( over_rgb='#FFCF00', out_rgb='#FFFFFF' )
+    raw "onMouseOver=\"this.style.background='#{over_rgb}'\"  onMouseOut=\"this.style.background='#{out_rgb}'\" style=\"background-color:#{out_rgb}\""
   end
 
   # 链接到编辑类别
@@ -245,7 +245,7 @@ module ApplicationHelper
 
   # 定投记录链接
   def invest_log_link( code = "BTC" )
-    if code == "BTC"
+    if code == "BTC" or code == "SBTC"
       link_to code+t(:invest_log), invest_log_path
     elsif code == "ETH"
       link_to code+t(:invest_log), invest_eth_log_path
@@ -281,6 +281,8 @@ module ApplicationHelper
   def set_auto_invest_form_link( code = "BTC" )
     if code == "BTC"
       link_to code+t(:set_auto_invest_params), set_auto_invest_form_path, { id: 'set_auto_invest_form' }
+    elsif code == "SBTC"
+      link_to code+t(:set_auto_invest_params), set_auto_invest_btc_form_path, { id: 'set_auto_invest_btc_form' }
     elsif code == "ETH"
       link_to code+t(:set_auto_invest_params), set_auto_invest_eth_form_path, { id: 'set_auto_invest_eth_form' }
     end
@@ -403,6 +405,7 @@ module ApplicationHelper
   def show_net_value_link
     reload_net_value
     twd2cny = Property.new.twd_to_cny
+    cny2btc = Property.new.cny_to_btc
     total_flow_assets_twd = Property.total_flow_assets_twd.to_i # 总的流动性资产总值
     total_flow_assets_cny = (total_flow_assets_twd*twd2cny).to_i
     flow_assets_twd = Property.flow_assets_twd.to_i # 流动性资产总值(135/170)
@@ -411,19 +414,26 @@ module ApplicationHelper
     investable_fund_twd = Property.total_investable_fund_records_twd.to_i # 可买币资产总值
     total_loan_lixi_twd = Property.total_loan_lixi.to_i # 总的所有贷款含利息
     loan_lixi_twd = Property.loan_lixi.to_i # 所有贷款含利息(135/170)
+    month_cost_max = $trial_cost_month_grow_limit # 每月生活费上限
+    keep_years = $keep_life_years # 至少保留几年的生活费
     if admin?
       flow_subtract_loan_twd = total_flow_assets_twd - total_loan_lixi_twd # 总的流动性扣除贷款
-      remain_months = (tag_value_twd*twd2cny/$trial_cost_month_grow_limit).to_i
+      remain_months = (tag_value_twd*twd2cny/month_cost_max).to_i
     else
       flow_subtract_loan_twd = flow_assets_twd - loan_lixi_twd # 流动性扣除贷款(135/170)
-      remain_months = (flow_assets_twd*twd2cny/$trial_cost_month_grow_limit).to_i
+      remain_months = (flow_assets_twd*twd2cny/month_cost_max).to_i
     end
+    # 扣除保留的生活费，可用于投资的资金
+    remain_money = tag_value_twd*twd2cny-(keep_years*12+1)*month_cost_max
+    remain_bitcoin = remain_money*cny2btc
+    @remain_money_to_invest = remain_money
+    @remain_invest_str = "扣除#{keep_years}年生活费后可用于投资的金额为:¥#{remain_money.to_i}(฿#{remain_bitcoin.floor(6)})"
     flow_subtract_loan_cny = (flow_subtract_loan_twd*twd2cny).to_i
     if admin?
       main_info = "<span id=\"properties_net_value_twd\" title=\"总资产扣除贷款：#{@properties_net_value_twd.to_i}\n#{t(:cny)}资产净值：#{@properties_net_value_cny.to_i}\n流动性资产总值：#{flow_assets_twd}\n比特币资产总值：#{btc_value_twd}\n所有贷款含利息：#{total_loan_lixi_twd}\n流动性扣除贷款：#{flow_subtract_loan_twd}\">\
       #{link_to(@properties_net_value_twd.to_i/10000, records_path(num:2,chart:1), target: :blank)}(¥#{@properties_net_value_cny.to_i/10000})</span>"
-      addon_info = " |<span id=\"properties_net_value_cny\" title=\"流动性资产总值：#{total_flow_assets_twd}(¥#{total_flow_assets_cny})\">\
-      #{link_to(total_flow_assets_twd/10000,'/properties?extags=&mode=a&pid=13&portfolio_name=流动性资产总值&tags=比特币+以太坊+可投资金')}(¥#{total_flow_assets_cny/10000})</span> | <span title=\"流动性资产扣除贷款的净值：#{flow_subtract_loan_twd}(¥#{flow_subtract_loan_cny})|#{t(:begin_profit_price)}:#{Property.begin_profit_price.to_i}\">\
+      addon_info = " |<span id=\"properties_net_value_cny\" title=\"流动性资产总值(不含贷款)：#{total_flow_assets_twd}(¥#{total_flow_assets_cny})\">\
+      #{link_to(total_flow_assets_twd/10000,'/properties?extags=&mode=a&pid=13&portfolio_name=流动性资产总值&tags='+$total_flow_assets_tags)}(¥#{total_flow_assets_cny/10000})</span> | <span title=\"流动性资产扣除贷款的净值：#{flow_subtract_loan_twd}(¥#{flow_subtract_loan_cny})|#{t(:begin_profit_price)}:#{Property.begin_profit_price.to_i}\">\
       #{flow_subtract_loan_twd/10000}(¥#{flow_subtract_loan_cny/10000})</span> ｜ <span id=\"net_growth_ave_month\" title=\"#{$net_start_date}起资产净值增加几万/月(台币｜人民币)\">#{to_n(@properties_net_growth_ave_month/10000.0,1)}|#{to_n(@properties_net_growth_ave_month_cny/10000.0,1)}</span>|<span title=\"#{Property.cal_year_profit}\">#{link_to(to_n((Property.cal_year_profit_p-1)*100,1)+'%',trial_lists_path)}</span>"
       flow_assets_info = "#{(tag_value_twd*twd2cny).to_i}|#{tag_value_twd}"
     else
@@ -432,7 +442,7 @@ module ApplicationHelper
       flow_assets_info = "#{(flow_assets_twd*twd2cny).to_i}|#{flow_assets_twd}"
     end
     month_growth_rate =
-    raw "#{main_info}#{addon_info}|<span title=\"#{$trial_cost_month_from_tag}资产总值(¥#{flow_assets_info})可用于生活#{remain_months}月(每月花费¥#{$trial_cost_month_grow_limit}|#{($trial_cost_month_grow_limit/twd2cny).to_i})\">#{link_to(to_n(remain_months/12.0,1),flow_assets_path)}年</span>"
+    raw "#{main_info}#{addon_info}|<span title=\"#{$trial_cost_month_from_tag}资产总值(¥#{flow_assets_info})可用于生活#{remain_months}月(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(to_n(remain_months/12.0,1),properties_path(tags:$trial_cost_month_from_tag))}年</span>"
   end
 
   # Fusioncharts属性大全: http://wenku.baidu.com/link?url=JUwX7IJwCbYMnaagerDtahulirJSr5ASDToWeehAqjQPfmRqFmm8wb5qeaS6BsS7w2_hb6rCPmeig2DBl8wzwb2cD1O0TCMfCpwalnoEDWa
@@ -582,7 +592,7 @@ module ApplicationHelper
 
   # 根据code回传文档路径
   def get_invest_params_path( code = "BTC" )
-    if code == "BTC"
+    if code == "BTC" or code == "SBTC"
       return $auto_invest_params_path
     elsif code == "ETH"
       return $auto_invest_eth_params_path
@@ -591,7 +601,11 @@ module ApplicationHelper
 
   # 获取定投参数的值
   def get_invest_params( index, code = "BTC" )
-    File.read(get_invest_params_path(code)).split(' ')[index]
+    if code == "BTC" or code == "SBTC"
+      File.read(get_invest_params_path('BTC')).split(' ')[index]
+    else
+      File.read(get_invest_params_path(code)).split(' ')[index]
+    end
   end
 
   # 储存定投参数的值
@@ -625,7 +639,7 @@ module ApplicationHelper
 
   # 读取火币APP的账号ID
   def get_huobi_acc_id
-    get_invest_params(24)
+    return $huobi_acc_id
   end
 
   # 显示定投参数的设定值链接(数字版)
@@ -749,13 +763,19 @@ module ApplicationHelper
   end
 
   # 理财目标的月末目标能连接到流动性资产总值一览表
-  def link_to_flow_assets_list( currency = :TWD, twd_to_cny = 0 )
+  def link_to_flow_assets_list( currency = :TWD, twd_to_cny = 0, twd_to_btc = 0 )
     if currency == :TWD
       text = @flow_assets_twd.to_i
     elsif currency == :CNY
       text = (@flow_assets_twd*twd_to_cny).to_i
     end
-    link_to text, {controller: :properties, tags: $link_to_flow_assets_list_tags, mode: $link_to_flow_assets_list_mode}, {title: @flow_assets_twd.to_i}
+    text2 = @flow_assets_btc.floor(8)
+    link_to text, {controller: :properties, tags: $link_to_flow_assets_list_tags, mode: $link_to_flow_assets_list_mode}, {title: (@flow_assets_twd.to_i).to_s+"(฿#{text2})"}
+  end
+
+  # 链接到SBTC交易列表
+  def link_to_btc_deal_records
+    link_to t(:deal_record_index_btc), deal_records_btc_path
   end
 
   # 链接到ETH交易列表
@@ -873,6 +893,12 @@ module ApplicationHelper
       rescue
         return 0
       end
+  end
+
+  # 资产净值变化值
+  def show_net_value_change_text
+    net_value_change, net_value_change_rate = Record.net_value_change_from($send_to_trezor_time) # 资产净值变化值, 资产净值变化率
+    raw "#{show_num_h_profit(:day)}资产变化: #{add_plus(net_value_change)}(#{net_value_change_rate}%|¥#{(net_value_change*Currency.new.twd_to_cny).to_i})"
   end
 
   def eth2bi

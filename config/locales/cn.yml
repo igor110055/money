@@ -3,7 +3,7 @@ cn:
   login_prompt: 请输入PIN码：
   login: 登入
   login_err_msg: PIN码输入错误！
-  logout: 登出系统
+  logout: 登出
   home: 首页
   bi: 笔
   look: 查看
@@ -12,7 +12,7 @@ cn:
   compose: 成员
   edit: 编辑
   keep: 保留
-  trial_list_index: 理财目标
+  trial_list_index: 目标
   set_to_trezor: 转出到钱包
   all_to_trezor: 本表全转出
   all_to_balance: 本表全消帐
@@ -53,13 +53,13 @@ cn:
   negative_property: 负债
   property_is_hidden: 设为隐藏
   property_is_locked: 不可删除
-  property_index: 资产列表
+  property_index: 资产
   back_to: 返回
   edit_property: 编辑资产
   update_property: 更新资产
   delete_property: 删除这笔资产
   delete_property_confirm: 您确定要删除这笔资产吗？
-  currency_index: 货币列表
+  currency_index: 货币
   currency_name_blank_err: 货币名称不能空白！
   currency_code_blank_err: 货币代码不能空白！
   currency_exchange_rate_blank_err: 货币汇率值不能空白！
@@ -93,7 +93,7 @@ cn:
   interest_rate_blank_err: 利息必须要有利率值！
   interest_start_date_type_err: 利息起算日必须符合yyyy-mm-dd格式！
   interest_rate_type_err: 利率值必须是数字且不能为负！
-  interest_index: 利息列表
+  interest_index: 利息
   interest_start_date: 利息起算日
   interest_rate: 年利率
   interest_amount: 利息金额
@@ -125,7 +125,7 @@ cn:
   property_non_exist: 该笔资产不存在！
   item_price_blank_err: 商品必须要有单价！
   item_amount_blank_err: 商品必须要有数量！
-  item_index: 商品列表
+  item_index: 房产
   new_item: 新建商品
   item_price: 商品单价
   item_currency: 币别
@@ -162,7 +162,7 @@ cn:
   edit_portfolio: 编辑资产组合
   update_portfolio: 更新资产组合
   update_all_portfolios: 更新组合
-  portfolio_index: 资产组合
+  portfolio_index: 组合
   new_portfolio: 新建组合
   portfolio_created_ok: 资产组合新建成功！
   portfolio_updated_ok: 资产组合更新成功！
@@ -179,7 +179,7 @@ cn:
   record_value: 记录数值
   edit_record: 编辑记录
   update_record: 更新记录
-  record_index: 记录列表
+  record_index: 记录
   new_record: 新建记录
   delete_record: 删除这笔记录
   delete_record_confirm: 您确定要删除这笔记录吗？
@@ -221,8 +221,9 @@ cn:
   edit_deal_record: 编辑交易记录
   update_deal_record: 更新记录
   new_deal_record: 新建交易记录
-  deal_record_index: BTC交易列表
-  deal_record_index_eth: ETH交易列表
+  deal_record_index: BTC
+  deal_record_index_btc: SBTC
+  deal_record_index_eth: ETH
   delete_deal_record: 删除这笔交易记录
   deal_record_price_type_err: 成交价格必须为大于零的数字！
   deal_record_amount_type_err: 成交数量必须为大于零的数字！
@@ -232,7 +233,7 @@ cn:
   clear_deal_records: 清空未卖
   clear_deal_records_ok: 未卖出的交易记录已全部清空！
   update_huobi_records: 更新记录与实现损益
-  huobi_assets: 火币资产
+  huobi_assets: 火币
   update_huobi_assets: 更新火币
   property_clear_amount_ok: 金额已归零！
   place_order_to_huobi: 火币下单
@@ -255,7 +256,7 @@ cn:
   order_calculate: 下单试算
   order_error: 下单参数有错误！
   order_usdt: 资金
-  order_list: 下单列表
+  order_list: 下单
   open_order_index: 下单列表
   open_order_created: 下单时间
   open_order_id: 下单编号
@@ -271,7 +272,7 @@ cn:
   delete_open_order_ok: 已成功撤消下单！
   delete_open_order_error: 撤消下单未成功！
   usdt_trade: 可用
-  invest_log: 智投日志
+  invest_log: 日志
   clear_invest_log: 清空日志
   delete_invest_log_ok: 智投日志已清空！
   delete_two_invest_log_ok: BTC与ETH智投日志已清理完毕！
@@ -279,7 +280,7 @@ cn:
   swap_chart: 切换图表
   see_kline: 看K线图
   see_line: 看折线图
-  set_auto_invest_params: 智投参数
+  set_auto_invest_params: 参数
   save_auto_invest_params: 储存智投参数
   set_auto_invest_params_ok: 参数更新成功！
   set_auto_invest_params_error: 智投参数储存时发生错误！
@@ -297,14 +298,14 @@ cn:
   send_stop_loss_error: 强制卖出失败！(尚未到达可卖出时间或其他原因)
   send_force_buy_ok: 强制买入已执行！
   send_force_buy_error: 强制买入失败！(尚未到达可买入时间或其他原因)
-  update_system_params: 系统参数
+  update_system_params: 参数
   save_system_params: 储存系统参数
   update_system_params_ok: 系统参数更新成功！
   update_system_params_error: 系统参数更新时发生错误！
   test_huobi: 测试火币
   ave_cost: 均价
   profit_now: 损益
-  trial_list: 理财目标
+  trial_list: 目标
   myage: 岁
   date_diff: 天数
   date: 日期

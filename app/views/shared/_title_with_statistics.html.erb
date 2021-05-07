@@ -2,7 +2,8 @@
   # 设置数据显示的小数点位数
   pos = 1
   # 获得所有宏观统计数据
-  p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit, total_unsell_profit, ave_hour_profit, total_real_p_24h, trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay_twd, p_ex_twd, p_mine_earn_twd = Property.invest_to_btc( admin? )
+  p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit, total_unsell_profit, ave_hour_profit, total_real_p_24h, trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay_twd, p_ex_twd, p_mine_earn_twd, flow_assets_twd = Property.invest_to_btc( admin? )
+
   @p_btc = p_btc
   @p_eth = p_eth
   @btc_p = btc_p
@@ -12,6 +13,8 @@
   @p_ex_twd = p_ex_twd.to_i
   @p_mine_earn_twd = p_mine_earn_twd.to_i
   @p_mine_cost_cny = ($mine_ori_cost+$mine_other_cost).to_i
+  @flow_assets_twd = flow_assets_twd
+  @title_table_margin = '0.3em'
 
   # 买卖比若超过(低于)所设定的值则会以高亮显示
   def buysell_class
@@ -84,31 +87,98 @@
   def p_mine_cost_twd
     (@p_mine_cost_cny*@cny2twd).to_i
   end
+
+  # 某项人民币资产占流动性资产比值
+  def get_flow_assets_p( input_value, ex_rate = @cny2twd )
+    input_value*ex_rate/@flow_assets_twd*100
+  end
+
+  # 显示统计总值
+  def show_title_value( currency = 'TWD' )
+    if $show_value_tag.empty?
+      twd_value = @flow_assets_twd
+    else
+      twd_value = Property.tagged_with($show_value_tag).sum {|p| p.amount_to(:twd)}
+    end
+    if $show_value_cur.empty? or $show_value_cur == 'TWD'
+      return twd_value.to_i
+    elsif $show_value_cur == 'CNY'
+      return '¥'+((twd_value*@twd2cny).to_i).to_s
+    else
+      return 0
+    end
+  end
+
+  # 显示统计总值的链接
+  def title_value_link
+    if $show_value_tag.empty?
+      return '/properties?extags=&mode=a&pid=13&portfolio_name=流动性资产总值&tags='+$total_flow_assets_tags
+    else
+      return '/properties?tags='+$show_value_tag
+    end
+  end
+
+  # 显示统计总值的说明
+  def show_title_value_note
+    if $show_value_tag.empty?
+      return '流动性资产总值'
+    else
+      return "#{$show_value_tag}总值"
+    end
+  end
+
+  # 可生活月数
+  life_fund = Property.total_life_fund_records_cny.to_f
+  life_months = (life_fund/$trial_cost_month_grow_limit)
+  # 狗狗币
+  doge_value = Property.doge_records_cny.to_i
+  # 狗狗币占流动性资产比值
+  doge_value_p = get_flow_assets_p(doge_value)
+  # UNI
+  uni_value = Property.uni_records_cny.to_i
+  # UNI币占流动性资产比值
+  uni_value_p = get_flow_assets_p(uni_value)
+  # 买矿机资金
+  buy_mine_fund = Property.buy_mine_fund_records_cny.to_i
+  # 买矿机资金达成百分比
+  buy_mine_fund_p = buy_mine_fund/$buy_mine_fund_target.to_f*100
+  # 应急占流动性资产比值
+  life_fund_p = get_flow_assets_p(life_fund)
+  # 持仓总值
+  hold_shares_value = Property.hold_shares_records_cny.to_i
+  # 持仓总值占流动性资产比值
+  hold_shares_p = get_flow_assets_p(hold_shares_value)
+  # 银行总值
+  bank_value = Property.bank_records_cny.to_i
+  # 银行总值占流动性资产比值
+  bank_value_p = get_flow_assets_p(bank_value)
 %>
 <h3>
-  <%= title_html+' ☞' if title_html and admin? %>
   <% if admin? %>
   <% # 显示宏观统计数据 %>
     <% if @buy_sell_rate.to_f > 0 %>
       <%= raw("<span title=\"买卖多空比(#{$default_chart_period})\" class=\"#{buysell_class}\">多空:#{to_n(@buy_sell_rate,pos)}</span>") %>
     <% end %>
-    <%= raw("<span title=\"#{p_btc}:#{btc_eq_twd}(¥#{btc_eq_cny})\">BTC:#{to_n(p_btc,2)}(#{to_n(btc_p,pos)}%) </span><span title=\"#{p_eth}:#{eth_eq_twd}(¥#{eth_eq_cny})\">ETH:#{to_n(p_eth,2)}(#{to_n(eth_p,pos)}%)</span> <span title=\"可投资金额(¥#{investable_cny.to_i})\">可投:#{(investable_cny*@cny2twd).to_i}(#{to_n(capital_p,pos)}%)</span> <span title=\"BTC+ETH总值(¥#{((btc_eq_twd+eth_eq_twd)*@twd2cny).to_i})\">持仓:#{btc_eq_twd+eth_eq_twd}</span><span title=\"BTC全部均价\">(#{total_ave_cost.to_i})</span> \
-      <span title=\"冷钱包(¥#{p_trezor_cny}|#{@p_trezor_twd})占总流动资产比例(#{to_n(trezor_p,4)}%)\">冷钱包:#{to_n(trezor_p,pos)}%</span> \
-      <span title=\"支付宝(¥#{p_alipay_cny}|#{@p_alipay_twd})占总流动资产比例(#{to_n(alipay_p,4)}%)\">支付宝:#{to_n(alipay_p,pos)}%</span> \
-      <span title=\"交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)\">交易所:#{to_n(ex_p,pos)}%</span> \
-      <span title=\"矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)\">矿场:#{to_n(mine_earn_p,pos)}%</span> \
-      <span title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机:#{to_n(mine_p,pos)}%</span> \
-      <span title=\"矿机可投资上限(#{to_n($mine_buy_limit*100)}%)可购买额度(¥#{to_n(mine_buy_cny)})\">额度:#{mine_buy_cny.to_i}</span> \
+    <%= raw("\
+    <table><tr> \
+      <td class='thead' title=\"流动性资产总值:¥#{(@flow_assets_twd*@twd2cny).to_i}(#{@flow_assets_twd.to_i})\">#{link_to('总值',title_value_link)}</td><td title=\"#{show_title_value_note}\">#{show_title_value}</td> \
+      <td class='thead' title=\"冷钱包(¥#{p_trezor_cny}|#{@p_trezor_twd})占总流动资产比例(#{to_n(trezor_p,4)}%)\">#{link_to '冷钱包','/properties?tags=冷钱包'}</td><td>#{to_n(trezor_p,pos)}%</td> \
+      <td class='thead' title=\"交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)\">#{link_to '交易所','/properties?tags=交易所'}</td><td>#{to_n(ex_p,pos)}%</td> \
+      <td class='thead' title=\"矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)\">#{link_to '矿场','/properties?tags=矿场'}</td><td>#{to_n(mine_earn_p,pos)}%</td> \
+      <td class='thead' title=\"¥#{bank_value}(#{(bank_value*@cny2twd).to_i})\">#{link_to '银行','/properties?tags=银行'}</td><td>#{to_n(bank_value_p,pos)}%</td> \
+      <td class='thead' title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机</td><td>#{to_n(mine_p,pos)}%</td></tr></table> \
+    <table style=\"margin-top:#{@title_table_margin}\"><tr> \
+      <td class='thead' title=\"#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})\">#{link_to 'BTC','/properties?tags=比特币'}</td><td>#{to_n(btc_p,pos)}%</td> \
+      <td class='thead' title=\"#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})\">#{link_to 'ETH','/properties?tags=以太坊'}</td><td>#{to_n(eth_p,pos)}%</td> \
+      <td class='thead' title=\"¥#{doge_value}(#{(doge_value*@cny2twd).to_i})\">#{link_to 'DOGE','/properties?tags=狗狗币'}</td><td>#{to_n(doge_value_p,pos)}%</td> \
+      <td class='thead' title=\"¥#{uni_value}(#{(uni_value*@cny2twd).to_i})\">#{link_to 'UNI','/properties?tags=UNI'}</td><td>#{to_n(uni_value_p,pos)}%</td> \
+      <td class='thead' title=\"持仓总值: ¥#{hold_shares_value}(#{(hold_shares_value*@cny2twd).to_i})\">#{link_to '持仓','/properties?tags=持仓'}</td><td>#{to_n(hold_shares_p,pos)}%</td> \
+      <td class='thead' title=\"可投资金额: ¥#{investable_cny.to_i}(#{(investable_cny*@cny2twd).to_i})\">#{link_to '可投','/properties?tags=可投资金'}</td><td>#{to_n(capital_p,pos)}%</td>\
+      <td class='thead' title=\"应急金总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_cost_month_grow_limit}(#{($trial_cost_month_grow_limit*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)\">#{link_to '应急','/properties?tags=应急'}</td><td>#{to_n(life_fund_p,pos)}%</td><td>#{life_months.floor(1)}月</td></tr></table> \
       ") %>
     <% end %>
 </h3>
-<!--
-  <span title=\"比特币占总流动资产比例(#{to_n(btc_p,3)}%), 每百分点等于#{one_btc2cny.to_i}人民币\" class=\"#{level_diff_class}\">#{to_n(btc_p,2)}%</span> \
-  <span title=\"以太坊占总流动资产比例(#{to_n(eth_p,3)}%), 每百分点等于#{one_btc2cny.to_i}人民币\" class=\"#{level_diff_class}\">#{to_n(eth_p,2)}%</span> \
-  <span title=\"冷钱包均价:全部均价:如果满仓均价:交易记录均价\">\
-    #{trezor_ave_cost.to_i}:#{total_ave_cost.to_i}:#{sim_ave_cost.to_i}:#{real_ave_cost.to_i}\
-  </span>
-  <span title=\"累计已实现损益\">#{total_real_profit}</span> \
-  <span title=\"近期已实现损益:未实现总损益\">#{total_real_p_24h.to_i}:#{total_unsell_profit.to_i}</span> \
-  <span title=\"交易记录的总体利率\">#{add_plus(to_n(price_p,1))}%</span> \
-//-->
+<%# if $buy_mine_fund_target > 0 %>
+  <%#= raw("<span title=\"买下一期矿机资金目标:¥#{$buy_mine_fund_target}\">#{link_to '矿机基金','/properties?tags=矿机基金'}:¥#{buy_mine_fund}(#{to_n(buy_mine_fund_p,pos)}%)</span>")
+  %>
+<%# end %>

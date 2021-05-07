@@ -23,7 +23,11 @@ class Record < ApplicationRecord
     rescue
       begin_value = $net_start_value
     end
-    end_value = where(["class_name = ? and oid = ?",'NetValueAdmin',1]).order('updated_at desc').limit(1).first.value
+    begin
+      end_value = where(["class_name = ? and oid = ?",'NetValueAdmin',1]).order('updated_at desc').limit(1).first.value
+    rescue
+      end_value = $net_start_value
+    end
     diff_value = end_value - begin_value
     diff_rate = (diff_value/begin_value)*100
     return diff_value.to_i, diff_rate.floor(2)

@@ -34,7 +34,10 @@ if __name__ == '__main__':
     size = sys.argv[3].split('=')[1]
     from_time = sys.argv[4].split('=')[1]
     to_time = sys.argv[5].split('=')[1]
-    if from_time != '0' and to_time != '0':
-        json.dump(get_socket_huobi_price(int(from_time), int(to_time), symbol, period), sys.stdout)
-    else:
-        json.dump(get_huobi_price(symbol, period, size), sys.stdout)
+    try:
+        if from_time != '0' and to_time != '0':
+            json.dump(get_socket_huobi_price(int(from_time), int(to_time), symbol, period), sys.stdout)
+        else:
+            json.dump(get_huobi_price(symbol, period, size), sys.stdout)
+    except Exception:
+        pass

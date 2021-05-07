@@ -33,13 +33,19 @@ FactoryBot.define do
     trait :btc do
       name { '比特币' }
       code { 'BTC' }
-      exchange_rate { 0.00010859 }
+      exchange_rate { 0.00001782 }
     end
 
     trait :usdt do
       name { '泰达币' }
       code { 'USDT' }
       exchange_rate { 1.0001 }
+    end
+
+    trait :eth do
+      name { '以太坊' }
+      code { 'ETH' }
+      exchange_rate { 0.00029119 }
     end
 
   end

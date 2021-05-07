@@ -56,7 +56,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   # 获取定投参数的值
   def self.get_invest_params( index, code = "BTC" )
-    if code == "BTC"
+    if code == "BTC" or code == "SBTC"
       File.read($auto_invest_params_path).split(' ')[index]
     elsif code == "ETH"
       File.read($auto_invest_eth_params_path).split(' ')[index]
@@ -65,7 +65,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   # 读取火币APP的账号ID
   def self.get_huobi_acc_id
-    get_invest_params(24)
+    return $huobi_acc_id
   end
 
   # 更新某笔数据的记录资料

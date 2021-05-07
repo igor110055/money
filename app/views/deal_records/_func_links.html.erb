@@ -88,5 +88,7 @@ end
   <% # 钱包记录 %>
   | <%= link_to t(:trezor_records), deal_records_path(show_trezor:1) %>
   <% # 全部记录 %>
-  | <%= link_to t(:show_all_deal_records), deal_records_path(show_all:1) %>
+  | <%= link_to t(:show_all_deal_records), show_all_path %>
+  <% # 可投资金 %>
+  | <%= link_to @remain_invest_str, properties_path(tags:$trial_cost_month_from_tag) if @remain_money_to_invest > 0 %>
 </div>

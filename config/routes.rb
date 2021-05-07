@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   resources :trial_lists
-  root 'deal_records#index_eth'
+  root 'deal_records#index_btc'
 
   resources :properties do
     member do
@@ -57,7 +57,10 @@ Rails.application.routes.draw do
   get 'update_btc_exchange_rates', to: 'currencies#update_btc_exchange_rates'
   get 'update_all_portfolios', to: 'portfolios#update_all_portfolios'
   get 'update_house_price', to: 'items#update_house_price'
+  get 'deal_records_btc', to: 'deal_records#index_btc'
   get 'deal_records_eth', to: 'deal_records#index_eth'
+  get 'delete_btc_deal_record', to: 'deal_records#delete_btc'
+  get 'clear_btc_deal_records', to: 'deal_records#clear_btcs'
   get 'delete_eth_deal_record', to: 'deal_records#delete_eth'
   get 'clear_eth_deal_records', to: 'deal_records#clear_eths'
   get 'delete_eth_deal_record_then_add_usdt', to: 'deal_records#delete_eth_then_add_usdt'
@@ -73,6 +76,7 @@ Rails.application.routes.draw do
   get 'send_force_buy', to: 'deal_records#send_force_buy'
   get 'sell_to_back', to: 'deal_records#sell_to_back'
   get 'set_btc_as_home', to: 'deal_records#set_btc_as_home'
+  get 'set_sbtc_as_home', to: 'deal_records#set_sbtc_as_home'
   get 'set_eth_as_home', to: 'deal_records#set_eth_as_home'
   get 'update_huobi_assets', to: 'main#update_huobi_assets'
   get 'update_huobi_records', to: 'main#update_huobi_records'
@@ -83,8 +87,10 @@ Rails.application.routes.draw do
   get 'invest_log', to: 'main#read_auto_invest_log'
   get 'invest_eth_log', to: 'main#read_auto_invest_eth_log'
   get 'set_auto_invest_form', to: 'main#set_auto_invest_form'
+  get 'set_auto_invest_btc_form', to: 'main#set_auto_invest_btc_form'
   get 'set_auto_invest_eth_form', to: 'main#set_auto_invest_eth_form'
   post 'set_auto_invest_params', to: 'main#set_auto_invest_params'
+  post 'set_auto_invest_btc_params', to: 'main#set_auto_invest_btc_params'
   post 'set_auto_invest_eth_params', to: 'main#set_auto_invest_eth_params'
   get 'setup_invest_param', to: 'main#setup_invest_param'
   get 'setup_invest_eth_param', to: 'main#setup_invest_eth_param'
@@ -97,6 +103,8 @@ Rails.application.routes.draw do
   get 'mtrade', to: 'main#model_trade_test_single'
   get 'mtrade_log', to: 'main#show_mtrade_log'
   get 'save_kdata', to: 'main#save_kline_data'
+  get 'sell_btc_amount_as_huobi', to: 'main#sell_btc_amount_as_huobi'
+  get 'sell_eth_amount_as_huobi', to: 'main#sell_eth_amount_as_huobi'
   get 'check_open_order', to: 'open_orders#check_open_order'
   get 'clear_open_orders', to: 'open_orders#clear'
   get 'huobi_assets', to: 'properties#huobi_assets'

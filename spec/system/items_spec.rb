@@ -30,11 +30,10 @@ RSpec.describe '系统测试(Items)', type: :system do
       expect(page).to have_link text: /#{item.url.truncate(20)}/
     end
 
-    specify '#163[系统层]导航列中点击更新房价能从赶集网自动更新房价' do
-      house_item = create(:item)
-      find('#update_house_price').click
-      # expect(page).to have_selector '.alert-notice', text: /#{$yanda_house_price_updated_ok}/
-    end
+    # specify '#163[系统层]导航列中点击更新房价能从赶集网自动更新房价' do
+    #   house_item = create(:item)
+    #   find('#update_house_price').click
+    # end
 
   end
 
@@ -136,7 +135,7 @@ RSpec.describe '系统测试(Items)', type: :system do
       end
 
       specify '#135[系统层]能通过表单修改数量' do
-        fill_in 'item[amount]', with: 1328.67
+        fill_in 'item[amount]', with: '1328.67'
         find('#update_item').click
         expect(page.html).to include '1328'
         expect(page).to have_selector '.alert-notice'
@@ -151,7 +150,7 @@ RSpec.describe '系统测试(Items)', type: :system do
       specify '#139[系统层]由资产列表更新商品返回资产列表否则返回商品列表' do
         property = item.property
         visit properties_path
-        click_on property.amount
+        click_on property.amount.to_s
         fill_in 'item[price]', with: 14000
         find('#update_item').click
         expect(current_path).to eq properties_path

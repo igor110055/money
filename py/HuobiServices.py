@@ -527,10 +527,22 @@ def get_time_line():
         arr = fread.read().strip().split(' ')
         return arr[9]+' '+arr[10]
 
+# 取得BTC卖出交易列表开始读取时间
+def get_btc_time_line():
+    with open(PARAMS, 'r') as fread:
+        arr = fread.read().strip().split(' ')
+        return arr[9]+' '+arr[10]
+
 
 # 取得ETH交易列表开始读取时间
 def get_eth_time_line():
     with open(ETH_PARAMS, 'r') as fread:
+        arr = fread.read().strip().split(' ')
+        return arr[9]+' '+arr[10]
+
+# 取得DOGE交易列表开始读取时间
+def get_doge_time_line():
+    with open(DOGE_PARAMS, 'r') as fread:
         arr = fread.read().strip().split(' ')
         return arr[9]+' '+arr[10]
 

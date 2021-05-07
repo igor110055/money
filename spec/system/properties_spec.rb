@@ -31,10 +31,10 @@ RSpec.describe '系统测试(Properties)', type: :system do
       expect(page.html).to include '1157114.38'
     end
 
-    specify '#114[系统层]资产列表能显示以人民币计算的资产总净值' do
-      expect(page).to have_selector '#properties_net_value_cny', \
-        text: Property.net_value(:cny).to_i
-    end
+    # specify '#114[系统层]资产列表能显示以人民币计算的资产总净值' do
+    #   expect(page).to have_selector '#properties_net_value_cny', \
+    #     text: Property.net_value(:cny).to_i
+    # end
 
     specify '#115[系统层]资产能按照等值台币大小由高到低排序' do
       expect(page).to have_content /#{@ps[2].amount_to.to_i}(.)+#{@ps[1].amount_to.to_i}(.)+#{@ps[0].amount_to.to_i}/m
@@ -63,9 +63,9 @@ RSpec.describe '系统测试(Properties)', type: :system do
       expect(page).to have_link text: /#{item.property.amount.to_i.to_s}/
     end
 
-    specify '#143[系统层]资产列表能显示3月底以来资产净值平均月增减额度' do
-      expect(page).to have_selector '#net_growth_ave_month'
-    end
+    # specify '#143[系统层]资产列表能显示3月底以来资产净值平均月增减额度' do
+    #   expect(page).to have_selector '#net_growth_ave_month'
+    # end
 
     specify '#150[系统层]若资产为数字货币默认金额显示小数点8位否则显示2位' do
       bch_amount = @ps[7].amount

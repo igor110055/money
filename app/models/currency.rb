@@ -88,7 +88,7 @@ class Currency < ApplicationRecord
 
   # 如果是法币则显示汇率否则显示报价
   def rate_or_price
-    is_digital? ? to_n(to_usd) : to_n(to_rate)
+    is_digital? ? to_n(to_usd,8) : to_n(to_rate,8)
   end
 
   # 要写入记录列表的值

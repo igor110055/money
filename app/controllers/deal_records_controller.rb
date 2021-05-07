@@ -1,7 +1,7 @@
 class DealRecordsController < ApplicationController
 
   # before_action :check_admin
-  before_action :set_deal_record, only: [:edit, :update, :destroy, :delete, :delete_eth, :delete_eth_then_add_usdt, :switch_first_sell, :switch_to_trezor, :switch_to_balance]
+  before_action :set_deal_record, only: [:edit, :update, :destroy, :delete, :delete_btc, :delete_eth, :delete_eth_then_add_usdt, :switch_first_sell, :switch_to_trezor, :switch_to_balance]
 
   def index
     prepare_price_vars
@@ -36,6 +36,13 @@ class DealRecordsController < ApplicationController
     index_footer
   end
 
+  def index_btc
+    prepare_price_vars
+    @btc_deal_records = get_btcs
+    @ethbtc_price = get_ethbtc_price
+    index_footer
+  end
+
   def index_eth
     prepare_price_vars
     @eth_deal_records = get_eths
@@ -46,14 +53,17 @@ class DealRecordsController < ApplicationController
   def index_footer
     summary
     @get_max_sell_count = get_max_sell_count
-    if $auto_update_btc_price > 0
-      @price_now, @buy_amount, @sell_amount, @buy_sell_rate = cal_buy_sell_rate  # 计算买卖双方成交量比值
-      update_btc_price(@price_now) if @price_now > 0
-      update_eth_price
+    # 计算买卖双方成交量比值
+    if $show_buy_sell_rate > 0
+      @price_now, @buy_amount, @sell_amount, @buy_sell_rate = cal_buy_sell_rate
     else
       @price_now, @buy_amount, @sell_amount, @buy_sell_rate = 0,0,0,0
     end
-    update_huobi_assets_core if $auto_update_huobi_assets > 0
+    if $auto_update_huobi_assets > 0
+      update_huobi_assets_core  # 执行更新火币资产
+      $auto_update_btc_price = 0  # 执行更新火币资产时已更新报价故无须重复
+    end
+    exe_auto_update_prices if $auto_update_btc_price > 0 # 执行自动更新报价
     setup_auto_refresh_sec
   end
 
@@ -109,6 +119,19 @@ class DealRecordsController < ApplicationController
 
   def delete
     destroy
+  end
+
+  # 删除某一笔BTC交易记录
+  def delete_btc
+    @deal_record.destroy
+    put_notice '该笔BTC'+t(:deal_record_destroyed_ok)
+    redirect_to deal_records_btc_path
+  end
+
+  # 删除所有的ETH交易记录
+  def clear_btcs
+    put_notice clear_btcs_msg
+    redirect_to deal_records_btc_path
   end
 
   # 删除某一笔ETH交易记录
@@ -320,6 +343,13 @@ class DealRecordsController < ApplicationController
     go_deal_records
   end
 
+  # 将SBTC交易列表设为一次性首页
+  def set_sbtc_as_home
+    set_as_home_url(deal_records_btc_path)
+    put_notice "已将#{deal_records_btc_path}设置为本次登入的首页"
+    redirect_to deal_records_btc_path
+  end
+
   # 将ETH交易列表设为一次性首页
   def set_eth_as_home
     set_as_home_url(deal_records_eth_path)
@@ -329,9 +359,24 @@ class DealRecordsController < ApplicationController
 
   private
 
+    # 取得所有的SBTC卖出交易记录
+    def get_btcs
+      rs = DealRecord.where("deal_type = 'sell-limit' and symbol = 'btcusdt' and account = '#{get_huobi_acc_id}'").order('created_at desc')
+      if params[:show_all]
+        return rs
+      else
+        return rs.limit($deal_records_limit)
+      end
+    end
+
     # 取得所有的ETH卖出交易记录
     def get_eths
-      DealRecord.where("deal_type = 'sell-limit' and symbol = '#{eth_symbol}' and account = '#{get_huobi_acc_id}'").order('created_at desc')
+      rs = DealRecord.where("deal_type = 'sell-limit' and symbol = '#{eth_symbol}' and account = '#{get_huobi_acc_id}'").order('created_at desc')
+      if params[:show_all]
+        return rs
+      else
+        return rs.limit($deal_records_limit)
+      end
     end
 
     def set_deal_record
@@ -380,6 +425,16 @@ class DealRecordsController < ApplicationController
     end
 
     # 显示删除单笔ETH交易记录
+    def delete_btc_msg
+      '该笔BTC'+t(:deal_record_destroyed_ok)
+    end
+
+    # 显示清空ETH交易记录
+    def clear_btcs_msg
+      '所有BTC'+t(:deal_record_destroyed_ok)+"(共#{DealRecord.clear_btc_records}笔)"
+    end
+
+    # 显示删除单笔ETH交易记录
     def delete_eth_msg
       '该笔ETH'+t(:deal_record_destroyed_ok)
     end
@@ -398,6 +453,8 @@ class DealRecordsController < ApplicationController
     def go_deal_records_or_eth(code)
       if code == "BTC"
         go_deal_records
+      elsif code == "SBTC"
+        redirect_to action: :index_btc
       elsif code == "ETH"
         redirect_to action: :index_eth
       end

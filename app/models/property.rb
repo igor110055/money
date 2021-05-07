@@ -54,7 +54,7 @@ class Property < ApplicationRecord
 
   # 资产能以新台币或其他币种结算所有资产包含利息的净值
   def self.net_value( target_code = :twd, options = {} )
-    value(target_code,options) + lixi(target_code,options)
+    value(target_code,options) # + lixi(target_code,options) 默认每项贷款数值已包含利息,故无须重复抵扣
   end
 
   # 资产列表能显示3月底以来资产净值平均月增减额度
@@ -198,7 +198,7 @@ class Property < ApplicationRecord
       trezor_p = huobi_p = yuebao_p = 0
     end
     if is_admin
-      return p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit.to_i.to_s + ' ', total_unsell_profit.to_i.to_s + ' ', ave_hour_profit.to_i.to_s + ' ', total_real_p_24h.to_s + ' ', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn
+      return p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit.to_i.to_s + ' ', total_unsell_profit.to_i.to_s + ' ', ave_hour_profit.to_i.to_s + ' ', total_real_p_24h.to_s + ' ', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd
     else
       p_fbtc = Property.tagged_with('家庭比特币').sum {|p| p.amount_to(:btc)}
       p_finv = Property.tagged_with('家庭投资').sum {|p| p.amount_to(:btc)}
@@ -207,7 +207,7 @@ class Property < ApplicationRecord
       else
         p_fbtc_finv = 0
       end
-      return p_fbtc, p_finv.floor(8), p_fbtc_finv, 0, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, '', '', '', '', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn
+      return p_fbtc, p_finv.floor(8), p_fbtc_finv, 0, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, '', '', '', '', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd
     end
   end
 
@@ -313,9 +313,14 @@ class Property < ApplicationRecord
     flow_assets_records.sum {|p| p.amount_to(:twd)}
   end
 
+  # 流动性资产总值比特币现值
+  def self.flow_assets_btc
+    flow_assets_records.sum {|p| p.amount_to(:btc)}
+  end
+
   # 跨账号流动性资产总值台币现值
   def self.total_flow_assets_records
-    new.get_properties_from_tags('比特币 以太坊 可投资金',nil,'a')
+    new.get_properties_from_tags($total_flow_assets_tags,nil,'a')
   end
 
   # 跨账号流动性资产总值台币现值
@@ -367,6 +372,71 @@ class Property < ApplicationRecord
   # 所有可投资金台币现值
   def self.investable_fund_records_cny
     investable_fund_records.sum {|p| p.amount_to(:cny)}
+  end
+
+  # 跨账号所有应急的现值
+  def self.total_life_fund_records
+    Property.tagged_with('应急')
+  end
+
+  # 所有应急的人民币现值
+  def self.total_life_fund_records_cny
+    total_life_fund_records.sum {|p| p.amount_to(:cny)}
+  end
+
+  # 跨账号所有买矿机资金的现值
+  def self.buy_mine_fund_records
+    Property.tagged_with('矿机基金')
+  end
+
+  # 买矿机资金的人民币现值
+  def self.buy_mine_fund_records_cny
+    buy_mine_fund_records.sum {|p| p.amount_to(:cny)}
+  end
+
+  # 所有应急的人民币现值
+  def self.total_life_fund_records_cny
+    total_life_fund_records.sum {|p| p.amount_to(:cny)}
+  end
+
+  # 狗狗币的现值
+  def self.doge_records
+    Property.tagged_with('狗狗币')
+  end
+
+  # 狗狗币的人民币现值
+  def self.doge_records_cny
+    doge_records.sum {|p| p.amount_to(:cny)}
+  end
+
+  # UNI币的现值
+  def self.uni_records
+    Property.tagged_with('UNI')
+  end
+
+  # UNI币的人民币现值
+  def self.uni_records_cny
+    uni_records.sum {|p| p.amount_to(:cny)}
+  end
+
+  # 数字货币持仓的现值
+  def self.hold_shares_records
+    Property.tagged_with('持仓')
+  end
+
+  # 数字货币持仓的人民币现值
+  def self.hold_shares_records_cny
+    hold_shares_records.sum {|p| p.amount_to(:cny)}
+  end
+
+  # 数字货币持仓的现值
+  def self.bank_records
+    Property.tagged_with('银行')
+  end
+
+  # 数字货币持仓的人民币现值
+  def self.bank_records_cny
+    bank_records.sum {|p| p.amount_to(:cny)}
   end
 
   # 跨账号所有可投资金台币现值
@@ -460,7 +530,9 @@ class Property < ApplicationRecord
   # BTC预估年化利率
   def self.cal_year_profit_p
     if ave_month_growth_rate > 0
-      return (1+ave_month_growth_rate.to_f/100)**12
+      value = (1+ave_month_growth_rate.to_f/100)**12
+      value = 10 if value >= 10
+      return value
     else
       return 1
     end

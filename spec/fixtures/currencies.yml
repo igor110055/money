@@ -21,8 +21,14 @@ krw:
 btc:
   name: 比特币
   code: BTC
-  exchange_rate: 0.00010859
+  exchange_rate: 0.00001782
   symbol: btcusdt
+
+eth:
+  name: 以太坊
+  code: ETH
+  exchange_rate: 0.00029119
+  symbol: ethusdt
 
 usdt:
   name: 泰达币

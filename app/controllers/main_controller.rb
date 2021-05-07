@@ -744,10 +744,21 @@ class MainController < ApplicationController
     end
   end
 
-  # 设置智投参数表单
-  def set_auto_invest_form
+  def prepare_btc_invest_form
     @invest_params_value = File.read($auto_invest_params_path)
     @price_now = get_price_now
+  end
+
+  # 设置智投参数表单
+  def set_auto_invest_form
+    prepare_btc_invest_form
+  end
+
+  # 设置智投参数表单
+  def set_auto_invest_btc_form
+    prepare_btc_invest_form
+    @price_pos = 0              # 价格小数点位数
+    @price_step = 200             # 价格递增值
   end
 
   # 设置智投参数表单
@@ -768,6 +779,12 @@ class MainController < ApplicationController
   def set_auto_invest_params
     execute_set_auto_invest_params
     redirect_to set_auto_invest_form_path
+  end
+
+  # 设置SBTC智投参数(只能卖出)
+  def set_auto_invest_btc_params
+    execute_set_auto_invest_params
+    redirect_to set_auto_invest_btc_form_path
   end
 
   # 设置ETH智投参数
@@ -791,6 +808,8 @@ class MainController < ApplicationController
     execute_setup_invest_param(params[:c])
     if params[:c] == "ETH"
       redirect_to set_auto_invest_eth_form_path
+    elsif params[:c] == "SBTC"
+      redirect_to set_auto_invest_btc_form_path
     else
       redirect_to set_auto_invest_form_path
     end
@@ -803,8 +822,9 @@ class MainController < ApplicationController
   end
 
   # 执行setup_invest_param
-  def execute_setup_invest_param( code = "BTC" )
-    if index = params[:i] and index.to_i < $exe_auto_invest_params_size and value = params[:v]
+  def execute_setup_invest_param( code = params[:c], index = params[:i], value = params[:v] )
+    code = "BTC" if code == nil
+    if index and index.to_i < $exe_auto_invest_params_size and value
       set_invest_params(code,index,value)
       set_invest_params(code,0,swap_sec(code))
       # 如果每隔几点购买额度翻倍 > 0 则必须设定多少价位以下执行买入
@@ -874,6 +894,18 @@ class MainController < ApplicationController
     @keep = $btc_base_level # 想要保持的基准仓位
     @fund_usdt = Property.total_investable_fund_records_usdt # 跨账号所有可投资金USDT现值
     @btc_amount = Property.btc_amount # 比特币总数
+  end
+
+  # 将原有参与卖出的比特币设定成火币的比特币资产余额
+  def sell_btc_amount_as_huobi
+    execute_setup_invest_param('SBTC',23,Property.find($huobi_btc_property_id).amount)
+    redirect_to set_auto_invest_btc_form_path
+  end
+
+  # 将原有参与卖出的以太坊设定成火币的以太坊资产余额
+  def sell_eth_amount_as_huobi
+    execute_setup_invest_param('ETH',3,Property.find($huobi_eth_property_id).amount)
+    redirect_to set_auto_invest_eth_form_path
   end
 
   private

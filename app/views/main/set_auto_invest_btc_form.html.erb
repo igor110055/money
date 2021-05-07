@@ -4,64 +4,64 @@ rate = 0.1 # 10%
 start_price = @price_now*(1-rate)
 end_price = @price_now*(1+rate)
 # 传入的数字货币代码
-code = "ETH"
+code = "SBTC"
 %>
-<h2>ETH <%= t(:set_auto_invest_params) %></h2>
-<%= form_tag set_auto_invest_eth_params_path, method: :post, id: 'set_auto_invest_eth_form' do %>
+<h2>BTC <%= t(:set_auto_invest_params) %></h2>
+<%= form_tag set_auto_invest_btc_params_path, method: :post, id: 'set_auto_invest_btc_form' do %>
   <% n = 0 %>
   <table width="<%=$default_table_width%>">
     <tr valign="top">
       <td><%= n %></td>
       <td width="140">每隔几秒自动买入一次</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
-      <td>卖以太坊后获得的币种</td>
-      <td><%= invest_text_setup_link(code,1,"btc usdt") %></td>
+      <td>多少价位以下执行买入</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>跌破多少价位停止买入</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
-    <tr valign="top" class="set_aif_bg_rose">
+    <tr valign="top">
       <td><%= n %></td>
-      <td><%= link_to '原有参与卖出的以太坊', sell_eth_amount_as_huobi_path, {title:'将原有参与卖出的以太坊设定成火币的以太坊资产余额'} %></td>
-      <td><%= show_invest_param_value(3,code) %> <%= invest_params_setup_link(code,3,0.1,2.0,0.1,1) %></td>
+      <td>原有参与投资的泰达币</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>单笔买入价格调整参数</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>自动买入的最大仓位值</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
-      <td>买入以太坊的最大总值</td>
-      <td>目前只能卖出而不适用</td>
+      <td>买入比特币的最大总值</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>单笔买入泰达币最小值</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>单笔买入泰达币最大值</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
@@ -78,8 +78,8 @@ code = "ETH"
     </tr>
     <tr valign="top">
       <td><%= n %></td>
-      <td>用于测试的以太坊价格</td>
-      <td>目前只能卖出而不适用</td>
+      <td>用于测试的比特币价格</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
@@ -97,13 +97,13 @@ code = "ETH"
     <tr valign="top">
       <td><%= n %></td>
       <td>时间间隔的倍数最小值</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>时间间隔的倍数最大值</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_rose">
@@ -115,7 +115,7 @@ code = "ETH"
     <tr valign="top">
       <td><%= n %></td>
       <td>买入几分钟内的最低价</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_rose">
@@ -127,7 +127,7 @@ code = "ETH"
     <tr valign="top">
       <td><%= n %></td>
       <td>仓位越高买入周期越长</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
@@ -139,7 +139,7 @@ code = "ETH"
     <tr valign="top">
       <td><%= n %></td>
       <td>触底反弹买进的索引值</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_rose">
@@ -148,10 +148,10 @@ code = "ETH"
       <td><%= show_invest_param_value(22,code) %> <%= invest_params_setup_link(code,22,0,3600*2,300) %></td>
       <% n += 1 %>
     </tr>
-    <tr valign="top">
+    <tr valign="top" class="set_aif_bg_rose">
       <td><%= n %></td>
-      <td>赎回多少本金停止卖出</td>
-      <td>此功能已废弃</td>
+      <td><%= link_to '原有参与卖出的比特币', sell_btc_amount_as_huobi_path, {title:'将原有参与卖出的比特币设定成火币的比特币资产余额'} %><div class="red_bg">必须0.0004以上<br/>否则无法送单卖出</div></td>
+      <td><%= show_invest_param_value(23,code) %> <%= invest_params_setup_link(code,23,0.01,0.05,0.001,3) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
@@ -163,13 +163,13 @@ code = "ETH"
     <tr valign="top">
       <td><%= n %></td>
       <td>交易列表上的交易总额</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
-      <td>交易列表的以太坊总数</td>
-      <td>目前只能卖出而不适用</td>
+      <td>交易列表的比特币总数</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_gold">
@@ -181,12 +181,12 @@ code = "ETH"
     <tr valign="top">
       <td><%= n %></td>
       <td title="<%= "全部累计已实现损益:未实现获利:\n平均每秒已实现获利:近期累计已实现获利:\n冷钱包总成本:冷钱包总数量" %>">交易列表的已实现损益</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_rose">
       <td><%= n %></td>
-      <td>留多少以太坊仓位不卖<div class="red_bg">原有以太坊须设置正确<br/>否则计算结果会很不准</div></td>
+      <td>留多少比特币仓位不卖<div class="red_bg">原有比特币须设置正确<br/>否则计算结果会很不准</div></td>
       <td>
         <%= show_invest_param_value(29,code) %> <%= invest_params_setup_link(code,29,0,100,1) %></td>
       <% n += 1 %>
@@ -194,38 +194,38 @@ code = "ETH"
     <tr valign="top">
       <td><%= n %></td>
       <td>是否强制执行买入操作</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>买入最低价时的最高价</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>成本均价是否越买越低</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>每隔几点购买额度翻倍</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
       <td>额度翻倍的最大购买价</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <% trace_rate_amp = 0.0015 %>
     <tr valign="top">
       <td><%= n %></td>
       <td>买入最低价时的反弹率</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_rose">
@@ -237,7 +237,7 @@ code = "ETH"
     <tr valign="top">
       <td><%= n %></td>
       <td>额度翻倍的最大购买价<br/>根据几分钟平均价调整</td>
-      <td>目前只能卖出而不适用</td>
+      <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_gold">

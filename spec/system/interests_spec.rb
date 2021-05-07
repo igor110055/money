@@ -20,8 +20,8 @@ RSpec.describe '系统测试(Interests)', type: :system do
     end
 
     specify '#113[系统层]利息列表下方能以新台币和人民币显示利息的总金额' do
-      expect(page).to have_selector '#interest_total_twd', text: Interest.total
-      expect(page).to have_selector '#interest_total_cny', text: Interest.total(:cny)
+      expect(page).to have_selector '#interest_total_twd', text: Interest.total.to_s
+      expect(page).to have_selector '#interest_total_cny', text: Interest.total(:cny).to_s
     end
 
   end

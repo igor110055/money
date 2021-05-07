@@ -85,17 +85,26 @@ def reach_btc_amount_goal
   ((@trezor_btc_amount - $trial_btc_amount_goal).abs < @diff_acceptable) or @trezor_btc_amount - $trial_btc_amount_goal > 0
 end
 
-@mine_num_ori = $mine_num # 原有矿机数量
+@mine_num_ori = $mine_num # 原有BTC矿机数量
+@mine_num_ori_eth = $mine_num_eth # 原有ETH矿机数量
 cal_btc_capital # 初始化月末值
 @today = Date.today # 设定今天日期
 birthday = "1974-12-02".to_date # 设定生日
 mine_amount = mine_earn_remain = 0 # 挖矿得到的总币数 | 扣除生活费剩余挖矿币数
 total_month_cost_cny = 0 # 每月生活费的总数
 twd_to_cny = Currency.new.twd_to_cny # 新台币转人民币
+twd_to_btc = Currency.new.twd_to_btc # 新台币转比特币
 cny_to_twd = Currency.new.cny_to_twd # 新台币转人民币
 total_buy_num = 0 # 新购买矿机总数
-have_mine = true if $mine_num > 0 or $mine_buy_dates.size > 0 # 判断是否显示矿机栏位
-show_balance_now = link_to_flow_assets_list(:CNY,twd_to_cny) # 缓存至变量节省计算时间
+# 判断是否显示矿机栏位
+have_mine = true if $mine_num > 0 or $mine_buy_dates.size > 0 # BTC矿机
+have_mine_eth = true if $mine_num_eth > 0 # ETH矿机
+if have_mine or have_mine_eth
+  show_mine_td = true
+else
+  show_mine_td = false
+end
+show_balance_now = link_to_flow_assets_list(:CNY,twd_to_cny,twd_to_btc) # 缓存至变量节省计算时间
 prices_arr = $trial_btc_prices # 设定BTC价格增长幅度
 btc_month_grow_rate = prices_arr[0].split(':')[0].to_f # 初始化BTC价格增长幅度
 prices_arr.delete_at(0) # 初始化BTC价格增长幅度
@@ -105,13 +114,15 @@ huobi_balance = Property.tagged_with(get_huobi_acc_id).sum {|p| p.amount_to(:btc
 btc_diff_flag = true # 用于一次性显示当月挖矿的收益是否已经达到BTC增减量
 @diff_acceptable = 0.0002 # 如果实际值与目标值相差在几个BTC以内则视为已达成目标
 fix_start_month_cost # 修正生活费计算的错误
+total_mine_sell = 0 # 当月挖矿后立刻卖出的累计收益
+mine_income_twd = mine_income_cny = 0 # 挖矿总收益
 %>
 <table width="<%=$default_table_width*0.95%>">
   <tr class="thead">
     <td><%= t(:myage)%></td>
     <td><%= t(:date)%></td>
     <td><%= t(:begin_price)%></td>
-    <td><%= t(:goal_price)%></td>
+    <!-- <td><%= t(:goal_price)%></td> -->
     <td><%= t(:reach_goal_price)%></td>
     <td><%= t(:begin_amount)%></td>
     <td title="每月生活费与矿机的支出(¥)加底线表示以冷钱包支付生活费"><%= t(:month_cost)%></td>
@@ -120,15 +131,16 @@ fix_start_month_cost # 修正生活费计算的错误
     <td><%= t(:month_grow_rate)%></td>
     <td><%= t(:end_price)%></td>
     <td title="<%= t(:end_balance)%>(¥)"><%= t(:end_balance)%></td>
-    <td title="以最高生活费计算的可生活月数">月数</td>
+    <!-- <td title="以最高生活费计算的可生活月数">月数</td> -->
     <td title="<%= t(:balance_now)%>(¥)"><%= t(:balance_now)%></td>
     <% if admin? %>
       <td title="<%= t(:goal_balance)%>(¥)"><%= t(:goal_balance)%></td>
       <td title="<%= t(:have_reached)%>(¥)"><%= t(:have_reached)%></td>
     <% end %>
     <% # 如果有矿机收益 %>
-    <% if have_mine %>
+    <% if have_mine or have_mine_eth %>
       <td title="以月末比特币价格估算的当月挖矿收益(¥)">当月挖矿</td>
+      <td title="当月挖矿后立刻卖出的累计收益(¥)">卖出累计</td>
       <td title="扣除每月生活费后的挖矿累计收益(¥)">挖矿累计</td>
       <td>矿机数</td>
       <% if admin? %>
@@ -136,36 +148,48 @@ fix_start_month_cost # 修正生活费计算的错误
       <% end %>
     <% end %>
   </tr>
-  <% rs_trial.each do |n| %>
-    <tr <%= change_row_color %>>
-      <% this_date = @today.at_beginning_of_month+n.month %>
-      <% account_date = @today.end_of_month+n.month # 挖矿收益结算日 %>
-      <% # month_cost 已加上日期的判断，后面使用该变数无需考虑日期了 %>
-      <% month_cost = (this_date > $trial_month_cost_start_date_admin) ? @month_cost.to_i : 0 %>
-      <% month_sell = month_cost/@usdt2cny/@btc_price %>
-      <% total_month_cost_cny += month_cost %>
-      <% begin_price = @btc_price %>
-      <% cost_by_trezor = true # 默认以冷钱包扣抵生活费 %>
-      <% buy_mine_note = '' # 矿机购买讯息 %>
-      <% mine_cost = cal_mine_cost(begin_price) # 这个月矿机的购买价格 %>
-      <% buy_num_this_month = 0 # 这个月购买矿机几台 %>
-      <% mine_cost_this_date = 0 # 这个月购买矿机所支付的人民币 %>
-      <% loan_lixi_cny = (Property.loan_lixi(this_date)*twd_to_cny).to_i # 这个月的贷款加利息 %>
-      <% goal_price, diff_price, goal_balance, diff_balance, reach_goal_price  = check_trial_reached(this_date) %>
+  <%
+  rs_trial.each do |n|
+    this_date = @today.at_beginning_of_month+n.month
+    account_date = @today.end_of_month+n.month # 挖矿收益结算日
+    # month_cost 已加上日期的判断，后面使用该变数无需考虑日期了
+    month_cost = (this_date > $trial_month_cost_start_date_admin) ? @month_cost.to_i : 0
+    month_sell = month_cost/@usdt2cny/@btc_price
+    total_month_cost_cny += month_cost
+    begin_price = @btc_price
+    cost_by_trezor = true # 默认以冷钱包扣抵生活费
+    buy_mine_note = '' # 矿机购买讯息
+    sell_mine_note = '' # 卖币讯息
+    tr_class = change_row_color # 以高亮显示整列
+    mine_cost = cal_mine_cost(begin_price) # 这个月矿机的购买价格
+    buy_num_this_month = 0 # 这个月购买矿机几台
+    mine_cost_this_date = 0 # 这个月购买矿机所支付的人民币
+    mine_earn = 0 # 当月可挖的总币数
+    loan_lixi_cny = (Property.loan_lixi(this_date)*twd_to_cny).to_i # 这个月的贷款加利息
+    goal_price, diff_price, goal_balance, diff_balance, reach_goal_price  = check_trial_reached(this_date)
+    # 若有输入卖币日期则以高亮显示整列
+    $mine_sell_dates.each_index do |i|
+      sell_date = $mine_sell_dates[i].split(':')[0]
+      if sell_date == this_date.to_s(:db)
+        tr_class = change_row_color('#FFCF00','#FFB6C1')
+      end
+    end
+  %>
+    <tr <%=tr_class%>>
       <!-- 岁 //-->
       <td align="center"><%= (((this_date-birthday).to_i)/365).to_i %></td>
       <!-- 日期 //-->
       <td align="center"><%= this_date.to_s(:db) %></td>
       <!-- 月初价 //-->
-      <td align="right"><%= to_n(@btc_price,0) %></td>
+      <td align="right" title="¥<%=btc_to_cny(@btc_price).to_i%>"><%= to_n(@btc_price,0) %></td>
       <!-- 目标价 //-->
-      <td align="right"><%= to_n(goal_price,0) %></td>
+      <!-- <td align="right"><%= to_n(goal_price,0) %></td> -->
       <!-- 达标价 //-->
       <td align="right"><%= to_n(reach_goal_price,0) %></td>
       <!-- 月初量 //-->
       <% begin_amount = @btc_amount %>
       <td align="right"><%= to_n(@btc_amount,8) %></td>
-      <% # 如果有矿机收益 %>
+      <% # 如果有BTC矿机收益 %>
       <%  if have_mine
             # 回本后每月得到的币数会减少
             # 只有开始的头一个月需要判断不满一个月的挖矿，其余默认为月初开始挖矿
@@ -205,9 +229,13 @@ fix_start_month_cost # 修正生活费计算的错误
             $mine_buy_dates.each_index do |i|
               buy_date = $mine_buy_dates[i].split(':')[0]
               buy_num = $mine_buy_dates[i].split(':')[1].to_i
+              # 是否以比特币投资，如果大于0为是
+              buy_using_btc = $mine_buy_dates[i].split(':')[2].to_i
               # 如果到达购买日则加购
               if buy_date == this_date.to_s(:db)
-                @btc_amount -= (mine_cost/$usdt_to_cny/@btc_price)*buy_num
+                if buy_using_btc > 0
+                  @btc_amount -= (mine_cost/btc_to_cny(@btc_price))*buy_num
+                end
                 $mine_num += buy_num
                 buy_num_this_month = buy_num
                 total_buy_num += buy_num
@@ -232,21 +260,69 @@ fix_start_month_cost # 修正生活费计算的错误
             end
           end
         %>
+        <% # 如果有ETH矿机收益 %>
+        <%  if have_mine_eth and this_date <= $mine_end_dates_eth
+              # 回本后每月得到的币数会减少
+              # 只有开始的头一个月需要判断不满一个月的挖矿，其余默认为月初开始挖矿
+              if this_date.year == $mine_start_date_eth.year and this_date.month == $mine_start_date_eth.month
+                pass_days_eth = day_diff($mine_start_date_eth,account_date)
+              elsif this_date > $mine_start_date_eth
+                pass_days_eth = day_diff(this_date,account_date)
+              else
+                pass_days_eth = 0
+              end
+              day_unback_eth = $mine_earn_day_eth
+              day_backed_eth = day_unback_eth*$mine_back_rate
+              # 回传已经回本的ETH矿机数量(ETH矿机已全部回本)
+              backed_num_eth = $mine_num_eth
+              # 计算尚未回本的矿机数量
+              unback_num_eth = 0
+              # 每天可挖的币数
+              day_earn_eth = day_unback_eth*unback_num_eth+day_backed_eth*backed_num_eth
+              # 当月可挖的总币数
+              mine_earn += day_earn_eth*pass_days_eth
+              # 生活费换算成比特币
+              month_cost_to_btc = month_cost/$usdt_to_cny/@btc_price
+              # ETH挖矿不抵扣生活费
+              mine_earn_remain = mine_earn
+              cost_by_trezor = false
+              # 累加实际能储存的币
+              mine_amount += mine_earn_remain  if mine_earn_remain > 0
+              mine_income_cny += mine_amount*btc_to_cny(@btc_price)
+              mine_income_twd += (mine_income_cny*@cny2twd).to_i
+              @btc_amount += mine_earn_remain
+            else
+              $mine_num_eth = 0
+              have_mine_eth = false
+            end
+          %>
       <!-- 支出 //-->
       <td align="right">
         <% if this_date > @month_cost_start %>
           <!-- 加底线表示以冷钱包支付生活费 //-->
           <% cost_str = to_n(@month_cost+mine_cost_this_date,0) %>
           <% cost_str = raw("<u>#{cost_str}</u>") if cost_by_trezor %>
-          <span title="生活费:¥<%=@month_cost.to_i%> 矿机费:¥<%=mine_cost_this_date%>"><%=cost_str%></span>
+          <span title="生活费:¥<%=@month_cost.to_i%> <%=buy_num_this_month%>台矿机费:¥<%=mine_cost_this_date%>(每台¥<%=mine_cost%>)"><%=cost_str%></span>
         <% end %>
       </td>
       <!-- 月初额 //-->
       <% begin_balance = @btc_capital %>
       <% begin_balance_twd = btc_capital_twd %>
       <!-- 月末量 //-->
-      <% @btc_amount -= month_sell if cost_by_trezor # 扣除生活费%>
-      <td class="<%= (btc_diff_flag and reach_btc_amount_goal) ? 'trial_goal_reach' : 'end_balance' %>" title="冷钱包余额:<%=to_n(@trezor_btc_amount,8)%> 与目标(<%=$trial_btc_amount_goal%>)相差:<%=to_n(@trezor_btc_amount-$trial_btc_amount_goal,8)%>" align="right"><%= to_n(@btc_amount,8) %></td>
+      <% @btc_amount -= month_sell if cost_by_trezor # 扣除生活费 %>
+      <%
+        # 若有输入卖币日期则卖币
+        $mine_sell_dates.each_index do |i|
+          sell_date = $mine_sell_dates[i].split(':')[0]
+          sell_amount = $mine_sell_dates[i].split(':')[1].to_f
+          # 如果到达卖币日期则卖币
+          if sell_date == this_date.to_s(:db)
+            @btc_amount -= sell_amount
+            sell_mine_note = "\n卖币#{sell_amount}枚, 共¥#{(sell_amount*btc_to_cny(@btc_price)).to_i}元"
+          end
+        end
+      %>
+      <td class="<%= (btc_diff_flag and reach_btc_amount_goal) ? 'trial_goal_reach' : 'end_balance' %>" title="冷钱包余额:<%=to_n(@trezor_btc_amount,8)%> 与目标(<%=$trial_btc_amount_goal%>)相差:<%=to_n(@trezor_btc_amount-$trial_btc_amount_goal,8)%><%=sell_mine_note%>" align="right"><%= to_n(@btc_amount,8) %></td>
       <!-- 增减 //-->
       <% # 查看极客挖矿余额是否已经大于增减量
           btc_diff_goal = @btc_amount-begin_amount
@@ -258,8 +334,8 @@ fix_start_month_cost # 修正生活费计算的错误
           btc_diff_title = ''
           # 显示矿机购买讯息
           if buy_num_this_month > 0
-            mine_cose_btc = mine_cost/@usdt2cny/begin_price
-            btc_diff_title += "月末可存#{mine_earn_remain.floor(4)} - 购买矿机(#{mine_cose_btc.floor(4)}) = #{(mine_earn_remain-mine_cose_btc).floor(4)} "
+            mine_cost_btc = mine_cost/btc_to_cny(@btc_price)
+            btc_diff_title += "月末可存#{mine_earn_remain.floor(4)} - 购买矿机#{buy_num_this_month}台(#{mine_cost_btc.floor(6)*buy_num_this_month}) = #{(mine_earn_remain-mine_cost_btc).floor(6)} "
           end
           # 显示目标差距
           if btc_diff_flag
@@ -296,7 +372,7 @@ fix_start_month_cost # 修正生活费计算的错误
       <!-- 月数 //-->
       <% net_end_balance_cny = end_balance_cny - loan_lixi_cny %>
       <% life_months = (net_end_balance_cny/max_month_cost).to_i %>
-      <td align="right" title="<%=end_balance_cny%>-<%=loan_lixi_cny%>=<%=net_end_balance_cny%>/<%=max_month_cost%>(<%=to_n(life_months.to_f/12,1)%>年)"><%=life_months%></td>
+      <!--td align="right" title="<%=end_balance_cny%>-<%=loan_lixi_cny%>=<%=net_end_balance_cny%>/<%=max_month_cost%>(<%=to_n(life_months.to_f/12,1)%>年)"><%=life_months%></td-->
       <!-- 目前值 //-->
       <td class="balance_now" align="right"><%= show_balance_now %></td>
       <% if admin? %>
@@ -317,19 +393,27 @@ fix_start_month_cost # 修正生活费计算的错误
         </td>
       <% end %>
       <% # 如果有矿机收益 %>
-      <% if have_mine %>
-        <% total_end_balance_twd = end_balance_twd + mine_income_twd %>
+      <% if show_mine_td %>
+        <% total_end_balance_twd = end_balance_twd + mine_income_twd # 月末值+挖矿总收益 %>
         <% mine_earn_remain_cny = (mine_earn_remain*btc_to_cny(end_price)).to_i %>
         <% mine_earn_remain_twd = (mine_earn_remain_cny*cny_to_twd).to_i %>
         <!-- 当月挖矿 //-->
-        <td align="right" title="台币: <%=(mine_income_cny*@cny2twd).to_i%> 月挖: <%= mine_earn.floor(4) %> 共挖: <%= mine_amount.floor(4) %> <%=show_br%>月末可存: <%=mine_earn_remain.floor(4)%>(¥<%=mine_earn_remain_cny%>|<%=mine_earn_remain_twd%>)"><%= (mine_earn*btc_to_cny(end_price)).to_i %></td>
+        <%
+        # 每月的产币值
+        mine_month_income_cny = (mine_earn*btc_to_cny(end_price)).to_i
+        # 每月的产币值累加
+        total_mine_sell += mine_month_income_cny
+        %>
+        <td align="right" title="月挖: <%= mine_earn.floor(4) %> 共挖: <%= mine_amount.floor(4) %> <%=show_br%>月末可存: <%=mine_earn_remain.floor(4)%>(¥<%=mine_earn_remain_cny%>|<%=mine_earn_remain_twd%>)"><%= mine_month_income_cny %></td>
+        <!-- 当月挖矿累计 //-->
+        <td align="right"><%= total_mine_sell %></td>
         <%  # 累计挖矿总收益
             mine_total_cny = (mine_amount*btc_to_cny(end_price)).to_i
             mine_total_twd = (mine_total_cny*@cny2twd).to_i %>
         <!-- 挖矿累计 //-->
         <td class="end_balance" align="right" title="฿<%=mine_amount.floor(4)%>(NT$<%= mine_total_twd %>)"><%=mine_total_cny%></td>
         <!-- 矿机数 //-->
-        <td align="center" title="未回本: <%=unback_num%> 已回本: <%=backed_num%><%=show_br(buy_mine_note)%><%=buy_mine_note%>"><%= $mine_num %></td>
+        <td align="center" title="未回本: <%=unback_num%> 已回本: <%=backed_num%><%=show_br(buy_mine_note)%><%=buy_mine_note%>"><%= $mine_num+$mine_num_eth %></td>
         <%
           # 计算矿机两种占比:135/170账号占比，总体占比(135+170)
           # 账号占比
@@ -342,7 +426,7 @@ fix_start_month_cost # 修正生活费计算的错误
           flow_mine_p = (mine_total_cost+$mine_other_cost).to_f/(balance_cost+other_balance_cost)*100
         %>
         <% if admin? %>
-          <td align="center" class="<%= flow_mine_p > $mine_buy_limit*100 ? 'trial_goal_unreach' : '' %>"><%= add_zero(acc_mine_p.to_i,2) %> | <%= add_zero(flow_mine_p.to_i,2) %></td>
+          <td align="center" class="<%= flow_mine_p > $mine_buy_limit*100 ? 'trial_goal_unreach' : '' %>"><%# add_zero(acc_mine_p.to_i,2) %><%= add_zero(to_n(flow_mine_p,2),2) %></td>
         <% end %>
       <% end %>
     </tr>
@@ -370,26 +454,30 @@ fix_start_month_cost # 修正生活费计算的错误
       <% # 显示现价与k线图链接 %>
       <%= kline_chart_link %> | <%= kline_chart_link to_n(@eth_price), "ethusdt" %>
     </td>
-    <td colspan="9" align="right">
+    <td colspan="8" align="right">
       <% # 显示资产净值与走势图链接 %>
       <%= show_net_value_link if admin? %>
     </td>
     <% # 如果有矿机收益 %>
     <% if admin? %>
-      <% if have_mine %>
+      <% if show_mine_td %>
         <td colspan="8" align="right">
       <% else %>
-        <td colspan="4" align="right">
+        <td colspan="3" align="right">
       <% end %>
     <% else %>
-      <% if have_mine %>
+      <% if show_mine_td %>
         <td colspan="5" align="right">
       <% else %>
-        <td colspan="2" align="right">
+        <td colspan="1" align="right">
       <% end %>
     <% end %>
-      <% # 将试算结果存入数据库 %>
-      <%= link_to t(:save_trials_to_db), save_trials_to_db_path, { id: 'save_trials_to_db' } if admin? %>
+      <% if admin? %>
+        <% # 将试算结果存入数据库 %>
+        <%= link_to t(:save_trials_to_db), save_trials_to_db_path, { id: 'save_trials_to_db' } %> |
+        <% # 显示所有数据 %>
+        <%= link_to '显示所有数据', trial_lists_path(show_all:1) %>
+      <% end %>
     </td>
   </tr>
 </table>

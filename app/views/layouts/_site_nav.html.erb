@@ -1,5 +1,5 @@
 <% if login? %>
-  <div id="<%= id %>">
+  <div id="<%= id %>" style="width:100%">
     <small>
       <%= link_back_to_trial_lists %> |
       <%= link_back_to_properties %> |
@@ -11,15 +11,13 @@
         <%= link_back_to_currencies %> |
         <%= link_back_to_items %> |
         <%= link_back_to_interests %> |
-        <%= link_back_to_deal_records %> |
-        <%= set_auto_invest_form_link("BTC") %> |
+        <%= link_to_btc_deal_records %> |
+        <%= set_auto_invest_form_link("SBTC") %> |
         <%= invest_log_link("BTC") %> |
         <%= link_to_eth_deal_records %> |
         <%= set_auto_invest_form_link("ETH") %> |
         <%= invest_log_link("ETH") %> |
         <%= clear_invest_log_link %> |
-        <%= update_btc_exchange_rates_link %> |
-        <%= rise_fall_list_link %> |
         <%= link_to t(:record_index), records_path %> |
       <% end %>
       <%= logout_link %>

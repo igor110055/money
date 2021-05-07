@@ -45,14 +45,14 @@ class CurrenciesController < ApplicationController
 
   # 更新比特币及以太坊的汇率值
   def update_btc_exchange_rates
-    put_notice t(:get_price_error) if not (update_btc_price and update_eth_price)
+    put_notice t(:get_price_error) if !(update_digital_exchange_rates > 0)
     go_back
   end
 
   # 更新所有数字货币的汇率值
   def update_all_digital_exchange_rates
     begin
-      if !(update_digital_exchange_rates > 0)
+      if !(update_digital_exchange_rates(true) > 0)
         put_notice t(:get_price_error)
       end
     rescue Net::OpenTimeout
@@ -95,9 +95,9 @@ class CurrenciesController < ApplicationController
     # 设定栏位安全白名单
     def currency_params
       if admin?
-        params.require(:currency).permit(:name, :code, :symbol, :exchange_rate)
+        params.require(:currency).permit(:name, :code, :symbol, :exchange_rate, :auto_update_price)
       else
-        params.require(:currency).permit(:name, :code, :exchange_rate)
+        params.require(:currency).permit(:name, :code, :exchange_rate, :auto_update_price)
       end
     end
 
