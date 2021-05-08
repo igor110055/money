@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe '系统测试(Currencies)', type: :system do
+RSpec.describe '系统测试[Currencies]', type: :system do
 
   fixtures :currencies
 
@@ -69,7 +69,7 @@ RSpec.describe '系统测试(Currencies)', type: :system do
         expect(page).to have_content $currency_exchange_rate_nan_err
       end
 
-      specify '#93[系统层]货币汇率值不为正数时无法新建且显示错误讯息' do
+      specify '货币汇率值不为正数时无法新建且显示错误讯息' do
         fill_in 'currency[exchange_rate]', with: 0
         find('#create_new_currency').click
         expect(page).to have_content $currency_exchange_rate_nap_err
@@ -159,7 +159,7 @@ RSpec.describe '系统测试(Currencies)', type: :system do
         expect(page).to have_content $currency_exchange_rate_nan_err
       end
 
-      specify '#147[系统层]非管理员看不到数字货币的符号属性' do
+      specify '非管理员看不到数字货币的符号属性' do
         btc = currencies(:btc)
         visit edit_currency_path(btc)
         expect(page).not_to have_selector '#currency_symbol'
@@ -175,7 +175,7 @@ RSpec.describe '系统测试(Currencies)', type: :system do
       login_as_admin
     end
 
-    specify '#147[系统层]只有管理员能设定数字货币的符号属性' do
+    specify '只有管理员能设定数字货币的符号属性' do
       btc = currencies(:btc)
       visit edit_currency_path(btc)
       fill_in 'currency[symbol]', with: 'btcusdt'

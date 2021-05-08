@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe '系统测试(Main)', type: :system do
+RSpec.describe '系统测试[Main]', type: :system do
 
   describe '登入与登出功能测试' do
 
@@ -31,7 +31,7 @@ RSpec.describe '系统测试(Main)', type: :system do
       expect(current_path).to eq login_path
     end
 
-    specify '#118[系统层]以管理员密码能正常登入和登出系统' do
+    specify '以管理员密码能正常登入和登出系统' do
       visit login_path
       fill_in 'pincode', with: "#{$pincode}:#{$admincode}"
       find('#login').click

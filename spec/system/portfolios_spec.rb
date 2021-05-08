@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe '系统测试(Portfolios)', type: :system do
+RSpec.describe '系统测试[Portfolios]', type: :system do
 
   let!(:portfolio) { create(:portfolio) }
 
@@ -12,13 +12,13 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
 
       before { visit portfolios_path }
 
-      specify '#152[系统层]资产组合列表能显示组合名称、包含标签及排除标签' do
+      specify '资产组合列表能显示组合名称、包含标签及排除标签' do
         expect(page).to have_content portfolio.name
         expect(page).to have_content portfolio.include_tags
         expect(page).to have_content portfolio.exclude_tags
       end
 
-      specify '#155[系统层]在资产组合列表中点击查看能显示该组合的资产列表' do
+      specify '在资产组合列表中点击查看能显示该组合的资产列表' do
         expect(page).to have_selector "#portfolio_#{portfolio.id}", count: 1
         expect(page.html).to include portfolio.include_tags
       end
@@ -27,7 +27,7 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
 
         before { create_properties_with_tags }
 
-        specify '#153[系统层]在标签页中更新资产金额后能回到该标签页' do
+        specify '在标签页中更新资产金额后能回到该标签页' do
           visit properties_path
           click_on 'MYCASH'
           fill_in "new_amount_#{@twd_cash.id}", with: '12345.67'
@@ -37,22 +37,13 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
           expect(page).to have_selector '#properties_total_info'
         end
 
-        specify '#158[系统层]点击查看资产组合能记录等值台币等值人民币与资产占比讯息' do
-          # 因执行auto_update_all_data.rb而暂停
-          # portfolio = create(:portfolio,:mycash)
-          # visit "/properties/?tags=#{portfolio.include_tags}&mode=#{portfolio.mode}&pid=#{portfolio.id}"
-          # twd_amount = @twd_cash.amount_to(:twd)+@cny_cash.amount_to(:twd)
-          # visit portfolios_path
-          # expect(page).to have_content twd_amount.to_i
-        end
-
-        specify '#159[系统层]按下更新组合链接能更新所有资产组合的栏位值' do
+        specify '按下更新组合链接能更新所有资产组合的栏位值' do
           visit portfolios_path
           find('#update_all_portfolios').click
           expect(page).to have_selector '.alert-notice', text: /#{$portfolios_updated_ok}/
         end
 
-        specify '#168[系统层]当有标签参数时所显示的资产列表中的占比必须相对于该列表' do
+        specify '当有标签参数时所显示的资产列表中的占比必须相对于该列表' do
           portfolio = create(:portfolio,:mycash)
           visit "/properties/?tags=#{portfolio.include_tags}"
           p_twd = sprintf("%0.02f",(@twd_cash.amount_to/(@twd_cash.amount_to+@cny_cash.amount_to)*100))
@@ -72,7 +63,7 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
 
       describe '成功用例' do
 
-        specify '#152[系统层]能通过资产组合表单成功建立一笔资产组合记录' do
+        specify '能通过资产组合表单成功建立一笔资产组合记录' do
           fill_in 'portfolio[name]', with: '我的比特币'
           fill_in 'portfolio[order_num]', with: 1
           fill_in 'portfolio[include_tags]', with: '比特币 个人资产'
@@ -86,19 +77,19 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
 
       describe '失败用例' do
 
-        specify '#152[系统层]当资产组合没有名称时无法新建且显示错误讯息' do
+        specify '当资产组合没有名称时无法新建且显示错误讯息' do
           fill_in 'portfolio[name]', with: nil
           find('#create_new_portfolio').click
           expect(page).to have_content $portfolio_name_blank_err
         end
 
-        specify '#152[系统层]当资产组合没有排序号码时无法新建且显示错误讯息' do
+        specify '当资产组合没有排序号码时无法新建且显示错误讯息' do
           fill_in 'portfolio[order_num]', with: nil
           find('#create_new_portfolio').click
           expect(page).to have_content $portfolio_order_num_blank_err
         end
 
-        specify '#152[系统层]当资产组合排序号码不为大于零的数字时无法新建且显示错误讯息' do
+        specify '当资产组合排序号码不为大于零的数字时无法新建且显示错误讯息' do
           fill_in 'portfolio[order_num]', with: 'abcdefg'
           find('#create_new_portfolio').click
           expect(page).to have_content $portfolio_order_num_nap_err
@@ -110,7 +101,7 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
           expect(page).to have_content $portfolio_order_num_nap_err
         end
 
-        specify '#152[系统层]当资产组合没有包含标签时无法新建且显示错误讯息' do
+        specify '当资产组合没有包含标签时无法新建且显示错误讯息' do
           fill_in 'portfolio[include_tags]', with: ''
           find('#create_new_portfolio').click
           expect(page).to have_content $portfolio_include_tags_blank_err
@@ -131,31 +122,31 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
 
       describe '成功用例' do
 
-        specify '#152[系统层]能通过表单修改名称' do
+        specify '能通过表单修改名称' do
           fill_in 'portfolio[name]', with: '所有新买的比特币'
           find('#update_portfolio').click
           expect(page).to have_selector '.alert-notice'
           expect(page).not_to have_content ori_portfolio_name
         end
 
-        specify '#152[系统层]能通过表单修改排序号码' do
+        specify '能通过表单修改排序号码' do
           fill_in 'portfolio[order_num]', with: 3
           find('#update_portfolio').click
           expect(page).to have_selector '.alert-notice'
         end
 
-        specify '#152[系统层]能通过表单修改包含标签' do
+        specify '能通过表单修改包含标签' do
           fill_in 'portfolio[include_tags]', with: '比特币 冷钱包 交易所'
           find('#update_portfolio').click
           expect(page).to have_selector '.alert-notice'
         end
-        specify '#152[系统层]能通过表单修改排除标签' do
+        specify '能通过表单修改排除标签' do
           fill_in 'portfolio[exclude_tags]', with: '家庭资产'
           find('#update_portfolio').click
           expect(page).to have_selector '.alert-notice'
         end
 
-        specify '#152[系统层]能通过表单删除一笔资产组合记录' do
+        specify '能通过表单删除一笔资产组合记录' do
           find('#delete_portfolio').click
           expect(page).not_to have_content ori_portfolio_name
           expect(page).to have_selector '.alert-notice'
@@ -165,19 +156,19 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
 
       describe '失败用例' do
 
-        specify '#152[系统层]当资产组合没有名称时无法新建且显示错误讯息' do
+        specify '当资产组合没有名称时无法新建且显示错误讯息' do
           fill_in 'portfolio[name]', with: nil
           find('#update_portfolio').click
           expect(page).to have_content $portfolio_name_blank_err
         end
 
-        specify '#152[系统层]当资产组合没有排序号码时无法新建且显示错误讯息' do
+        specify '当资产组合没有排序号码时无法新建且显示错误讯息' do
           fill_in 'portfolio[order_num]', with: nil
           find('#update_portfolio').click
           expect(page).to have_content $portfolio_order_num_blank_err
         end
 
-        specify '#152[系统层]当资产组合排序号码不为大于零的数字时无法新建且显示错误讯息' do
+        specify '当资产组合排序号码不为大于零的数字时无法新建且显示错误讯息' do
           fill_in 'portfolio[order_num]', with: 'abcdefg'
           find('#update_portfolio').click
           expect(page).to have_content $portfolio_order_num_nap_err
@@ -189,7 +180,7 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
           expect(page).to have_content $portfolio_order_num_nap_err
         end
 
-        specify '#152[系统层]当资产组合没有包含标签时无法新建且显示错误讯息' do
+        specify '当资产组合没有包含标签时无法新建且显示错误讯息' do
           fill_in 'portfolio[include_tags]', with: ''
           find('#update_portfolio').click
           expect(page).to have_content $portfolio_include_tags_blank_err
@@ -205,7 +196,7 @@ RSpec.describe '系统测试(Portfolios)', type: :system do
 
     before { login_as_guest }
 
-    specify '#152[系统层]非管理员则无法显示资产组合编辑页面' do
+    specify '非管理员则无法显示资产组合编辑页面' do
       visit portfolios_path
       expect(current_path).to eq login_path
       visit edit_portfolio_path(portfolio)
