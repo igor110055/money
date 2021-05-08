@@ -223,7 +223,7 @@ module ApplicationHelper
 
   # K线图链接
   def kline_chart_link( text = to_n(get_btc_price), symbol = "btcusdt" )
-    link_to text, {controller: :main, action: :kline_chart, symbol: symbol}, {target: :blank, title: "¥#{(text.to_f*$usdt_to_cny).to_i}" }
+    link_to text, {controller: :main, action: :kline_chart, symbol: symbol}, {target: :blank, title: "¥#{(text.to_f*$usdt_to_cny).floor(2)}" }
   end
 
   # K线图链接

@@ -101,6 +101,11 @@ class ApplicationController < ActionController::Base
     get_huobi_price('ethbtc','%.6f')
   end
 
+  # 取得狗狗币的现价
+  def get_doge_price
+    get_huobi_price('dogeusdt','%.6f')
+  end
+
   # 更新所有数字货币的汇率值
   def update_digital_exchange_rates( show_notice = false )
     # 必须先更新USDT的汇率，其他的报价换算成美元才能准确

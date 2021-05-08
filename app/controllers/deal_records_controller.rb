@@ -39,7 +39,7 @@ class DealRecordsController < ApplicationController
   def index_btc
     prepare_price_vars
     @btc_deal_records = get_btcs
-    @ethbtc_price = get_ethbtc_price
+    @doge_price = get_doge_price
     index_footer
   end
 
