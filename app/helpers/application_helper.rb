@@ -863,6 +863,15 @@ module ApplicationHelper
     end
   end
 
+  # 取得狗狗币现价
+  def get_doge_price
+    if rate = eval("$DOGE_exchange_rate")
+      return 1.0/rate
+    else
+      return 1.0/Currency.find_by_code('DOGE').exchange_rate
+    end
+  end
+
   # USDT >> TWD
   def usdt_to_twd
     DealRecord.new.usdt_to_twd
@@ -922,6 +931,11 @@ module ApplicationHelper
   # 设定一次性首页
   def set_as_home_url( url )
     session[:home_url] = url
+  end
+
+  # 计算矿机总成本
+  def total_mine_cost
+    ($mine_ori_cost+$mine_other_cost).to_i
   end
 
 end

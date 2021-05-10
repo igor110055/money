@@ -48,6 +48,12 @@ FactoryBot.define do
       exchange_rate { 0.00029119 }
     end
 
+    trait :doge do
+      name { '狗狗币' }
+      code { 'DOGE' }
+      exchange_rate { 2.10216523 }
+    end
+
   end
 
 end

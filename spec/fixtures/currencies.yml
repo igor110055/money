@@ -30,6 +30,12 @@ eth:
   exchange_rate: 0.00029119
   symbol: ethusdt
 
+doge:
+  name: 狗狗币
+  code: DOGE
+  exchange_rate: 2.10216523
+  symbol: dogeusdt
+
 usdt:
   name: 泰达币
   code: USDT

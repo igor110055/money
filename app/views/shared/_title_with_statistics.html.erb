@@ -12,7 +12,7 @@
   @p_alipay_twd = p_alipay_twd.to_i
   @p_ex_twd = p_ex_twd.to_i
   @p_mine_earn_twd = p_mine_earn_twd.to_i
-  @p_mine_cost_cny = ($mine_ori_cost+$mine_other_cost).to_i
+  @p_mine_cost_cny = total_mine_cost
   @flow_assets_twd = flow_assets_twd
   @title_table_margin = '0.3em'
 
@@ -93,6 +93,17 @@
     input_value*ex_rate/@flow_assets_twd*100
   end
 
+  # 显示矿机总成本
+  def show_mine_cost
+    if $show_value_cur.empty? or $show_value_cur == 'TWD'
+      return (total_mine_cost*@cny2twd).to_i
+    elsif $show_value_cur == 'CNY'
+      return '¥'+total_mine_cost.to_s
+    else
+      return 0
+    end
+  end
+
   # 显示统计总值
   def show_title_value( currency = 'TWD' )
     if $show_value_tag.empty?
@@ -166,7 +177,7 @@
       <td class='thead' title=\"交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)\">#{link_to '交易所','/properties?tags=交易所'}</td><td>#{to_n(ex_p,pos)}%</td> \
       <td class='thead' title=\"矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)\">#{link_to '矿场','/properties?tags=矿场'}</td><td>#{to_n(mine_earn_p,pos)}%</td> \
       <td class='thead' title=\"¥#{bank_value}(#{(bank_value*@cny2twd).to_i})\">#{link_to '银行','/properties?tags=银行'}</td><td>#{to_n(bank_value_p,pos)}%</td> \
-      <td class='thead' title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机</td><td>#{to_n(mine_p,pos)}%</td></tr></table> \
+      <td class='thead' title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机</td><td>#{to_n(mine_p,pos)}%</td><td>#{show_mine_cost}</td></tr></table> \
     <table style=\"margin-top:#{@title_table_margin}\"><tr> \
       <td class='thead' title=\"#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})\">#{link_to 'BTC','/properties?tags=比特币'}</td><td>#{to_n(btc_p,pos)}%</td> \
       <td class='thead' title=\"#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})\">#{link_to 'ETH','/properties?tags=以太坊'}</td><td>#{to_n(eth_p,pos)}%</td> \

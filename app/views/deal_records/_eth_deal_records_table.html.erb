@@ -79,7 +79,7 @@
       <%= link_to t(:deal_record_created), order_list_params('created_at') %>
       |
       <% # 显示现价与k线图链接 %>
-      <%= kline_chart_link(to_n(btc_now,2)) %> | <%= kline_chart_link to_n(@eth_price), "ethusdt" %> | <%= kline_chart_link to_n(@ethbtc_price,6), "ethbtc" %>
+      <%= kline_chart_link(to_n(btc_now,2)) %> | <%= kline_chart_link to_n(eth_now,2), "ethusdt" %> | <%= kline_chart_link to_n(eth_now/btc_now,6), "ethbtc" %>
     </td>
     <td>
       <% # 成交价 %>
