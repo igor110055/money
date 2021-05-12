@@ -849,8 +849,10 @@ module ApplicationHelper
   def get_btc_price
     if rate = eval("$BTC_exchange_rate")
       return 1.0/rate
+    elsif btc = Currency.find_by_code('BTC')
+      return 1.0/btc.exchange_rate
     else
-      return 1.0/Currency.find_by_code('BTC').exchange_rate
+      return 0
     end
   end
 
@@ -858,8 +860,10 @@ module ApplicationHelper
   def get_eth_price
     if rate = eval("$ETH_exchange_rate")
       return 1.0/rate
+    elsif eth = Currency.find_by_code('ETH')
+      return 1.0/eth.exchange_rate
     else
-      return 1.0/Currency.find_by_code('ETH').exchange_rate
+      return 0
     end
   end
 
@@ -867,8 +871,10 @@ module ApplicationHelper
   def get_doge_price
     if rate = eval("$DOGE_exchange_rate")
       return 1.0/rate
+    elsif doge = Currency.find_by_code('DOGE')
+      return 1.0/doge.exchange_rate
     else
-      return 1.0/Currency.find_by_code('DOGE').exchange_rate
+      return 0
     end
   end
 
