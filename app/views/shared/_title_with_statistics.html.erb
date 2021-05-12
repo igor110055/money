@@ -171,25 +171,20 @@
       <%= raw("<span title=\"买卖多空比(#{$default_chart_period})\" class=\"#{buysell_class}\">多空:#{to_n(@buy_sell_rate,pos)}</span>") %>
     <% end %>
     <%= raw("\
-    <table><tr> \
-      <td class='thead' title=\"流动性资产总值:¥#{(@flow_assets_twd*@twd2cny).to_i}(#{@flow_assets_twd.to_i})\">#{link_to('总值',title_value_link)}</td><td title=\"#{show_title_value_note}\">#{show_title_value}</td> \
+    <table width=\"#{$title_table_width}\" style=\"text-align:right\"><tr> \
+      <td class='thead' title=\"流动性资产总值:¥#{(@flow_assets_twd*@twd2cny).to_i}(#{@flow_assets_twd.to_i})\">#{link_to('总值',title_value_link)}</td><td  title=\"#{show_title_value_note}\">#{show_title_value}</td> \
       <td class='thead' title=\"冷钱包(¥#{p_trezor_cny}|#{@p_trezor_twd})占总流动资产比例(#{to_n(trezor_p,4)}%)\">#{link_to '冷钱包','/properties?tags=冷钱包'}</td><td>#{to_n(trezor_p,pos)}%</td> \
       <td class='thead' title=\"交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)\">#{link_to '交易所','/properties?tags=交易所'}</td><td>#{to_n(ex_p,pos)}%</td> \
       <td class='thead' title=\"矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)\">#{link_to '矿场','/properties?tags=矿场'}</td><td>#{to_n(mine_earn_p,pos)}%</td> \
       <td class='thead' title=\"¥#{bank_value}(#{(bank_value*@cny2twd).to_i})\">#{link_to '银行','/properties?tags=银行'}</td><td>#{to_n(bank_value_p,pos)}%</td> \
       <td class='thead' title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机</td><td>#{to_n(mine_p,pos)}%</td><td>#{show_mine_cost}</td></tr></table> \
-    <table style=\"margin-top:#{@title_table_margin}\"><tr> \
+    <table width=\"#{$title_table_width}\" style=\"margin-top:#{@title_table_margin};text-align:right\"><tr> \
       <td class='thead' title=\"#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})\">#{link_to 'BTC','/properties?tags=比特币'}</td><td>#{to_n(btc_p,pos)}%</td> \
       <td class='thead' title=\"#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})\">#{link_to 'ETH','/properties?tags=以太坊'}</td><td>#{to_n(eth_p,pos)}%</td> \
       <td class='thead' title=\"¥#{doge_value}(#{(doge_value*@cny2twd).to_i})\">#{link_to 'DOGE','/properties?tags=狗狗币'}</td><td>#{to_n(doge_value_p,pos)}%</td> \
-      <td class='thead' title=\"¥#{uni_value}(#{(uni_value*@cny2twd).to_i})\">#{link_to 'UNI','/properties?tags=UNI'}</td><td>#{to_n(uni_value_p,pos)}%</td> \
       <td class='thead' title=\"持仓总值: ¥#{hold_shares_value}(#{(hold_shares_value*@cny2twd).to_i})\">#{link_to '持仓','/properties?tags=持仓'}</td><td>#{to_n(hold_shares_p,pos)}%</td> \
       <td class='thead' title=\"可投资金额: ¥#{investable_cny.to_i}(#{(investable_cny*@cny2twd).to_i})\">#{link_to '可投','/properties?tags=可投资金'}</td><td>#{to_n(capital_p,pos)}%</td>\
       <td class='thead' title=\"应急金总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_cost_month_grow_limit}(#{($trial_cost_month_grow_limit*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)\">#{link_to '应急','/properties?tags=应急'}</td><td>#{to_n(life_fund_p,pos)}%</td><td>#{life_months.floor(1)}月</td></tr></table> \
       ") %>
     <% end %>
 </h3>
-<%# if $buy_mine_fund_target > 0 %>
-  <%#= raw("<span title=\"买下一期矿机资金目标:¥#{$buy_mine_fund_target}\">#{link_to '矿机基金','/properties?tags=矿机基金'}:¥#{buy_mine_fund}(#{to_n(buy_mine_fund_p,pos)}%)</span>")
-  %>
-<%# end %>

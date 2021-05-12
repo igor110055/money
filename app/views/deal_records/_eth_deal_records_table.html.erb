@@ -24,7 +24,8 @@
   get_pos = @target_bi == 'btc' ? 8 : 4 # 实得币数显示的小数点位数
   # 显示以太坊剩余仓位状态
   def show_eth_level_status
-    raw "<span title='#{get_huobi_acc_id}交易所内以太坊剩余仓位'>#{(@eth_amount_ex/@ori_eth_amount*100).to_i}</span>/<span title='保留多少以太仓位不卖'>#{@keep_eth_level}</span>"
+    eth_level = @ori_eth_amount > 0 ? (@eth_amount_ex/@ori_eth_amount*100).to_i : 0
+    raw "<span title='#{get_huobi_acc_id}交易所内以太坊剩余仓位'>#{eth_level}</span>/<span title='保留多少以太仓位不卖'>#{@keep_eth_level}</span>"
   end
 
   # 显示当前的卖出策略
@@ -71,7 +72,7 @@
   end
 
 %>
-<table width="<%=$default_table_width*table_width_ratio%>">
+<table width="<%=$default_table_width*table_width_ratio%>" style="font-size:<%=$deal_record_font_size%>">
   <tr class="thead">
     <td width="15"><%= link_to '🏠', set_eth_as_home_path %></td>
     <td width="320">
