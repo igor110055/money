@@ -95,9 +95,9 @@
 
   # 显示矿机总成本
   def show_mine_cost
-    if $show_value_cur.empty? or $show_value_cur == 'TWD'
+    if $show_value_cur.empty? or $show_value_cur.upcase == 'TWD'
       return (total_mine_cost*@cny2twd).to_i
-    elsif $show_value_cur == 'CNY'
+    elsif $show_value_cur.upcase == 'CNY'
       return '¥'+total_mine_cost.to_s
     else
       return 0
@@ -111,9 +111,9 @@
     else
       twd_value = Property.tagged_with($show_value_tag).sum {|p| p.amount_to(:twd)}
     end
-    if $show_value_cur.empty? or $show_value_cur == 'TWD'
+    if $show_value_cur.empty? or $show_value_cur.upcase == 'TWD'
       return twd_value.to_i
-    elsif $show_value_cur == 'CNY'
+    elsif $show_value_cur.upcase == 'CNY'
       return '¥'+((twd_value*@twd2cny).to_i).to_s
     else
       return 0
@@ -172,7 +172,7 @@
     <% end %>
     <%= raw("\
     <table width=\"#{$title_table_width}\" style=\"text-align:right\"><tr> \
-      <td class='thead' title=\"流动性资产总值:¥#{(@flow_assets_twd*@twd2cny).to_i}(#{@flow_assets_twd.to_i})\">#{link_to('总值',title_value_link)}</td><td  title=\"#{show_title_value_note}\">#{show_title_value}</td> \
+      <td class='thead' title=\"流动性资产总值:¥#{(@flow_assets_twd*@twd2cny).to_i}(#{@flow_assets_twd.to_i})\">#{link_to('总值',title_value_link)}</td><td  title=\"#{show_title_value_note}\">#{link_to( show_title_value, switch_title_cur_path)}</td> \
       <td class='thead' title=\"冷钱包(¥#{p_trezor_cny}|#{@p_trezor_twd})占总流动资产比例(#{to_n(trezor_p,4)}%)\">#{link_to '冷钱包','/properties?tags=冷钱包'}</td><td>#{to_n(trezor_p,pos)}%</td> \
       <td class='thead' title=\"交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)\">#{link_to '交易所','/properties?tags=交易所'}</td><td>#{to_n(ex_p,pos)}%</td> \
       <td class='thead' title=\"矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)\">#{link_to '矿场','/properties?tags=矿场'}</td><td>#{to_n(mine_earn_p,pos)}%</td> \

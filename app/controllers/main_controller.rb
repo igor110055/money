@@ -863,20 +863,45 @@ class MainController < ApplicationController
 
   # 设置系统参数表单
   def system_params_form
-    @system_params_content = File.read($system_params_path)
+    @system_params_content = get_system_params_content
+  end
+
+  # 切换以什么币种显示统计总值(CNY|TWD空值时默认)
+  def switch_title_cur
+    if $show_value_cur.empty? or $show_value_cur.upcase == "TWD"
+      replace_system_params_content( "$show_value_cur = '#{$show_value_cur}'", "$show_value_cur = 'CNY'" )
+    elsif $show_value_cur.upcase == "CNY"
+      replace_system_params_content( "$show_value_cur = '#{$show_value_cur}'", "$show_value_cur = 'TWD'" )
+    end
+    redirect_to root_path
+  end
+
+  # 置换系统参数内容
+  def replace_system_params_content( from, to )
+    text = get_system_params_content
+    text.sub! from, to
+    write_to_system_params_file text
   end
 
   # 更新系统参数
   def update_system_params
-    if text = params[:system_params_content] and pass_system_params_check(text)
-      File.open($system_params_path, 'w+') do |f|
-        f.write(text)
-      end
+    if write_to_system_params_file(params[:system_params_content])
       put_notice t(:update_system_params_ok)
     else
       put_notice t(:update_system_params_error)
     end
     redirect_to action: :system_params_form
+  end
+
+  # 写入系统参数文档
+  def write_to_system_params_file( text )
+    if text and pass_system_params_check(text)
+      File.open($system_params_path, 'w+') do |f|
+        f.write(text)
+      end
+      return true
+    end
+    return false
   end
 
   # 建立漲跌試算表列出可买币数、累计币数、等值台币及资产净值

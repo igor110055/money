@@ -661,6 +661,11 @@ class ApplicationController < ActionController::Base
     @twd2cny = DealRecord.new.twd_to_cny
   end
 
+  # 取得系统参数文档内容
+  def get_system_params_content
+    File.read($system_params_path)
+  end
+
   # 建立回到目录页的方法
   $models.each do |n|
     define_method "go_#{n.pluralize}" do
