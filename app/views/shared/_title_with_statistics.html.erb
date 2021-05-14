@@ -177,7 +177,7 @@
       <td class='thead' title=\"交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)\">#{link_to '交易所','/properties?tags=交易所'}</td><td>#{to_n(ex_p,pos)}%</td> \
       <td class='thead' title=\"矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)\">#{link_to '矿场','/properties?tags=矿场'}</td><td>#{to_n(mine_earn_p,pos)}%</td> \
       <td class='thead' title=\"¥#{bank_value}(#{(bank_value*@cny2twd).to_i})\">#{link_to '银行','/properties?tags=银行'}</td><td>#{to_n(bank_value_p,pos)}%</td> \
-      <td class='thead' title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机</td><td>#{to_n(mine_p,pos)}%</td><td>#{show_mine_cost}</td></tr></table> \
+      <td class='thead' title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机</td><td>#{to_n(mine_p,pos)}%</td><td>#{link_to( show_mine_cost, switch_title_cur_path)}</td></tr></table> \
     <table width=\"#{$title_table_width}\" style=\"margin-top:#{@title_table_margin};text-align:right\"><tr> \
       <td class='thead' title=\"#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})\">#{link_to 'BTC','/properties?tags=比特币'}</td><td>#{to_n(btc_p,pos)}%</td> \
       <td class='thead' title=\"#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})\">#{link_to 'ETH','/properties?tags=以太坊'}</td><td>#{to_n(eth_p,pos)}%</td> \
