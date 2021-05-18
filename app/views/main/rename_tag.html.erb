@@ -1,0 +1,13 @@
+<h2>资产标签名设定</h2>
+<%= form_tag update_tag_name_path, method: :post, id: 'update_tag_name_form' do %>
+  <div>
+    <span id="update_tag_name_span">
+      原始标签名：<%= text_field_tag 'tag_from' %><br/>
+      新的标签名：<%= text_field_tag 'tag_to' %>
+    </span>
+    <div align="left" style="width:90%;padding:1em">
+      <%= submit_tag '批量修改资产标签名', style: 'font-size: 1.2em' %>
+    </div>
+  </div>
+<% end %>
+<p/>

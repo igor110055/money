@@ -190,7 +190,7 @@
       <td class='thead' title=\"#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})\">#{link_to 'BTC','/properties?tags=比特币'}</td><td>#{to_n(btc_p,pos)}%</td> \
       <td class='thead' title=\"#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})\">#{link_to 'ETH','/properties?tags=以太坊'}</td><td>#{to_n(eth_p,pos)}%</td> \
       <td class='thead' title=\"¥#{doge_value}(#{(doge_value*@cny2twd).to_i})\">#{link_to 'DOGE','/properties?tags=狗狗币'}</td><td>#{to_n(doge_value_p,pos)}%</td> \
-      <td class='thead' title=\"持币总值: ¥#{hold_shares_value}(#{(hold_shares_value*@cny2twd).to_i})\">#{link_to '持币','/properties?tags=持仓'}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(hold_shares_p,pos)}%</td> \
+      <td class='thead' title=\"持币总值: ¥#{hold_shares_value}(#{(hold_shares_value*@cny2twd).to_i})\">#{link_to '持币','/properties?tags=持币'}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(hold_shares_p,pos)}%</td> \
       <td class='thead' title=\"可投资金额: ¥#{investable_cny.to_i}(#{(investable_cny*@cny2twd).to_i})\">#{link_to '资金','/properties?tags=可投资金'}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(capital_p,pos)}%</td>\
       <td class='thead' title=\"应急金总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_cost_month_grow_limit}(#{($trial_cost_month_grow_limit*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)\">#{link_to '应急','/properties?tags=应急'}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(life_fund_p,pos)}%</td><td bgcolor='#{@set_bgcolor2}'>#{life_months.floor(1)}月</td></tr></table> \
       ") %>

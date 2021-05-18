@@ -112,6 +112,8 @@ Rails.application.routes.draw do
   get 'switch_show_value_cur', to: 'main#switch_show_value_cur'
   get 'switch_auto_update_btc_price', to: 'main#switch_auto_update_btc_price'
   get 'switch_auto_update_huobi_assets', to: 'main#switch_auto_update_huobi_assets'
+  get 'rename_tag', to: 'main#rename_tag'
+  post 'update_tag_name', to: 'main#update_tag_name'
   get 'main/del_huobi_orders'
   get 'main/kline_chart'
   get 'main/line_chart'

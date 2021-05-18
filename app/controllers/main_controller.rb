@@ -952,6 +952,31 @@ class MainController < ApplicationController
     redirect_to set_auto_invest_eth_form_path
   end
 
+  # 实现批量修改资产标签名的功能
+  def rename_tag
+
+  end
+
+  #
+  def update_tag_name
+    count = 0
+    Property.tagged_with(params[:tag_from]).each do |p|
+      new_tag_list = []
+      p.tag_list.each do |t|
+        if t == params[:tag_from]
+          new_tag_list << params[:tag_to]
+        else
+          new_tag_list << t
+        end
+      end
+      p.tag_list = new_tag_list.join(',')
+      p.save
+      count += 1
+    end
+    put_notice "#{count}个资产标签名修改完成！"
+    redirect_to action: :rename_tag
+  end
+
   private
 
     # 系统参数的更新必须确保每一行以钱号开头以免系统无法运作

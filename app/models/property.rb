@@ -421,7 +421,7 @@ class Property < ApplicationRecord
 
   # 数字货币持仓的现值
   def self.hold_shares_records
-    Property.tagged_with('持仓')
+    Property.tagged_with('持币')
   end
 
   # 数字货币持仓的人民币现值
