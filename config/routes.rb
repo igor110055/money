@@ -110,6 +110,7 @@ Rails.application.routes.draw do
   get 'huobi_assets', to: 'properties#huobi_assets'
   get 'save_trials_to_db', to: 'trial_lists#save_trials_to_db'
   get 'switch_show_value_cur', to: 'main#switch_show_value_cur'
+  get 'switch_auto_update_btc_price', to: 'main#switch_auto_update_btc_price'
   get 'switch_auto_update_huobi_assets', to: 'main#switch_auto_update_huobi_assets'
   get 'main/del_huobi_orders'
   get 'main/kline_chart'

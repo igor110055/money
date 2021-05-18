@@ -945,6 +945,15 @@ module ApplicationHelper
   end
 
   # 切换自动报价的文字显示
+  def get_switch_update_price_text
+    if $auto_update_btc_price == 1
+      "关闭自动报价"
+    elsif $auto_update_btc_price == 0
+      "开启自动报价"
+    end
+  end
+
+  # 切换自动报价的文字显示
   def get_switch_huobi_text
     if $auto_update_huobi_assets == 1
       "关闭自动报价与火币资产更新"

@@ -887,7 +887,12 @@ class MainController < ApplicationController
 
   # 系统参数页面点击关闭自动报价则自动更新相关参数
   def switch_auto_update_huobi_assets
-    switch_system_param 'auto_update_huobi_assets', 0, 1, false, '自动报价切换成功！'
+    switch_system_param 'auto_update_huobi_assets', 0, 1, false, '自动报价(含火币资产更新)切换成功！'
+  end
+
+  # 系统参数页面点击关闭自动报价则自动更新相关参数2
+  def switch_auto_update_btc_price
+    switch_system_param 'auto_update_btc_price', 0, 1, false, '自动报价切换成功！'
   end
 
   # 置换系统参数内容
