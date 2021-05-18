@@ -944,4 +944,13 @@ module ApplicationHelper
     ($mine_ori_cost+$mine_other_cost).to_i
   end
 
+  # 切换自动报价的文字显示
+  def get_switch_huobi_text
+    if $auto_update_huobi_assets == 1
+      "关闭自动报价与火币资产更新"
+    elsif $auto_update_huobi_assets == 0
+      "开启自动报价与火币资产更新"
+    end
+  end
+
 end

@@ -151,11 +151,10 @@ class Property < ApplicationRecord
     flow_assets_twd = Property.total_flow_assets_twd # 流动性资产总值
     eq_btc = flow_assets_twd*(new.twd_to_btc)
     # 矿机占流动资产比例
-    mine_costs_twd = ($mine_ori_cost+$mine_other_cost)*(new.cny_to_twd)
-    flow_plus_mine = flow_assets_twd+mine_costs_twd
-    mine_p = mine_costs_twd/flow_plus_mine*100
+    flow_plus_mine_twd = flow_assets_twd+mine_costs_twd
+    mine_p = mine_costs_twd/flow_plus_mine_twd*100
     # 矿机可投资额度
-    mine_buy_cny = (flow_plus_mine*$mine_buy_limit-mine_costs_twd)*(new.twd_to_cny)
+    mine_buy_cny = (flow_plus_mine_twd*$mine_buy_limit-mine_costs_twd)*(new.twd_to_cny)
     # 计算交易所和矿场持仓的实际比例
     btc_ex = btc_in_huobi_records # 交易所持仓的数据集
     if eq_btc > 0
@@ -173,7 +172,8 @@ class Property < ApplicationRecord
     investable = total_investable_fund_records # 所有可投资金数据集
     investable_cny = investable.sum {|p| p.amount_to(:cny)}
     if eq_btc > 0
-      capital_p = (investable.sum {|p| p.amount_to(:btc)})/eq_btc*100
+      # 加上矿机成本计算占比
+      capital_p = (investable.sum {|p| p.amount_to(:twd)})/flow_plus_mine_twd*100
     else
       capital_p = 0
     end
@@ -183,8 +183,8 @@ class Property < ApplicationRecord
     sim_ave_cost = (record_cost+trezor_cost+sim_cost)/(record_amount+trezor_amount+sim_amount)
     # 比特币每1个百分点对应多少人民币
     begin
-      btc_p = btc_level
-      eth_p = eth_level
+      btc_p = btc_level(nil,true)
+      eth_p = eth_level(nil,true)
       one_btc2cny = p_btc*(new.btc_to_cny)/btc_p
     rescue
       btc_p = eth_p = one_btc2cny = 0
@@ -198,7 +198,7 @@ class Property < ApplicationRecord
       trezor_p = huobi_p = yuebao_p = 0
     end
     if is_admin
-      return p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit.to_i.to_s + ' ', total_unsell_profit.to_i.to_s + ' ', ave_hour_profit.to_i.to_s + ' ', total_real_p_24h.to_s + ' ', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd
+      return p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit.to_i.to_s + ' ', total_unsell_profit.to_i.to_s + ' ', ave_hour_profit.to_i.to_s + ' ', total_real_p_24h.to_s + ' ', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd, flow_plus_mine_twd
     else
       p_fbtc = Property.tagged_with('家庭比特币').sum {|p| p.amount_to(:btc)}
       p_finv = Property.tagged_with('家庭投资').sum {|p| p.amount_to(:btc)}
@@ -207,7 +207,7 @@ class Property < ApplicationRecord
       else
         p_fbtc_finv = 0
       end
-      return p_fbtc, p_finv.floor(8), p_fbtc_finv, 0, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, '', '', '', '', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd
+      return p_fbtc, p_finv.floor(8), p_fbtc_finv, 0, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, '', '', '', '', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd, flow_plus_mine_twd
     end
   end
 
@@ -551,14 +551,27 @@ class Property < ApplicationRecord
     return "平均月化利率：#{format("%.2f", ave_month_growth_rate)}%" + br + "预估年化利率：#{format("%.2f", profit_p_value*100)}%" + br + "比特币年目标：#{year_goal}(¥#{year_goal_cny})" + br + "比特币年获利：#{year_profit}(¥#{year_profit_cny})" + br + "平均每月获利：#{year_profit/12}(¥#{(year_profit_cny/12).to_i})"
   end
 
+  # 计算矿机总成本
+  def self.mine_costs_twd
+    ($mine_ori_cost+$mine_other_cost)*(new.cny_to_twd)
+  end
+
   # 回传BTC总仓位值 = 比特币资产总值/流动性资产总值
-  def self.btc_level( btc_price = nil )
-    btc_value_twd(btc_price)/total_flow_assets_twd(btc_price)*100
+  def self.btc_level( btc_price = nil, include_mine_cost = false )
+    if include_mine_cost
+      btc_value_twd(btc_price)/(total_flow_assets_twd(btc_price)+mine_costs_twd)*100
+    else
+      btc_value_twd(btc_price)/total_flow_assets_twd(btc_price)*100
+    end
   end
 
   # 回传ETH总仓位值 = 以太坊资产总值/流动性资产总值
-  def self.eth_level( btc_price = nil )
-    eth_value_twd(nil)/total_flow_assets_twd(btc_price)*100
+  def self.eth_level( btc_price = nil, include_mine_cost = false )
+    if include_mine_cost
+      eth_value_twd(nil)/(total_flow_assets_twd(btc_price)+mine_costs_twd)*100
+    else
+      eth_value_twd(nil)/total_flow_assets_twd(btc_price)*100
+    end
   end
 
   # 要写入记录列表的值

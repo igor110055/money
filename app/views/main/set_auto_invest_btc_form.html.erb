@@ -1,8 +1,10 @@
 <%
 # 价差
 rate = 0.1 # 10%
-start_price = @price_now*(1-rate)
-end_price = @price_now*(1+rate)
+price_div = 100
+start_price = (@price_now*(1-rate)/price_div).to_i*price_div
+end_price = (@price_now*(1+rate)/price_div).to_i*price_div
+
 # 传入的数字货币代码
 code = "SBTC"
 %>
@@ -12,7 +14,7 @@ code = "SBTC"
   <table width="<%=$default_table_width%>">
     <tr valign="top">
       <td><%= n %></td>
-      <td width="140">每隔几秒自动买入一次</td>
+      <td width="180">每隔几秒自动买入一次</td>
       <td>本表只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
@@ -151,7 +153,7 @@ code = "SBTC"
     <tr valign="top" class="set_aif_bg_rose">
       <td><%= n %></td>
       <td><%= link_to '原有参与卖出的比特币', sell_btc_amount_as_huobi_path, {title:'将原有参与卖出的比特币设定成火币的比特币资产余额'} %><div class="red_bg">必须0.0004以上<br/>否则无法送单卖出</div></td>
-      <td><%= show_invest_param_value(23,code) %> <%= invest_params_setup_link(code,23,0.01,0.05,0.001,3) %></td>
+      <td><%= show_invest_param_value(23,code) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">

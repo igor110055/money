@@ -866,14 +866,28 @@ class MainController < ApplicationController
     @system_params_content = get_system_params_content
   end
 
-  # 切换以什么币种显示统计总值(CNY|TWD空值时默认)
-  def switch_title_cur
-    if $show_value_cur.empty? or $show_value_cur.upcase == "TWD"
-      replace_system_params_content( "$show_value_cur = '#{$show_value_cur}'", "$show_value_cur = 'CNY'" )
-    elsif $show_value_cur.upcase == "CNY"
-      replace_system_params_content( "$show_value_cur = '#{$show_value_cur}'", "$show_value_cur = 'TWD'" )
+  # 设定系统参数切换值
+  def switch_system_param( name, value1, value2, is_str = true, msg = nil )
+    eval_str1 = is_str ? "$#{name} == '#{value1}'" : "$#{name} == #{value1}"
+    eval_str2 = is_str ? "$#{name} == '#{value2}'" : "$#{name} == #{value2}"
+    if eval(eval_str1)
+      params = is_str ? ["$#{name} = '#{eval("$"+name)}'", "$#{name} = '#{value2}'"] : ["$#{name} = #{eval("$"+name)}", "$#{name} = #{value2}"]
+    elsif eval(eval_str2)
+      params = is_str ? ["$#{name} = '#{eval("$"+name)}'", "$#{name} = '#{value1}'"] : ["$#{name} = #{eval("$"+name)}", "$#{name} = #{value1}"]
     end
-    redirect_to root_path
+    replace_system_params_content(params[0],params[1])
+    put_notice msg if msg
+    redirect_to request.env["HTTP_REFERER"]
+  end
+
+  # 切换以什么币种显示统计总值(CNY|TWD空值时默认)
+  def switch_show_value_cur
+    switch_system_param 'show_value_cur', 'TWD', 'CNY'
+  end
+
+  # 系统参数页面点击关闭自动报价则自动更新相关参数
+  def switch_auto_update_huobi_assets
+    switch_system_param 'auto_update_huobi_assets', 0, 1, false, '自动报价切换成功！'
   end
 
   # 置换系统参数内容

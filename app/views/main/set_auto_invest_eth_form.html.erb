@@ -1,8 +1,10 @@
 <%
 # 价差
 rate = 0.1 # 10%
-start_price = @price_now*(1-rate)
-end_price = @price_now*(1+rate)
+price_div = 50
+start_price = (@price_now*(1-rate)/price_div).to_i*price_div
+end_price = (@price_now*(1+rate)/price_div).to_i*price_div
+
 # 传入的数字货币代码
 code = "ETH"
 %>
