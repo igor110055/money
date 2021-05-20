@@ -867,6 +867,11 @@ module ApplicationHelper
     end
   end
 
+  # 取得以太坊兑比特币的现价
+  def get_ethbtc_price
+    get_huobi_price('ethbtc','%.6f')
+  end
+
   # 取得狗狗币现价
   def get_doge_price
     if rate = eval("$DOGE_exchange_rate")

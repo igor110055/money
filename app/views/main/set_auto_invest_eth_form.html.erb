@@ -1,10 +1,13 @@
 <%
-# 价差
-rate = 0.1 # 10%
-price_div = 50
-start_price = (@price_now*(1-rate)/price_div).to_i*price_div
-end_price = (@price_now*(1+rate)/price_div).to_i*price_div
-
+rate = 0.1 # 价差10%
+if get_invest_params(1,'ETH') == 'btc'
+  start_price = @price_now*(1-rate)
+  end_price = @price_now*(1+rate)
+else
+  price_div = 50
+  start_price = (@price_now*(1-rate)/price_div).to_i*price_div
+  end_price = (@price_now*(1+rate)/price_div).to_i*price_div
+end
 # 传入的数字货币代码
 code = "ETH"
 %>
