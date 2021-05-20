@@ -597,7 +597,7 @@ class ApplicationController < ActionController::Base
 
   # 设定是否自动刷新页面
   def setup_auto_refresh_sec
-    @auto_refresh_sec = $auto_refresh_sec_for_deal_records if $auto_refresh_sec_for_deal_records > 0
+    @auto_refresh_sec = $auto_refresh_sec if $auto_refresh_sec > 0
   end
 
   # 更新火币2个账号的资产余额

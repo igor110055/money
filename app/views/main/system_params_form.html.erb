@@ -1,8 +1,9 @@
 <h2>
   系统参数设定
   <small style="margin-left:1em"> |
-    <%= link_to get_switch_update_price_text, switch_auto_update_btc_price_path %> |
-    <%= link_to get_switch_huobi_text, switch_auto_update_huobi_assets_path %> |
+    <% %w(auto_update_btc_price auto_update_huobi_assets auto_refresh_sec).each do |name| %>
+      <%= link_to eval("get_#{name}_text"), eval("switch_#{name}_path") %> |
+    <% end %>
   </small>
 </h2>
 <%= form_tag update_system_params_path, method: :post, id: 'update_system_params_form' do %>
