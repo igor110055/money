@@ -200,7 +200,7 @@ class DealRecord < ApplicationRecord
   def self.sell_records( code = "BTC" )
     if code == "BTC" or code == "SBTC"
       where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1 and real_profit != 0")
-    elsif code == "ETH"
+    elsif code == "SETH"
       where("#{eth_sell_conditions} account = '#{self.get_huobi_acc_id}'")
     end
   end
@@ -263,7 +263,7 @@ class DealRecord < ApplicationRecord
   def self.real_sell_records( code = "BTC" )
     if code == "BTC" or code == "SBTC"
       sell_records(code).where.not(order_id: [nil, ""])
-    elsif code == "ETH"
+    elsif code == "SETH"
       sell_records(code)
     end
   end

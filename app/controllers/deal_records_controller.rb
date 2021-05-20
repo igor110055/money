@@ -169,7 +169,7 @@ class DealRecordsController < ApplicationController
 
   def delete_invest_log
     execute_delete_invest_log $auto_invest_log_path
-    execute_delete_invest_log $auto_invest_eth_log_path, "ETH"
+    execute_delete_invest_log $auto_invest_eth_log_path, "SETH"
     put_notice t(:delete_two_invest_log_ok)
     redirect_to invest_eth_log_path
   end
@@ -453,7 +453,7 @@ class DealRecordsController < ApplicationController
         go_deal_records
       elsif code == "SBTC"
         redirect_to action: :index_btc
-      elsif code == "ETH"
+      elsif code == "SETH"
         redirect_to action: :index_eth
       end
     end

@@ -58,7 +58,7 @@ class ApplicationRecord < ActiveRecord::Base
   def self.get_invest_params( index, code = "BTC" )
     if code == "BTC" or code == "SBTC"
       File.read($auto_invest_params_path).split(' ')[index]
-    elsif code == "ETH"
+    elsif code == "ETH" or code == "SETH"
       File.read($auto_invest_eth_params_path).split(' ')[index]
     end
   end

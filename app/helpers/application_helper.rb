@@ -247,7 +247,7 @@ module ApplicationHelper
   def invest_log_link( code = "BTC" )
     if code == "BTC" or code == "SBTC"
       link_to code+t(:invest_log), invest_log_path
-    elsif code == "ETH"
+    elsif code == "ETH" or code == "SETH"
       link_to code+t(:invest_log), invest_eth_log_path
     end
   end
@@ -278,13 +278,13 @@ module ApplicationHelper
   end
 
   # 设置定投参数表单链接
-  def set_auto_invest_form_link( code = "BTC" )
+  def set_auto_invest_form_link( code = "BTC", link_text = "参数设定" )
     if code == "BTC"
-      link_to code+t(:set_auto_invest_params), set_auto_invest_form_path, { id: 'set_auto_invest_form' }
+      link_to link_text, set_auto_invest_form_path, { id: 'set_auto_invest_form' }
     elsif code == "SBTC"
-      link_to code+t(:set_auto_invest_params), set_auto_invest_btc_form_path, { id: 'set_auto_invest_btc_form' }
-    elsif code == "ETH"
-      link_to code+t(:set_auto_invest_params), set_auto_invest_eth_form_path, { id: 'set_auto_invest_eth_form' }
+      link_to link_text, set_auto_sell_btc_form_path, { id: 'set_auto_sell_btc_form' }
+    elsif code == "SETH"
+      link_to link_text, set_auto_sell_eth_form_path, { id: 'set_auto_sell_eth_form' }
     end
   end
 
@@ -594,7 +594,7 @@ module ApplicationHelper
   def get_invest_params_path( code = "BTC" )
     if code == "BTC" or code == "SBTC"
       return $auto_invest_params_path
-    elsif code == "ETH"
+    elsif code == "ETH" or code == "SETH"
       return $auto_invest_eth_params_path
     end
   end
@@ -603,8 +603,8 @@ module ApplicationHelper
   def get_invest_params( index, code = "BTC" )
     if code == "BTC" or code == "SBTC"
       File.read(get_invest_params_path('BTC')).split(' ')[index]
-    else
-      File.read(get_invest_params_path(code)).split(' ')[index]
+    elsif code == "ETH" or code == "SETH"
+      File.read(get_invest_params_path('ETH')).split(' ')[index]
     end
   end
 

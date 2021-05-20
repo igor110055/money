@@ -223,7 +223,7 @@ cn:
   new_deal_record: 新建交易记录
   deal_record_index: BTC
   deal_record_index_btc: SBTC
-  deal_record_index_eth: ETH
+  deal_record_index_eth: SETH
   delete_deal_record: 删除这笔交易记录
   deal_record_price_type_err: 成交价格必须为大于零的数字！
   deal_record_amount_type_err: 成交数量必须为大于零的数字！

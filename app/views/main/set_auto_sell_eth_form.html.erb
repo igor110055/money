@@ -9,10 +9,10 @@ else
   end_price = (@price_now*(1+rate)/price_div).to_i*price_div
 end
 # 传入的数字货币代码
-code = "ETH"
+code = "SETH"
 %>
 <h2>ETH <%= t(:set_auto_invest_params) %></h2>
-<%= form_tag set_auto_invest_eth_params_path, method: :post, id: 'set_auto_invest_eth_form' do %>
+<%= form_tag set_auto_sell_eth_params_path, method: :post, id: 'set_auto_sell_eth_form' do %>
   <% n = 0 %>
   <table width="<%=$default_table_width%>">
     <tr valign="top">

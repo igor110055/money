@@ -9,7 +9,7 @@ end_price = (@price_now*(1+rate)/price_div).to_i*price_div
 code = "SBTC"
 %>
 <h2>BTC <%= t(:set_auto_invest_params) %></h2>
-<%= form_tag set_auto_invest_btc_params_path, method: :post, id: 'set_auto_invest_btc_form' do %>
+<%= form_tag set_auto_sell_btc_params_path, method: :post, id: 'set_auto_sell_btc_form' do %>
   <% n = 0 %>
   <table width="<%=$default_table_width%>">
     <tr valign="top">
