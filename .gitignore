@@ -31,10 +31,5 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /spec/examples.txt
-/app/views/layouts/global_variables.txt
-/config/global_variables.txt
-/config/system_params.txt
-/py/sell_btc.py
-/py/sell_eth.py
 /py/Utils.py
 /py/*.pyc
