@@ -593,9 +593,9 @@ module ApplicationHelper
   # 根据code回传文档路径
   def get_invest_params_path( code = "BTC" )
     if code == "BTC" or code == "SBTC"
-      return $auto_invest_params_path
+      return $auto_sell_btc_params_path
     elsif code == "ETH" or code == "SETH"
-      return $auto_invest_eth_params_path
+      return $auto_sell_eth_params_path
     end
   end
 

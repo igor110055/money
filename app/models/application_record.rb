@@ -57,9 +57,9 @@ class ApplicationRecord < ActiveRecord::Base
   # 获取定投参数的值
   def self.get_invest_params( index, code = "BTC" )
     if code == "BTC" or code == "SBTC"
-      File.read($auto_invest_params_path).split(' ')[index]
+      File.read($auto_sell_btc_params_path).split(' ')[index]
     elsif code == "ETH" or code == "SETH"
-      File.read($auto_invest_eth_params_path).split(' ')[index]
+      File.read($auto_sell_eth_params_path).split(' ')[index]
     end
   end
 

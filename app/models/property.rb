@@ -117,16 +117,16 @@ class Property < ApplicationRecord
   # 数字货币总资产换算成比特币
   def self.invest_to_btc( is_admin = false )
     # 读取交易列表上的交易总额与比特币总数以求平均成本
-    cost1 = get_invest_param_from($auto_invest_params_path,25)
-    amount1 = get_invest_param_from($auto_invest_params_path,26)
-    cost2 = get_invest_param_from($auto_invest_params_path2,25)
-    amount2 = get_invest_param_from($auto_invest_params_path2,26)
+    cost1 = get_invest_param_from($auto_sell_btc_params_path,25)
+    amount1 = get_invest_param_from($auto_sell_btc_params_path,26)
+    cost2 = get_invest_param_from($auto_sell_btc_params_path2,25)
+    amount2 = get_invest_param_from($auto_sell_btc_params_path2,26)
     record_cost = cost1 + cost2
     record_amount = amount1 + amount2
     real_ave_cost = record_amount > 0 ? record_cost/record_amount : 0
     # 处理交易列表的已实现损益和未实现损益
-    sell_profit1, unsell_profit1, ave_sec_profit1, real_p_24h1, trezor_cost1, trezor_amount1 = get_invest_param_from($auto_invest_params_path,28,false).split(':')
-    sell_profit2, unsell_profit2, ave_sec_profit2, real_p_24h2, trezor_cost2, trezor_amount2 = get_invest_param_from($auto_invest_params_path2,28,false).split(':')
+    sell_profit1, unsell_profit1, ave_sec_profit1, real_p_24h1, trezor_cost1, trezor_amount1 = get_invest_param_from($auto_sell_btc_params_path,28,false).split(':')
+    sell_profit2, unsell_profit2, ave_sec_profit2, real_p_24h2, trezor_cost2, trezor_amount2 = get_invest_param_from($auto_sell_btc_params_path2,28,false).split(':')
     total_real_profit = sell_profit1.to_f + sell_profit2.to_f
     total_unsell_profit = unsell_profit1.to_f + unsell_profit2.to_f
     ave_hour_profit = (ave_sec_profit1.to_f + ave_sec_profit2.to_f)*60*60

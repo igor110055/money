@@ -745,7 +745,7 @@ class MainController < ApplicationController
   end
 
   def prepare_btc_invest_form
-    @invest_params_value = File.read($auto_invest_params_path)
+    @invest_params_value = File.read($auto_sell_btc_params_path)
     @price_now = get_price_now
   end
 
@@ -763,7 +763,7 @@ class MainController < ApplicationController
 
   # 设置智投参数表单
   def set_auto_sell_eth_form
-    @invest_params_value = File.read($auto_invest_eth_params_path)
+    @invest_params_value = File.read($auto_sell_eth_params_path)
     if get_invest_params(1,'ETH') == 'usdt'
       @price_now = get_eth_price  # 币种报价
       @price_pos = 0              # 价格小数点位数

@@ -10,17 +10,11 @@ def test_db_path(local=False):
     else:
         return "/home/jie/sites/money/db/development_test.sqlite3"
 
-def get_params_path(local=False):
-    if local == True:
-        return "/Users/lin/sites/money/py/auto_invest_params_local.txt"
-    else:
-        return "/home/jie/sites/money/py/auto_invest_params.txt"
+def get_sell_btc_setup():
+    return "/home/jie/sites/money/py/auto_sell_btc_params.txt"
 
-def get_eth_params_path(local=False):
-    if local == True:
-        return "/Users/lin/sites/money/py/auto_invest_eth_params_local.txt"
-    else:
-        return "/home/jie/sites/money/py/auto_invest_eth_params.txt"
+def get_sell_eth_setup():
+    return "/home/jie/sites/money/py/auto_sell_eth_params.txt"
 
 def get_doge_params_path(local=False):
     if local == True:
