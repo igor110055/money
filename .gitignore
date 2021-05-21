@@ -37,3 +37,5 @@
 /py/sell_btc.py
 /py/sell_eth.py
 /py/Utils.py
+/py/*.pyc
+/py/*.py

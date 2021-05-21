@@ -18,6 +18,7 @@
   @title_table_margin = '0.3em'
   @set_bgcolor1 = '#EEE8AA'
   @set_bgcolor2 = '#E6E6FA'
+  @show_title_value_twd = @show_title_value_cny = 0
 
   # 买卖比若超过(低于)所设定的值则会以高亮显示
   def buysell_class
@@ -118,6 +119,8 @@
     else
       twd_value = Property.tagged_with($show_value_tag).sum {|p| p.amount_to(:twd)}
     end
+    @show_title_value_twd = twd_value.to_i
+    @show_title_value_cny = (twd_value*@twd2cny).to_i
     if $show_value_cur.empty? or $show_value_cur.upcase == 'TWD'
       return twd_value.to_i
     elsif $show_value_cur.upcase == 'CNY'
@@ -143,10 +146,11 @@
 
   # 显示统计总值的说明
   def show_title_value_note
+    show_title_value if @show_title_value_twd == 0
     if $show_value_tag.empty?
-      return '流动性资产总值'
+      return "流动性资产总值(¥#{@show_title_value_cny}|#{@show_title_value_twd})"
     else
-      return "#{$show_value_tag}总值"
+      return "#{$show_value_tag}总值(¥#{@show_title_value_cny}|#{@show_title_value_twd})"
     end
   end
 
