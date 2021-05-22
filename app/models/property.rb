@@ -374,12 +374,12 @@ class Property < ApplicationRecord
     investable_fund_records.sum {|p| p.amount_to(:cny)}
   end
 
-  # 跨账号所有应急的现值
+  # 跨账号所有生活的现值
   def self.total_life_fund_records
-    Property.tagged_with('应急')
+    Property.tagged_with('生活')
   end
 
-  # 所有应急的人民币现值
+  # 所有生活的人民币现值
   def self.total_life_fund_records_cny
     total_life_fund_records.sum {|p| p.amount_to(:cny)}
   end
@@ -394,7 +394,7 @@ class Property < ApplicationRecord
     buy_mine_fund_records.sum {|p| p.amount_to(:cny)}
   end
 
-  # 所有应急的人民币现值
+  # 所有生活的人民币现值
   def self.total_life_fund_records_cny
     total_life_fund_records.sum {|p| p.amount_to(:cny)}
   end
@@ -441,7 +441,7 @@ class Property < ApplicationRecord
 
   # 跨账号所有可投资金台币现值
   def self.total_investable_fund_records
-    Property.tagged_with('可投资金')
+    Property.tagged_with($cash_field_tag)
   end
 
   # 跨账号所有可投资金台币现值
