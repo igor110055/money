@@ -29,8 +29,13 @@ class Interest < ApplicationRecord
   end
 
   # 利息金额的等值台币
-  def amount_to( target_code = :twd )
-    (amount * (target_rate(target_code)/property.currency.exchange_rate)).to_i
+  def amount_to( target_code = :twd, pos = 0 )
+    value = amount * (target_rate(target_code)/property.currency.exchange_rate)
+    if pos == 0
+      return value.to_i
+    else
+      return value.floor(pos)
+    end
   end
 
   # 利息币别
@@ -47,16 +52,21 @@ class Interest < ApplicationRecord
     "#{property.name}利息"
   end
 
-  def ave_year( target_code = :twd )
-    ave_day(target_code)*365
+  def ave_year( target_code = :twd, pos = 0 )
+    ave_day(target_code,pos)*365
   end
 
-  def ave_month( target_code = :twd )
-    ave_day(target_code)*31
+  def ave_month( target_code = :twd, pos = 0 )
+    ave_day(target_code,pos)*31
   end
 
-  def ave_day( target_code = :twd )
-    (property.amount.to_f * (rate.to_f/100/365) * (target_rate(target_code)/property.currency.exchange_rate)).abs.to_i
+  def ave_day( target_code = :twd, pos = 0 )
+    value = (property.amount.to_f * (rate.to_f/100/365) * (target_rate(target_code)/property.currency.exchange_rate)).abs
+    if pos == 0
+      return value.to_i
+    else
+      return value.floor(pos)
+    end
   end
 
 end

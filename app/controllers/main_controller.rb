@@ -754,6 +754,40 @@ class MainController < ApplicationController
     prepare_btc_invest_form
   end
 
+  # 简化自动交易参数的输入界面以便将来支援多种交易对的设定
+  def set_auto_trade_form
+    @params_files = {
+      btcusdt_buy:    'btcusdt_buy_params.txt',
+      btcusdt_sell:   'btcusdt_sell_params.txt',
+      ethusdt_buy:    'ethusdt_buy_params.txt',
+      ethusdt_sell:   'ethusdt_sell_params.txt',
+      ethbtc_buy:     'ethbtc_buy_params.txt',
+      ethbtc_sell:    'ethbtc_sell_params.txt',
+      dogeusdt_buy:   'dogeusdt_buy_params.txt',
+      dogeusdt_sell:  'dogeusdt_sell_params.txt'
+    }
+    @params_indexs = {
+      btcusdt_buy:    '',
+      btcusdt_sell:   %w(9 10 16 18 22 23 24 27 29 36 38 39),
+      ethusdt_buy:    '',
+      ethusdt_sell:   %w(1 3 9 10 16 18 22 24 27 29 36 38 39),
+      ethbtc_buy:     '',
+      ethbtc_sell:    %w(1 3 9 10 16 18 22 24 27 29 36 38 39),
+      dogeusdt_buy:   '',
+      dogeusdt_sell:  ''
+    }
+    @params_labels = {
+      btcusdt_buy:    '',
+      btcusdt_sell:   %w(获得币种 记录日期 记录时间 几秒侦测 几分高价 几秒卖出 原有总量 账号代码 强制卖出 仓位不卖 回调比例 最低卖价 每笔卖出),
+      ethusdt_buy:    '',
+      ethusdt_sell:   '',
+      ethbtc_buy:     '',
+      ethbtc_sell:    '',
+      dogeusdt_buy:   '',
+      dogeusdt_sell:  ''
+    }
+  end
+
   # 设置智投参数表单
   def set_auto_sell_btc_form
     prepare_btc_invest_form

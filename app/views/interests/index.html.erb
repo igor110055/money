@@ -23,12 +23,12 @@
     <td align="right"><%= to_n(interest.property.amount.abs,1) %></td>
     <td align="right"><%= interest.start_date.to_s(:db) %></td>
     <td align="right"><%= to_n(interest.rate, 2) %></td>
-    <td align="right"><%= to_n(interest.amount, 0) %></td>
+    <td align="right"><%= to_n(interest.amount, 2) %></td>
     <td align="center"><%= interest.currency_name %></td>
-    <td align="right"><%= interest.amount_to %></td>
-    <td align="right"><%= interest.ave_year %><br>¥<%= interest.ave_year(:cny) %></td>
-    <td align="right"><%= interest.ave_month %><br>¥<%= interest.ave_month(:cny) %></td>
-    <td align="right"><%= interest.ave_day %><br>¥<%= interest.ave_day(:cny) %></td>
+    <td align="right"><%= interest.amount_to(:twd,2) %></td>
+    <td align="right"><%= interest.ave_year(:twd,2) %><br>¥<%= interest.ave_year(:cny,2) %></td>
+    <td align="right"><%= interest.ave_month(:twd,2) %><br>¥<%= interest.ave_month(:cny,2) %></td>
+    <td align="right"><%= interest.ave_day(:twd,2) %><br>¥<%= interest.ave_day(:cny,2) %></td>
     <td align="center"><%= chart_link(interest) %></td>
   </tr>
   <% n += 1 %>

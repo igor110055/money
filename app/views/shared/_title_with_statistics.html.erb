@@ -193,12 +193,12 @@
     <% end %>
     <%= raw("\
     <table width=\"#{$title_table_width}\" style=\"text-align:right\"><tr> \
-      <td class='thead' title=\"流动性资产总值:¥#{(@flow_assets_twd*@twd2cny).to_i}(#{@flow_assets_twd.to_i})\">#{show_title_head}</td><td  title=\"#{show_title_value_note}\">#{link_to( show_title_value, switch_show_value_cur_path)}</td> \
+      <td class='thead' title=\"流动性资产总值:¥#{(@flow_assets_twd*@twd2cny).to_i}(#{@flow_assets_twd.to_i})\">#{show_title_head}</td><td title=\"#{show_title_value_note}\">#{link_to( show_title_value, switch_show_value_cur_path)}</td> \
       <td class='thead' title=\"冷钱包(¥#{p_trezor_cny}|#{@p_trezor_twd})占总流动资产比例(#{to_n(trezor_p,4)}%)\">#{link_to '冷钱包','/properties?tags=冷钱包'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(trezor_p,pos)}%</td> \
       <td class='thead' title=\"交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)\">#{link_to '交易所','/properties?tags=交易所'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(ex_p,pos)}%</td> \
       <td class='thead' title=\"矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)\">#{link_to '矿场','/properties?tags=矿场'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(mine_earn_p,pos)}%</td> \
       <td class='thead' title=\"¥#{bank_value}(#{(bank_value*@cny2twd).to_i})\">#{link_to '银行','/properties?tags=银行'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(bank_value_p,pos)}%</td> \
-      <td class='thead' title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">矿机</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(mine_p,pos)}%</td><td bgcolor='#{@set_bgcolor2}'>#{link_to( show_mine_cost, switch_show_value_cur_path)}</td></tr></table> \
+      <td class='thead'>矿机</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(mine_p,pos)}%</td><td bgcolor='#{@set_bgcolor2}' title=\"矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)\">#{link_to( show_mine_cost, switch_show_value_cur_path)}</td></tr></table> \
     <table width=\"#{$title_table_width}\" style=\"margin-top:#{@title_table_margin};text-align:right\"><tr> \
       <td class='thead' title=\"#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})\">#{link_to 'BTC','/properties?tags=比特币'}</td><td>#{to_n(btc_p,pos)}%</td> \
       <td class='thead' title=\"#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})\">#{link_to 'ETH','/properties?tags=以太坊'}</td><td>#{to_n(eth_p,pos)}%</td> \
