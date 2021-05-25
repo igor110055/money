@@ -592,7 +592,15 @@ class ApplicationController < ActionController::Base
 
   # 读取火币APP的账号ID
   def get_huobi_acc_id
-    return $huobi_acc_id
+    if $huobi_acc_id
+      return $huobi_acc_id
+    else
+      if __FILE__.index("/money/")
+        $huobi_acc_id = '135'
+      elsif __FILE__.index("/money2/")
+        $huobi_acc_id = '170'
+      end
+    end
   end
 
   # 设定是否自动刷新页面
@@ -600,16 +608,46 @@ class ApplicationController < ActionController::Base
     @auto_refresh_sec = $auto_refresh_sec if $auto_refresh_sec > 0
   end
 
+  # 置换系统参数内容
+  def replace_system_params_content( from, to )
+    text = get_system_params_content
+    text.sub! from, to
+    write_to_system_params_file text
+  end
+
   # 更新火币2个账号的资产余额
   def exe_update_huobi_assets
+    add_system_params_if_none('huobi_acc_id',$huobi_acc_id,true,false)
+    `python py/update_assets.py`
     ori_acc_id = get_huobi_acc_id
-    ['135','170'].each do |acc_id|
-      set_invest_params('BTC', 24, acc_id )
-      sleep 1
-      # put_notice acc_id + "：" + `python py/update_assets.py`
-      `python py/update_assets.py`
+    new_acc_id = swap_acc_id(ori_acc_id)
+    replace_system_params_content("$huobi_acc_id = '#{ori_acc_id}'","$huobi_acc_id = '#{new_acc_id}'")
+    # put_notice acc_id + "：" + `python py/update_assets.py` -- for debug
+    `python py/update_assets.py`
+    replace_system_params_content("$huobi_acc_id = '#{new_acc_id}'","$huobi_acc_id = '#{ori_acc_id}'")
+  end
+
+  # 交换火币2个账号ID
+  def swap_acc_id(id)
+    id == '135' ? '170' : '135'
+  end
+
+  # 如果没有该项系统参数则加入
+  def add_system_params_if_none( name, value, is_str = true, append = true )
+    if !find_system_param( name )
+      text = get_system_params_content
+      new_line = is_str ? "$#{name} = '#{value}'" : "$#{name} = #{value}"
+      if append
+        write_to_system_params_file text+new_line
+      else
+        write_to_system_params_file new_line+"\n"+text
+      end
     end
-    set_invest_params('BTC', 24, ori_acc_id )
+  end
+
+  # 验证某个系统参数名称是否存在
+  def find_system_param( name )
+    get_system_params_content.index("$#{name} =")
   end
 
   # 更新交易列表上的总成本与比特币总数以供跨网站计算均价使用

@@ -39,3 +39,4 @@
 /py/Utils.py
 /py/*.pyc
 /py/*.py
+py/__pycache__/*.pyc

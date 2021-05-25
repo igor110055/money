@@ -934,13 +934,6 @@ class MainController < ApplicationController
     redirect_to request.env["HTTP_REFERER"]
   end
 
-  # 置换系统参数内容
-  def replace_system_params_content( from, to )
-    text = get_system_params_content
-    text.sub! from, to
-    write_to_system_params_file text
-  end
-
   # 更新系统参数
   def update_system_params
     if write_to_system_params_file(params[:system_params_content])
