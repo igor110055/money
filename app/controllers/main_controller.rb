@@ -1009,6 +1009,28 @@ class MainController < ApplicationController
     redirect_to action: :rename_tag
   end
 
+  # 由外部链接而来更新资产的金额
+  def sync_asset_amount
+    if params[:key] == $api_key and params[:sync_code] and params[:amount]
+      rs = Property.find_by_sync_code(params[:sync_code])
+      if rs
+        rs.update_attribute(:amount,params[:amount])
+        status_str = 'ok'
+        info_str = "#{params[:sync_code]}:#{params[:amount]}"
+      else
+        status_str = 'error'
+        info_str = 'Record not find'
+      end
+    end
+    respond_to do |format|
+      format.json { render json:  { status: status_str, info: info_str } }
+      format.html do
+        put_notice "无效的请求，必须经由API来调用更新资产的金额！"
+        redirect_to root_path
+      end
+    end
+  end
+
   private
 
     # 系统参数的更新必须确保每一行以钱号开头以免系统无法运作

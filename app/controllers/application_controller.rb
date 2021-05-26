@@ -1,10 +1,13 @@
 require 'socket'
+require 'net/https'
+require 'net/http'
+require 'uri'
 
 class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 初始化设置

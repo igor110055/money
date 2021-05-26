@@ -1,11 +1,15 @@
 <%= render 'shared/error_messages', object: @property %>
 
 <%= form_for(@property) do |f| %>
-<table width="900">
+<table width="920">
   <tr><td colspan="2" class="thead"><%= timestamps(@property) %></td></tr>
   <tr>
-    <td><%= t(:property_name) %>：</td>
+    <td width="200"><%= t(:property_name) %>：</td>
     <td><%= f.text_field(:name,size:40) %></td></tr>
+  <tr>
+  <tr>
+    <td><%= t(:property_sync_code) %>：</td>
+    <td><%= f.text_field(:sync_code, onclick: select_all) %></td></tr>
   <tr>
     <td><%= t(:property_amount) %>：</td>
     <td><%= f.text_field(:amount, onclick: select_all) %></td>

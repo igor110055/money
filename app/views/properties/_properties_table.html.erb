@@ -17,7 +17,7 @@
 <% properties.each do |property| %>
   <tr <%= change_row_color %>>
     <td align="right"><%= n %></td>
-    <td><%= link_edit_to(property,property.name,session[:path],title: property.tag_list) %> <%= '🔒' if property.locked? %></td>
+    <td><%= link_edit_to(property,property.name,session[:path],title: property.tag_list) %> <%= raw "<span title='该项资产已锁定而不可删除'>🔒</span>" if property.locked? %> <%= raw "<span title='缺少同步码而无法与另一账号同步更新'>⚠️</span>" if !property.sync_code %></td>
   <% if property.item %>
     <td align="right"><%= link_to to_n(property.amount), edit_item_path(property.item,path:properties_path) %></td>
   <% else %>

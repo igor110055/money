@@ -62,16 +62,33 @@ class PropertiesController < ApplicationController
   def update
     params[:property][:amount].gsub!(',','')
     if @property.update_attributes(property_params)
-      put_notice t(:property_updated_ok) + add_id(@property) + add_amount(@property)
+      put_notice t(:property_updated_ok) + add_id(@property) + add_amount(@property) + ' ' + sync_amount(params[:property][:sync_code],params[:property][:amount])
       session[:path] ? go_back : go_properties
     else
       render action: :edit
     end
   end
 
+  # 同步另一台服务器的资产值
+  def sync_amount( sync_code, amount )
+    url = "#{$host2}main/sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code}&amount=#{amount}"
+    begin
+      resp = Net::HTTP.get_response(URI(url))
+      h = eval(resp.body)
+      if h[:status] == 'ok'
+        return "(同步另一台服务器成功!)"
+      else
+        return "(同步另一台服务器失败!请确认设置了正确的同步码:#{sync_code})"
+      end
+    rescue
+      return "(同步另一台服务器失败!请确认另一台服务器连线正常)"
+    end
+  end
+
   # 从列表中快速更新资产金额
   def update_amount
     update_property_amount
+    put_notice sync_amount(Property.find(params[:id]).sync_code,eval("params[:new_amount_#{params[:id]}]"))
   end
 
   # 删除资产
@@ -106,7 +123,7 @@ class PropertiesController < ApplicationController
     def property_params
       if admin?
         params[:property][:tag_list].gsub!(' ',',') if !params[:property][:tag_list].nil?
-        params.require(:property).permit(:name,:amount,:currency_id,:is_hidden,:is_locked,:tag_list)
+        params.require(:property).permit(:name,:sync_code,:amount,:currency_id,:is_hidden,:is_locked,:tag_list)
       else
         params.require(:property).permit(:name,:amount,:currency_id)
       end

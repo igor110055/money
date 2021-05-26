@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_23_035028) do
+ActiveRecord::Schema.define(version: 2021_05_26_093000) do
 
   create_table "currencies", force: :cascade do |t|
     t.string "name"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 2021_04_23_035028) do
     t.integer "currency_id"
     t.boolean "is_hidden"
     t.boolean "is_locked"
+    t.string "sync_code"
     t.index ["currency_id"], name: "index_properties_on_currency_id"
   end
 
