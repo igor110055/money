@@ -61,6 +61,7 @@ class PropertiesController < ApplicationController
   # 储存更新资产
   def update
     params[:property][:amount].gsub!(',','')
+    params[:property][:sync_code].downcase!
     if @property.update_attributes(property_params)
       put_notice t(:property_updated_ok) + add_id(@property) + add_amount(@property) + ' ' + sync_amount(params[:property][:sync_code],params[:property][:amount])
       session[:path] ? go_back : go_properties
@@ -71,7 +72,7 @@ class PropertiesController < ApplicationController
 
   # 同步另一台服务器的资产值
   def sync_amount( sync_code, amount )
-    url = "#{$host2}main/sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code}&amount=#{amount}"
+    url = "#{$host2}main/sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&amount=#{amount}"
     begin
       resp = Net::HTTP.get_response(URI(url))
       h = eval(resp.body)

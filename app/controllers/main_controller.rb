@@ -1012,7 +1012,7 @@ class MainController < ApplicationController
   # 由外部链接而来更新资产的金额
   def sync_asset_amount
     if params[:key] == $api_key and params[:sync_code] and params[:amount]
-      rs = Property.find_by_sync_code(params[:sync_code])
+      rs = Property.find_by_sync_code(params[:sync_code].downcase)
       if rs
         rs.update_attribute(:amount,params[:amount])
         status_str = 'ok'
