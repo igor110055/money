@@ -343,6 +343,11 @@ cn:
         code: 货币代码
         exchange_rate: 货币汇率值
     errors:
+      messages:
+              record_invalid: '验证失败: %{errors}'
+              restrict_dependent_destroy:
+                has_one: 无法删除记录，因为存在 %{record} 单个相依模型
+                has_many: 无法删除记录，因为存在 %{record} 多个相依模型
       models:
         property:
           attributes:

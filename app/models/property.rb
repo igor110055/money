@@ -19,6 +19,9 @@ class Property < ApplicationRecord
         maximum: $property_name_maxlength,
         message: $property_name_len_err }
 
+  validates :sync_code, uniqueness: { case_sensitive: false,
+    message: "同步更新码必须是唯一不可重复" }
+
   validates \
     :amount,
       presence: {

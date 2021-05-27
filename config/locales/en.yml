@@ -325,6 +325,11 @@ en:
         code: Currency Code
         exchange_rate: Exchange Rate
     errors:
+      messages:
+              record_invalid: 'Invalid Record: %{errors}'
+              restrict_dependent_destroy:
+                has_one: The record cannot be deleted because it exists %{record} dependent
+                has_many: The record cannot be deleted because it exists %{record} dependents
       models:
         property:
           attributes:

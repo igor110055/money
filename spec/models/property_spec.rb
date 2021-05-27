@@ -45,6 +45,14 @@ RSpec.describe '模型测试[Property]', type: :model do
       expect(p.amount_to(:usd).to_i).to eq (100.0*(1.0/trate)).to_i
     end
 
+    specify '同步更新码必须是唯一的否则会提示错误讯息' do
+      p1 = create(:property, sync_code: 'cash_10')
+      p2 = create(:property)
+      p2.sync_code = 'cash_10'
+      p2.save
+      expect(p2.errors.messages).not_to be_blank
+    end
+
   end
 
   describe '进阶验证' do

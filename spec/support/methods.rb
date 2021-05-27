@@ -83,18 +83,18 @@ end
 # 建立不同币别的资产
 def create_different_currency_properties
   # amount值不能过大，否则测试包含利息的资产总净值会出错，已使用floor函数缓解此问题
-  @twd = create(:property, amount: 132423321100.123, \
+  @twd = create(:property, sync_code: 'twd_d1', amount: 132423321100.123, \
                currency: currencies(:twd), name: '台币现金')
-  @cny = create(:property, amount: 132423321100.345, \
+  @cny = create(:property, sync_code: 'cny_d1', amount: 132423321100.345, \
                currency: currencies(:cny), name: '人民币现金')
-  @usd = create(:property, amount: 132423321100.567, \
+  @usd = create(:property, sync_code: 'usd_d1', amount: 132423321100.567, \
                currency: currencies(:usd), name: '美元现金')
-  @twd_loan = create(:property, amount: -2000000000.0, currency: currencies(:twd), name: '台币贷款')
-  @cny_loan = create(:property, amount: -10000000.0, currency: currencies(:cny), name: '人民币贷款')
-  @btc_hidden = create(:property, amount: 13000000.66085678, currency: currencies(:btc), name: '个人比特币', is_hidden: true)
-  @btc_locked = create(:property, amount: 13000000.66085678, currency: currencies(:btc), name: '私人比特币', is_locked: true)
-  @btc = create(:property, amount: 14000000.32874321, currency: currencies(:btc), name: '家庭比特币')
-  @bch = create(:property, amount: 888000.53561621, currency: currencies(:bch), name: '个人比特现金')
+  @twd_loan = create(:property, sync_code: 'twd_loan_d1', amount: -2000000000.0, currency: currencies(:twd), name: '台币贷款')
+  @cny_loan = create(:property, sync_code: 'cny_loan_d1', amount: -10000000.0, currency: currencies(:cny), name: '人民币贷款')
+  @btc_hidden = create(:property, sync_code: 'btc_hidden_d1', amount: 13000000.66085678, currency: currencies(:btc), name: '个人比特币', is_hidden: true)
+  @btc_locked = create(:property, sync_code: 'btc_locked_d1', amount: 13000000.66085678, currency: currencies(:btc), name: '私人比特币', is_locked: true)
+  @btc = create(:property, sync_code: 'btc_d1', amount: 14000000.32874321, currency: currencies(:btc), name: '家庭比特币')
+  @bch = create(:property, sync_code: 'bch_d1', amount: 888000.53561621, currency: currencies(:bch), name: '个人比特现金')
   # 建立p4,p5的利息资料
   l1 = create(:interest, property: @twd_loan, start_date: 30.days.ago, rate: 6.5)
   l2 = create(:interest, property: @cny_loan, start_date: 90.days.ago, rate: 4.5)
