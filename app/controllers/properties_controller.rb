@@ -72,18 +72,7 @@ class PropertiesController < ApplicationController
 
   # 同步另一台服务器的资产值
   def sync_amount( sync_code, amount )
-    url = "#{$host2}main/sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&amount=#{amount}"
-    begin
-      resp = Net::HTTP.get_response(URI(url))
-      h = eval(resp.body)
-      if h[:status] == 'ok'
-        return "(同步另一台服务器成功!)"
-      else
-        return "(同步另一台服务器失败!请确认设置了正确的同步码:#{sync_code})"
-      end
-    rescue
-      return "(同步另一台服务器失败!请确认另一台服务器连线正常)"
-    end
+    send_sync_request "#{$host2}main/sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&value=#{amount}"
   end
 
   # 从列表中快速更新资产金额

@@ -27,11 +27,17 @@ class InterestsController < ApplicationController
 
   def update
     if @interest.update(interest_params)
-      put_notice t(:interest_updated_ok)
+      p = @interest.property
+      put_notice t(:interest_updated_ok) + ' ' + sync_date_and_rate( p.sync_code, params[:interest][:start_date], params[:interest][:rate] )
       go_interests
     else
       render :edit
     end
+  end
+
+  # 同步两个服务器的利息起算日和年利率
+  def sync_date_and_rate( sync_code, start_date, rate )
+    send_sync_request "#{$host2}main/sync_interest_info.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&start_date=#{start_date}&rate=#{rate}"
   end
 
   # 删除利息

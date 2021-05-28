@@ -121,5 +121,6 @@ Rails.application.routes.draw do
   get 'main/rise_fall_list'
   get 'main/level_trial_list'
   get 'main/sync_asset_amount'
+  get 'main/sync_interest_info'
 
 end

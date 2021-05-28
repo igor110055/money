@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 初始化设置
@@ -705,6 +705,48 @@ class ApplicationController < ActionController::Base
   # 取得系统参数文档内容
   def get_system_params_content
     File.read($system_params_path)
+  end
+
+  # 提交同步另一台服务器
+  def send_sync_request( url )
+    begin
+      resp = Net::HTTP.get_response(URI(url))
+      h = eval(resp.body)
+      if h[:status] == 'ok'
+        return "(同步另一台服务器成功!)"
+      else
+        return "(同步另一台服务器失败!请确认设置了正确的同步码:#{sync_code})"
+      end
+    rescue
+      return "(同步另一台服务器失败!请确认 #{url} 连线正常)"
+    end
+  end
+
+  # 由外部链接而来更新某项数据
+  def sync_property
+    if params[:key] == $api_key and params[:sync_code]
+      @rs = Property.find_by_sync_code(params[:sync_code].downcase)
+      if @rs
+        if block_given?
+          yield
+          status_str = 'ok'
+          info_str = "sync_code:#{params[:sync_code]}"
+        else
+          status_str = 'error'
+          info_str = 'No block given'
+        end
+      else
+        status_str = 'error'
+        info_str = 'Record not find'
+      end
+    end
+    respond_to do |format|
+      format.json { render json:  { status: status_str, info: info_str } }
+      format.html do
+        put_notice "无效的请求，必须经由API来调用！"
+        redirect_to root_path
+      end
+    end
   end
 
   # 建立回到目录页的方法
