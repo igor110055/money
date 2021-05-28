@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @trade_param.name %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @trade_param.title %>
+</p>
+
+<p>
+  <strong>Order num:</strong>
+  <%= @trade_param.order_num %>
+</p>
+
+<%= link_to 'Edit', edit_trade_param_path(@trade_param) %> |
+<%= link_to 'Back', trade_params_path %>

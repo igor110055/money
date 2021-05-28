@@ -315,6 +315,8 @@ en:
   operate_money: Operate Money
   copyright: Copyright
   contact_email: Contact Email
+  trade_param_index: Trade Params
+  delete_trade_param: Delete This Param
   activerecord:
     attributes:
       property:

@@ -1,0 +1,27 @@
+<h2>交易参数列表</h2>
+
+<table>
+  <tr class="thead">
+    <td width="15"></td>
+    <td>参数名称</td>
+    <td>显示标题</td>
+    <td>排序编号</td>
+    <td>排序动作</td>
+  </tr>
+<% n = 1 %>
+<% @trade_params.each do |trade_param| %>
+  <tr <%= change_row_color %>>
+    <td align="right"><%= n %></td>
+    <td><%= link_edit_to(trade_param,trade_param.name) %></td>
+    <td><%= link_edit_to(trade_param,trade_param.title) %></td>
+    <td align="right"><%= trade_param.order_num %></td>
+    <td align="center">↑<%= raw("&nbsp;"*3) %>↓</td>
+  </tr>
+  <% n += 1 %>
+<% end %>
+  <tr>
+    <td colspan="5" class="thead"></td>
+  </tr>
+</table>
+<br/>
+<%= link_to '新增参数', new_trade_param_path, { id: 'add_new_trade_param' } %>

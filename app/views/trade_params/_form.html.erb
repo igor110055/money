@@ -1,0 +1,28 @@
+<%= render 'shared/error_messages', object: @trade_param %>
+
+<%= form_for(@trade_param) do |f| %>
+<table>
+  <tr><td colspan="2" class="thead"><%= timestamps(@trade_param) %></td></tr>
+  <tr>
+    <td>参数名称：</td>
+    <td><%= f.text_field(:name) %></td>
+  </tr>
+  <tr>
+    <td>显示标题：</td>
+    <td><%= f.text_field(:title) %></td>
+  </tr>
+  <tr>
+    <td>排序编号：</td>
+    <td><%= f.text_field(:order_num) %></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right" class="tfoot">
+      <%= f.submit( submit,id: submit_id) %>
+    </td>
+  </tr>
+</table>
+<% end %>
+<br/>
+<%= link_back_to_trade_params %>
+<%= link_to_delete(@trade_param) %>
+<p/>

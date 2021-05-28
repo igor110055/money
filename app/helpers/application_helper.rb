@@ -3,7 +3,7 @@ module ApplicationHelper
   include ActsAsTaggableOn::TagsHelper
 
   # 为哪些模型自动建立返回列表的链接以及执行返回列表的指令 eq. link_back_to_xxx, go_xxx
-  $models = %w(property currency interest item portfolio record deal_record open_order trial_list)
+  $models = %w(property currency interest item portfolio record deal_record open_order trial_list trade_param)
   # 为哪些类型的通知自动产生方法
   $flashs = %w(notice warning)
   # 建立从列表中快速更新某个值的方法

@@ -333,6 +333,8 @@ cn:
   operate_money: 短线资金
   copyright: 版权所有
   contact_email: 联系邮箱
+  trade_param_index: 交易参数列表
+  delete_trade_param: 删除这个参数
   activerecord:
     attributes:
       property:
