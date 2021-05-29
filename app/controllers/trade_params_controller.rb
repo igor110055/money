@@ -12,6 +12,7 @@ class TradeParamsController < ApplicationController
 
   def new
     @trade_param = TradeParam.new
+    @trade_param.order_num = TradeParam.last.id+1
   end
 
   def edit
@@ -55,5 +56,5 @@ class TradeParamsController < ApplicationController
     def trade_param_params
       params.require(:trade_param).permit(:name, :title, :order_num)
     end
-    
+
 end

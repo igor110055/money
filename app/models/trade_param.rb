@@ -7,5 +7,17 @@ class TradeParam < ApplicationRecord
   validates \
     :title,
       presence: {
-        message: $trade_param_title_blank_err }          
+        message: $trade_param_title_blank_err }
+  validates \
+    :order_num,
+      presence: {
+        message: $trade_param_order_num_blank_err },
+      numericality: {
+        message: $trade_param_order_num_numerical_err }
+  validates \
+    :order_num,
+      numericality: {
+        greater_than: 0,
+        message: $trade_param_order_num_format_err }
+
 end
