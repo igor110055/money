@@ -141,7 +141,7 @@ class Property < ApplicationRecord
     # 所有比特币均价
     total_ave_cost = (record_cost+trezor_cost)/(record_amount+trezor_amount)
     # 现价与均价的比率(利率)
-    price_now = new.get_btc_price
+    price_now = new.fix_zero_price(new.get_btc_price)
     price_p = real_ave_cost > 0 ? (price_now/real_ave_cost-1)*100 : 0
     # 以比特币计算的总资产值
     p_btc = btc_records.sum {|p| p.amount}
@@ -182,7 +182,7 @@ class Property < ApplicationRecord
     end
     # 如果梭哈均价
     sim_cost = investable.sum {|p| p.amount_to(:usdt)}
-    sim_amount = sim_cost/price_now # 所有可投资金全部购买BTC
+    sim_amount = price_now ? sim_cost/price_now : 0 # 所有可投资金全部购买BTC
     sim_ave_cost = (record_cost+trezor_cost+sim_cost)/(record_amount+trezor_amount+sim_amount)
     # 比特币每1个百分点对应多少人民币
     begin

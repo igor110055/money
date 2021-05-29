@@ -10,8 +10,10 @@
   btc_now = get_btc_price
   # 以太坊现价
   eth_now = get_eth_price
+  # 以太坊兑比特币现价
+  eth_btc_now = btc_now > 0 ? eth_now/btc_now : 0
   # 狗狗币现价
-  doge_now = get_doge_price
+  doge_now = get_doge_price #fix_zero_price(get_doge_price)
   # 交易所内剩余的BTC
   @btc_amount_ex = DealRecord.btc_amount
   # 原有参与卖出的BTC
@@ -79,7 +81,7 @@
     <td width="15"><%= link_to '🏠', set_sbtc_as_home_path %></td>
     <td width="320">
       <% # 显示现价与k线图链接 %>
-      <%= kline_chart_link(to_n(btc_now,2)) %> | <%= kline_chart_link to_n(eth_now,2), "ethusdt" %> | <%= kline_chart_link to_n(eth_now/btc_now,5), "ethbtc" %> | <%= kline_chart_link to_n(doge_now,5), "dogeusdt" %>
+      <%= kline_chart_link(to_n(btc_now,2)) %> | <%= kline_chart_link to_n(eth_now,2), "ethusdt" %> | <%= kline_chart_link to_n(eth_btc_now,5), "ethbtc" %> | <%= kline_chart_link to_n(doge_now,5), "dogeusdt" %>
     </td>
     <td>
       <% # 成交价 %>

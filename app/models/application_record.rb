@@ -114,7 +114,12 @@ class ApplicationRecord < ActiveRecord::Base
 
   # 新台币换成人民币
   def twd_to_cny
-    target_rate(:cny).to_f/target_rate(:twd)
+    # 修复新建数据库时遇到的bug
+    begin
+      target_rate(:cny).to_f/target_rate(:twd)
+    rescue
+      1/4.5
+    end
   end
 
   # 新台币换成USDT
@@ -124,7 +129,12 @@ class ApplicationRecord < ActiveRecord::Base
 
   # 人民币换成新台币
   def cny_to_twd
-    target_rate(:twd).to_f/target_rate(:cny)
+    # 修复新建数据库时遇到的bug
+    begin
+      target_rate(:twd).to_f/target_rate(:cny)
+    rescue
+      4.5
+    end
   end
 
   # 比特币换成人民币
@@ -138,12 +148,22 @@ class ApplicationRecord < ActiveRecord::Base
 
   # 人民币换成比特币
   def cny_to_btc
-    target_rate(:btc).to_f/target_rate(:cny)
+    # 修复新建数据库时遇到的bug
+    begin
+      target_rate(:btc).to_f/target_rate(:cny)
+    rescue
+      1/280000
+    end
   end
 
   # 新台币换成比特币
   def twd_to_btc
-    target_rate(:btc).to_f/target_rate(:twd)
+    # 修复新建数据库时遇到的bug
+    begin
+      target_rate(:btc).to_f/target_rate(:twd)
+    rescue
+      1/982000
+    end
   end
 
 end

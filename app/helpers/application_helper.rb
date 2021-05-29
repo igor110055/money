@@ -550,6 +550,11 @@ module ApplicationHelper
     period.sub("min","分钟").sub("hour","小时").sub("day","天").sub("week","周").sub("mon","月").sub("year","年")
   end
 
+  # 修正divided by 0错误
+  def fix_zero_price( price )
+  	return 10 if price == 0
+  end
+
   # 取得最新的比特币报价
   def btc_price
     begin
