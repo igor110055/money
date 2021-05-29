@@ -1011,18 +1011,35 @@ class MainController < ApplicationController
 
   # 由外部链接而来更新资产的金额
   def sync_asset_amount
-    sync_property do
+    sync_host(Property,'sync_code') do
       @rs.update_attribute(:amount,params[:value])
     end
   end
 
   # 由外部链接而来更新利息起算日和年利率
   def sync_interest_info
-    sync_property do
+    sync_host(Property,'sync_code') do
       Interest.find_by_property_id(@rs.id).update_attributes(
         start_date: params[:start_date],
         rate: params[:rate].to_f
       )
+    end
+  end
+
+  # 新增或修改交易参数后能同步更新两台服务器
+  def sync_trade_params
+    sync_host(TradeParam,'name',true) do
+      if @rs
+        @rs.update_attributes(
+          order_num: params[:order_num].to_i
+        )
+      else
+        TradeParam.create(
+          name: params[:sync_code],
+          title: '待输入的交易参数标题',
+          order_num: params[:order_num].to_i
+        )
+      end
     end
   end
 

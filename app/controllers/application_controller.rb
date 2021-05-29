@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_trade_params ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 初始化设置
@@ -712,32 +712,47 @@ class ApplicationController < ActionController::Base
     begin
       resp = Net::HTTP.get_response(URI(url))
       h = eval(resp.body)
-      if h[:status] == 'ok'
+      if h[:status].include? 'ok'
         return "(同步另一台服务器成功!)"
       else
         return "(同步另一台服务器失败!请确认设置了正确的同步码:#{sync_code})"
       end
     rescue
-      return "(同步另一台服务器失败!请确认 #{url} 连线正常)"
+      return "(同步另一台服务器失败!请确认 #{url} 连线正常或只含ASCII字符"
     end
   end
 
   # 由外部链接而来更新某项数据
-  def sync_property
+  def sync_host( class_name, field_name, include_new = false )
     if params[:key] == $api_key and params[:sync_code]
-      @rs = Property.find_by_sync_code(params[:sync_code].downcase)
-      if @rs
+      @rs = eval("class_name.find_by_#{field_name}(params[:sync_code].downcase)")
+      # 如果只能更新
+      if !include_new
+        @rs = eval("class_name.find_by_#{field_name}(params[:sync_code].downcase)")
+        if @rs # 只能执行更新且找到数据记录
+          if block_given?
+            yield
+            status_str = 'updated_ok'
+            info_str = "sync_code:#{params[:sync_code]}"
+          else
+            status_str = 'error'
+            info_str = 'No block given'
+          end
+        else # 只能执行更新且找不到数据记录
+          status_str = 'error'
+          info_str = 'Record not find'
+        end
+      end
+      # 如果包含新增
+      if include_new
         if block_given?
           yield
-          status_str = 'ok'
+          status_str = 'created_or_updated_ok'
           info_str = "sync_code:#{params[:sync_code]}"
         else
           status_str = 'error'
           info_str = 'No block given'
         end
-      else
-        status_str = 'error'
-        info_str = 'Record not find'
       end
     end
     respond_to do |format|

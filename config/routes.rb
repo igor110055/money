@@ -127,5 +127,6 @@ Rails.application.routes.draw do
   get 'main/level_trial_list'
   get 'main/sync_asset_amount'
   get 'main/sync_interest_info'
+  get 'main/sync_trade_params'
 
 end
