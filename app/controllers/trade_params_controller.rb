@@ -42,9 +42,14 @@ class TradeParamsController < ApplicationController
     send_sync_request "#{$host2}main/sync_trade_params.json?key=#{$api_key}&sync_code=#{params[:trade_param][:name].downcase}&title=#{u(params[:trade_param][:title])}&order_num=#{params[:trade_param][:order_num]}"
   end
 
+  # 能同步删除两台服务器的交易参数
+  def sync_destroy
+    send_sync_request "#{$host2}main/sync_trade_params.json?key=#{$api_key}&sync_code=#{@trade_param.name}&destroy=1"
+  end
+
   def destroy
+    put_notice "交易参数已成功删除！#{sync_destroy}"
     @trade_param.destroy
-    put_notice "交易参数已成功删除！"
     go_trade_params
   end
 

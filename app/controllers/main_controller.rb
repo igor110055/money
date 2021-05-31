@@ -1029,12 +1029,14 @@ class MainController < ApplicationController
   # 新增或修改交易参数后能同步更新两台服务器
   def sync_trade_params
     sync_host(TradeParam,'name',true) do
-      if @rs
+      if @rs and !params[:destroy]
         @rs.update_attributes(
           title: params[:title],
           order_num: params[:order_num].to_i
         )
-      else
+      elsif @rs and params[:destroy]
+        @rs.destroy
+      elsif !@rs and !params[:destroy]
         TradeParam.create(
           name: params[:sync_code],
           title: params[:title],
