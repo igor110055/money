@@ -39,7 +39,7 @@ class TradeParamsController < ApplicationController
 
   # 同步另一台服务器的值
   def sync_attributes
-    send_sync_request "#{$host2}main/sync_trade_params.json?key=#{$api_key}&sync_code=#{params[:trade_param][:name].downcase}&order_num=#{params[:trade_param][:order_num]}"
+    send_sync_request "#{$host2}main/sync_trade_params.json?key=#{$api_key}&sync_code=#{params[:trade_param][:name].downcase}&title=#{u(params[:trade_param][:title])}&order_num=#{params[:trade_param][:order_num]}"
   end
 
   def destroy

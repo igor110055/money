@@ -1031,12 +1031,13 @@ class MainController < ApplicationController
     sync_host(TradeParam,'name',true) do
       if @rs
         @rs.update_attributes(
+          title: params[:title],
           order_num: params[:order_num].to_i
         )
       else
         TradeParam.create(
           name: params[:sync_code],
-          title: '待输入的交易参数标题',
+          title: params[:title],
           order_num: params[:order_num].to_i
         )
       end

@@ -764,6 +764,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # 将字符串编码后代入Net::HTTP.get_response(URI(url))
+  def u( text )
+    URI::escape(text)
+  end
+
   # 建立回到目录页的方法
   $models.each do |n|
     define_method "go_#{n.pluralize}" do
