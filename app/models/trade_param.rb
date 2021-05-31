@@ -20,4 +20,12 @@ class TradeParam < ApplicationRecord
         greater_than: 0,
         message: $trade_param_order_num_format_err }
 
+  def order_up
+    exe_order_up TradeParam, id
+  end
+
+  def order_down
+    exe_order_down TradeParam, id
+  end
+
 end

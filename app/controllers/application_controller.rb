@@ -10,6 +10,41 @@ class ApplicationController < ActionController::Base
   before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_trade_params ]
   before_action :summary, :memory_back, only: [ :index ]
 
+  # 建立回到目录页的方法
+  $models.each do |n|
+    define_method "go_#{n.pluralize}" do
+      eval("redirect_to controller: :#{n.pluralize}, action: :index")
+    end
+  end
+
+  # 建立各种通知消息的方法
+  $flashs.each do |type|
+    define_method "put_#{type}" do |msg|
+      eval %Q[
+        flash[:#{type}] ? flash[:#{type}].gsub!(\"(\#{now})\",'') : flash[:#{type}] = ''
+        flash[:#{type}] += \"\#{msg} (\#{now})\"
+        flash[:#{type}].gsub!(\"<_io.TextIOWrapper name='<stdout>' mode='w' encoding='UTF-8'>\",'')
+      ]
+    end
+  end
+
+  # 建立从列表中快速更新某个值的方法
+  $quick_update_attrs.each do |setting|
+    m = setting.split(':')[0]; attrs = setting.split(':')[1].split(',')
+    attrs.each do |a|
+      define_method "update_#{m}_#{a}" do
+        eval %Q[
+          if new_#{a} = params[\"new_#{a}_\#{params[:id]}\"]
+            new_#{a}.gsub!(',','')
+            @#{m}.update_attribute(:#{a}, new_#{a})
+            put_notice t(:#{m}_updated_ok) + add_id(@#{m}) + add_amount(@#{m})
+          end
+          session[:path] ? go_back : go_#{m.pluralize}
+        ]
+      end
+    end
+  end
+
   # 初始化设置
   def initialize
     super
@@ -767,41 +802,6 @@ class ApplicationController < ActionController::Base
   # 将字符串编码后代入Net::HTTP.get_response(URI(url))
   def u( text )
     URI::escape(text)
-  end
-
-  # 建立回到目录页的方法
-  $models.each do |n|
-    define_method "go_#{n.pluralize}" do
-      eval("redirect_to controller: :#{n.pluralize}, action: :index")
-    end
-  end
-
-  # 建立各种通知消息的方法
-  $flashs.each do |type|
-    define_method "put_#{type}" do |msg|
-      eval %Q[
-        flash[:#{type}] ? flash[:#{type}].gsub!(\"(\#{now})\",'') : flash[:#{type}] = ''
-        flash[:#{type}] += \"\#{msg} (\#{now})\"
-        flash[:#{type}].gsub!(\"<_io.TextIOWrapper name='<stdout>' mode='w' encoding='UTF-8'>\",'')
-      ]
-    end
-  end
-
-  # 建立从列表中快速更新某个值的方法
-  $quick_update_attrs.each do |setting|
-    m = setting.split(':')[0]; attrs = setting.split(':')[1].split(',')
-    attrs.each do |a|
-      define_method "update_#{m}_#{a}" do
-        eval %Q[
-          if new_#{a} = params[\"new_#{a}_\#{params[:id]}\"]
-            new_#{a}.gsub!(',','')
-            @#{m}.update_attribute(:#{a}, new_#{a})
-            put_notice t(:#{m}_updated_ok) + add_id(@#{m}) + add_amount(@#{m})
-          end
-          session[:path] ? go_back : go_#{m.pluralize}
-        ]
-      end
-    end
   end
 
 end

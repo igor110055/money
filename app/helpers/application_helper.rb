@@ -981,4 +981,33 @@ module ApplicationHelper
     end
   end
 
+  # 更新排序号
+  def exe_update_order_num( class_name, order_field = :order_num, ids = class_name.all.order(order_field) )
+    ids.each {|i| class_name.find(i).update_attribute( order_field, ids.index(i)+1 )}
+  end
+
+  # 执行向上排序
+  def exe_order_up( class_name, object_id, order_field = :order_num )
+    @ids = []
+    class_name.all.order(order_field).each {|d| @ids << d.id}
+    @ori_index = @ids.index(object_id.to_i)
+    if @ori_index != 0 then
+      @ids[@ori_index] = @ids[@ori_index-1]
+      @ids[@ori_index-1] = object_id.to_i
+      exe_update_order_num( class_name, order_field, @ids )
+    end
+  end
+
+  # 执行向下排序
+  def exe_order_down( class_name, object_id, order_field = :order_num )
+    @ids = []
+    class_name.all.order(order_field).each {|d| @ids << d.id}
+    @ori_index = @ids.index(object_id.to_i)
+    if @ori_index != @ids.size-1 then
+      @ids[@ori_index] = @ids[@ori_index+1]
+      @ids[@ori_index+1] = object_id.to_i
+      exe_update_order_num( class_name, order_field, @ids )
+    end
+  end
+
 end

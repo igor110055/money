@@ -15,7 +15,7 @@
     <td><%= link_edit_to(trade_param,trade_param.name) %></td>
     <td><%= link_edit_to(trade_param,trade_param.title) %></td>
     <td align="right"><%= trade_param.order_num %></td>
-    <td align="center">↑<%= raw("&nbsp;"*3) %>↓</td>
+    <td align="center"><%= link_to '↑', trade_params_order_up_path(id:trade_param) %><%= raw("&nbsp;"*3) %><%= link_to '↓', trade_params_order_down_path(id:trade_param) %></td>
   </tr>
   <% n += 1 %>
 <% end %>
