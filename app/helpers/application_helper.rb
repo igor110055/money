@@ -22,6 +22,11 @@ module ApplicationHelper
     end
   end
 
+  # 交易参数的类型选项
+  def trade_param_type_arr
+    [ ['boolean','b'],['datetime','dt'],['decimal','d'],['integer','i'],['string','s']]
+  end
+
   # 网站标题
   def site_name
     $site_name

@@ -86,7 +86,7 @@ class TradeParamsController < ApplicationController
     end
 
     def trade_param_params
-      params.require(:trade_param).permit(:name, :title, :order_num)
+      params.require(:trade_param).permit(:name, :title, :param_type, :default_range_step, :order_num)
     end
 
     def sync_root
