@@ -76,7 +76,7 @@ end
   | <%= link_to t(:show_sell_deal_records), deal_records_path(show_sell:1) %>
   <% # 全部未卖 %>
   | <%= link_to t(:show_unsell_deal_records), deal_records_path(show_unsell:1) %>
-    <%= show_total_unsell_count if not @max_sell_count > 0 %>
+    <%#= show_total_unsell_count if not @max_sell_count > 0 %>
   <% # 优卖记录 %>
   | <%= link_to t(:show_first_sell_deal_records), deal_records_path(show_first:1) %>
   <% # 凑消帐 %>
