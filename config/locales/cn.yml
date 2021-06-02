@@ -335,6 +335,8 @@ cn:
   contact_email: 联系邮箱
   trade_param_index: 交易参数列表
   delete_trade_param: 删除这个参数
+  trade_strategy_index: 交易策略列表
+  delete_trade_strategy: 删除这个策略
   activerecord:
     attributes:
       property:
@@ -365,3 +367,7 @@ cn:
               required: 利息必须关联某一个资产！
             rate:
               not_a_number: 利率值必须是数字且不能为负！
+        trade_strategy:
+          attributes:
+            trade_param:
+              required: 策略必须关联某一个参数！

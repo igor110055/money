@@ -1,0 +1,36 @@
+<%= render 'shared/error_messages', object: @trade_strategy %>
+
+<%= form_for(@trade_strategy) do |f| %>
+<table>
+  <tr><td colspan="2" class="thead"><%= timestamps(@trade_strategy) %></td></tr>
+  <tr>
+    <td>交易对码：</td>
+    <td><%= f.select(:symbol, Currency.digitals.collect {|c| [ c.symbol, c.symbol ]}) %></td>
+  </tr>
+  <tr>
+    <td>交易类型：</td>
+    <td><%= f.select(:deal_type, trade_deal_type_arr) %></td>
+  </tr>
+  <tr>
+    <td>参数名称：</td>
+    <td><%= f.select(:trade_param_id, TradeParam.all.collect {|p| [ "#{p.title} #{p.name}", p.id ]}) %></td>
+  </tr>
+  <tr>
+    <td>参数的值：</td>
+    <td><%= f.text_field(:param_value, onclick: select_all) %></td>
+  </tr>
+  <tr>
+    <td>范围步长：</td>
+    <td><%= f.text_field(:range_step, placeholder: '初值,终值,步长', onclick: select_all) %></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right" class="tfoot">
+      <%= f.submit( submit,id: submit_id) %>
+    </td>
+  </tr>
+</table>
+<% end %>
+<br/>
+<%= link_back_to_trade_strategies %>
+<%= link_to_delete(@trade_strategy) %>
+<p/>

@@ -13,6 +13,11 @@ Rails.application.routes.draw do
       get :delete
     end
   end
+  resources :trade_strategies do
+    member do
+      get :delete
+    end
+  end
   resources :items do
     member do
       get :update_price, :update_amount, :chart, :delete

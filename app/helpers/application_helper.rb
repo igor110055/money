@@ -3,7 +3,7 @@ module ApplicationHelper
   include ActsAsTaggableOn::TagsHelper
 
   # 为哪些模型自动建立返回列表的链接以及执行返回列表的指令 eq. link_back_to_xxx, go_xxx
-  $models = %w(property currency interest item portfolio record deal_record open_order trial_list trade_param)
+  $models = %w(property currency interest item portfolio record deal_record open_order trial_list trade_param trade_strategy)
   # 为哪些类型的通知自动产生方法
   $flashs = %w(notice warning)
   # 建立从列表中快速更新某个值的方法
@@ -25,6 +25,11 @@ module ApplicationHelper
   # 交易参数的类型选项
   def trade_param_type_arr
     [ ['boolean','b'],['datetime','dt'],['decimal','d'],['integer','i'],['string','s']]
+  end
+
+  # 交易策略的交易类型
+  def trade_deal_type_arr
+    [ ['限价买','buy-limit'],['市价买','buy-market'],['限价卖','sell-limit'],['市价卖','sell-market'] ]
   end
 
   # 网站标题

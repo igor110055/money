@@ -317,6 +317,8 @@ en:
   contact_email: Contact Email
   trade_param_index: Trade Params
   delete_trade_param: Delete This Param
+  trade_strategy_index: Trade Strategies
+  delete_trade_strategy: Delete This Strategy
   activerecord:
     attributes:
       property:
@@ -347,3 +349,7 @@ en:
               required: Interest must be associated with a property!
             rate:
               not_a_number: Interest's rate must be a positive number!
+        trade_strategy:
+          attributes:
+            trade_param:
+              required: Trade Strategy must be associated with a trade param!

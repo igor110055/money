@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_01_103057) do
+ActiveRecord::Schema.define(version: 2021_06_02_094929) do
 
   create_table "currencies", force: :cascade do |t|
     t.string "name"
@@ -151,6 +151,17 @@ ActiveRecord::Schema.define(version: 2021_06_01_103057) do
     t.datetime "updated_at", null: false
     t.string "param_type"
     t.string "default_range_step"
+  end
+
+  create_table "trade_strategies", force: :cascade do |t|
+    t.string "symbol"
+    t.string "deal_type"
+    t.string "param_value"
+    t.string "range_step"
+    t.integer "trade_param_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trade_param_id"], name: "index_trade_strategies_on_trade_param_id"
   end
 
   create_table "trial_lists", force: :cascade do |t|

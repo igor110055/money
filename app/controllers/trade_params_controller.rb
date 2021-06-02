@@ -7,9 +7,6 @@ class TradeParamsController < ApplicationController
     @trade_params = TradeParam.all.order(:order_num)
   end
 
-  def show
-  end
-
   def new
     @trade_param = TradeParam.new
     @trade_param.order_num = TradeParam.all.size+1
