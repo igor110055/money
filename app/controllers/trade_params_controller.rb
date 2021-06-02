@@ -39,7 +39,7 @@ class TradeParamsController < ApplicationController
 
   # 同步另一台服务器的值
   def sync_attributes
-    send_sync_request "#{sync_root}&title=#{u(params[:trade_param][:title])}&order_num=#{params[:trade_param][:order_num]}"
+    send_sync_request "#{sync_root}&title=#{u(params[:trade_param][:title])}&param_type=#{params[:trade_param][:param_type]}&default_range_step=#{params[:trade_param][:default_range_step]}&order_num=#{params[:trade_param][:order_num]}"
   end
 
   # 能同步删除两台服务器的交易参数

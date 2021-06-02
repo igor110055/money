@@ -1032,6 +1032,8 @@ class MainController < ApplicationController
       if @rs and !params[:destroy] and !params[:order_up] and !params[:order_down]
         @rs.update_attributes(
           title: params[:title],
+          param_type: params[:param_type],
+          default_range_step: params[:default_range_step],
           order_num: params[:order_num].to_i
         )
       elsif @rs and params[:destroy] and !params[:order_up] and !params[:order_down]
@@ -1044,6 +1046,8 @@ class MainController < ApplicationController
         TradeParam.create(
           name: params[:sync_code],
           title: params[:title],
+          param_type: params[:param_type],
+          default_range_step: params[:default_range_step],
           order_num: params[:order_num].to_i
         )
       end
