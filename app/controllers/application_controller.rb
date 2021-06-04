@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_trade_params ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_tparam_info ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 建立回到目录页的方法
@@ -767,7 +767,7 @@ class ApplicationController < ActionController::Base
         if @rs # 只能执行更新且找到数据记录
           if block_given?
             yield
-            status_str = 'updated_ok'
+            status_str = "updated_ok(#{Time.now})"
             info_str = "sync_code:#{params[:sync_code]}"
           else
             status_str = 'error'
@@ -782,7 +782,7 @@ class ApplicationController < ActionController::Base
       if include_new
         if block_given?
           yield
-          status_str = 'created_or_updated_ok'
+          status_str = "created_or_updated_ok(#{Time.now})"
           info_str = "sync_code:#{params[:sync_code]}"
         else
           status_str = 'error'
@@ -793,8 +793,7 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.json { render json:  { status: status_str, info: info_str } }
       format.html do
-        put_notice "无效的请求，必须经由API来调用！"
-        redirect_to root_path
+        render plain: "无效的请求，必须经由API来调用！"
       end
     end
   end

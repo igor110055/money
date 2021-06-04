@@ -132,7 +132,7 @@ Rails.application.routes.draw do
   get 'main/level_trial_list'
   get 'sync_asset_amount', to: 'properties#sync_asset_amount'
   get 'sync_interest_info', to: 'interests#sync_interest_info'
-  get 'main/sync_trade_params'
+  get 'sync_tparam_info', to: 'main#sync_tparam_info'
   get 'trade_params_order_up', to: 'trade_params#order_up'
   get 'trade_params_order_down', to: 'trade_params#order_down'
 

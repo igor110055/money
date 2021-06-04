@@ -87,7 +87,7 @@ class TradeParamsController < ApplicationController
     end
 
     def sync_root
-      "#{$host2}main/sync_trade_params.json?key=#{$api_key}&sync_code=#{@trade_param.name.downcase}"
+      "#{$host2}sync_tparam_info.json?key=#{$api_key}&sync_code=#{@trade_param.name.downcase}"
     end
 
 end

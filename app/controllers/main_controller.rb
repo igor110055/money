@@ -989,7 +989,7 @@ class MainController < ApplicationController
 
   end
 
-  #
+  # 更新资产标签名
   def update_tag_name
     count = 0
     Property.tagged_with(params[:tag_from]).each do |p|
@@ -1010,7 +1010,7 @@ class MainController < ApplicationController
   end
 
   # 新增或修改交易参数后能同步更新两台服务器
-  def sync_trade_params
+  def sync_tparam_info
     sync_host(TradeParam,'name',true) do
       if @rs and !params[:destroy] and !params[:order_up] and !params[:order_down]
         @rs.update_attributes(
