@@ -324,7 +324,7 @@ def check_sell_amount(sell_price, sell_amount, usdt_now, sell_max_usd):
         over_sell = True
     return sell_amount, over_sell
 
-
+# 处理卖出
 def batch_sell_process(test_price, price, base_price, ftext, time_line, u2c, profit_cny, max_sell_count):
     global ORDER_ID
     global FORCE_SELL

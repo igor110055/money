@@ -72,7 +72,14 @@ class PropertiesController < ApplicationController
 
   # 同步另一台服务器的资产值
   def sync_amount( sync_code, amount )
-    send_sync_request "#{$host2}main/sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&value=#{amount}"
+    send_sync_request "#{$host2}sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&value=#{amount}"
+  end
+
+  # 由外部链接而来更新资产的金额
+  def sync_asset_amount
+    sync_host(Property,'sync_code') do
+      @rs.update_attribute(:amount,params[:value])
+    end
   end
 
   # 从列表中快速更新资产金额

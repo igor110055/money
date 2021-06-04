@@ -130,7 +130,7 @@ Rails.application.routes.draw do
   get 'main/line_chart'
   get 'main/rise_fall_list'
   get 'main/level_trial_list'
-  get 'main/sync_asset_amount'
+  get 'sync_asset_amount', to: 'properties#sync_asset_amount'
   get 'main/sync_interest_info'
   get 'main/sync_trade_params'
   get 'trade_params_order_up', to: 'trade_params#order_up'

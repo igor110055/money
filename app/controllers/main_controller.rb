@@ -1009,13 +1009,6 @@ class MainController < ApplicationController
     redirect_to action: :rename_tag
   end
 
-  # 由外部链接而来更新资产的金额
-  def sync_asset_amount
-    sync_host(Property,'sync_code') do
-      @rs.update_attribute(:amount,params[:value])
-    end
-  end
-
   # 由外部链接而来更新利息起算日和年利率
   def sync_interest_info
     sync_host(Property,'sync_code') do
