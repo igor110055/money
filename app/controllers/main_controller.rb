@@ -1009,16 +1009,6 @@ class MainController < ApplicationController
     redirect_to action: :rename_tag
   end
 
-  # 由外部链接而来更新利息起算日和年利率
-  def sync_interest_info
-    sync_host(Property,'sync_code') do
-      Interest.find_by_property_id(@rs.id).update_attributes(
-        start_date: params[:start_date],
-        rate: params[:rate].to_f
-      )
-    end
-  end
-
   # 新增或修改交易参数后能同步更新两台服务器
   def sync_trade_params
     sync_host(TradeParam,'name',true) do

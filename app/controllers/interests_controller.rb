@@ -37,7 +37,17 @@ class InterestsController < ApplicationController
 
   # 同步两个服务器的利息起算日和年利率
   def sync_date_and_rate( sync_code, start_date, rate )
-    send_sync_request "#{$host2}main/sync_interest_info.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&start_date=#{start_date}&rate=#{rate}"
+    send_sync_request "#{$host2}sync_interest_info.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&start_date=#{start_date}&rate=#{rate}"
+  end
+
+  # 由外部链接而来更新利息起算日和年利率
+  def sync_interest_info
+    sync_host(Property,'sync_code') do
+      Interest.find_by_property_id(@rs.id).update_attributes(
+        start_date: params[:start_date],
+        rate: params[:rate].to_f
+      )
+    end
   end
 
   # 删除利息
