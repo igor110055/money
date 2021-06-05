@@ -1009,7 +1009,7 @@ class MainController < ApplicationController
     redirect_to action: :rename_tag
   end
 
-  # 新增或修改交易参数后能同步更新两台服务器
+  # 新增删除或修改交易参数后能同步更新两台服务器
   def sync_tparam_info
     sync_host(TradeParam,'name',true) do
       if @rs and !params[:destroy] and !params[:order_up] and !params[:order_down]
@@ -1032,6 +1032,31 @@ class MainController < ApplicationController
           param_type: params[:param_type],
           default_range_step: params[:default_range_step],
           order_num: params[:order_num].to_i
+        )
+      end
+    end
+  end
+
+  # 新增删除或修改交易策略后能同步更新两台服务器
+  def sync_tstrategy_info
+    sync_host(TradeStrategy,'symbol,deal_type,trade_param_id',true) do
+      if @rs and !params[:destroy]
+        @rs.update_attributes(
+          symbol: params[:symbol],
+          deal_type: params[:deal_type],
+          param_value: params[:param_value],
+          range_step: params[:range_step],
+          trade_param_id: params[:trade_param_id]
+        )
+      elsif @rs and params[:destroy]
+        @rs.destroy
+      elsif !@rs and !params[:destroy]
+        TradeStrategy.create(
+          symbol: params[:symbol],
+          deal_type: params[:deal_type],
+          param_value: params[:param_value],
+          range_step: params[:range_step],
+          trade_param_id: params[:trade_param_id]
         )
       end
     end

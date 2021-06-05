@@ -27,7 +27,7 @@ class TradeStrategiesController < ApplicationController
 
     def update
       if @trade_strategy.update(trade_strategy_params)
-        put_notice "交易策略已成功更新！"
+        put_notice "交易策略已成功更新！#{sync_attributes}"
         go_trade_strategies
       else
         render :edit
@@ -35,18 +35,18 @@ class TradeStrategiesController < ApplicationController
     end
 
     # 同步另一台服务器的值
-    # def sync_attributes
-    #   send_sync_request "#{sync_root}&title=#{u(params[:trade_strategy][:title])}&param_type=#{params[:trade_strategy][:param_type]}&default_range_step=#{params[:trade_strategy][:default_range_step]}&order_num=#{params[:trade_strategy][:order_num]}"
-    # end
+    def sync_attributes
+      send_sync_request "#{sync_root}&symbol=#{params[:trade_strategy][:symbol]}&deal_type=#{params[:trade_strategy][:deal_type]}&param_value=#{params[:trade_strategy][:param_value]}&range_step=#{params[:trade_strategy][:range_step]}&trade_param_id=#{params[:trade_strategy][:trade_param_id]}"
+    end
 
     # 能同步删除两台服务器的交易策略
-    # def sync_destroy
-    #   send_sync_request "#{sync_root}&destroy=1"
-    # end
+    def sync_destroy
+      send_sync_request "#{sync_root}&destroy=1"
+    end
 
     def destroy
       @trade_strategy.destroy
-      put_notice "交易策略已成功删除！"
+      put_notice "交易策略已成功删除！#{sync_destroy}"
       go_trade_strategies
     end
 
@@ -63,4 +63,9 @@ class TradeStrategiesController < ApplicationController
     def trade_strategy_params
       params.require(:trade_strategy).permit(:symbol, :deal_type, :param_value, :range_step, :trade_param_id)
     end
+
+    def sync_root
+      "#{$host2}sync_tstrategy_info.json?key=#{$api_key}&sync_code=#{[@trade_strategy.symbol,@trade_strategy.deal_type,@trade_strategy.trade_param_id].join(',')}"
+    end
+
 end

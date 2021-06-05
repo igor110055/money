@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_tparam_info ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 建立回到目录页的方法
@@ -757,13 +757,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # 依照栏位数取得符合条件的数据
+  def get_sync_record( class_name, field_name, field_value )
+    value_str = field_value.split(',').join("','")
+    eval "class_name.find_by_#{field_name.split(',').join('_and_')}('#{value_str}')"
+  end
+
   # 由外部链接而来更新某项数据
   def sync_host( class_name, field_name, include_new = false )
     if params[:key] == $api_key and params[:sync_code]
-      @rs = eval("class_name.find_by_#{field_name}(params[:sync_code].downcase)")
+      @rs = get_sync_record(class_name,field_name,params[:sync_code].downcase)
       # 如果只能更新
       if !include_new
-        @rs = eval("class_name.find_by_#{field_name}(params[:sync_code].downcase)")
+        @rs = get_sync_record(class_name,field_name,params[:sync_code].downcase)
         if @rs # 只能执行更新且找到数据记录
           if block_given?
             yield
