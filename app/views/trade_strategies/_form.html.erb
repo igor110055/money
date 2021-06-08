@@ -4,10 +4,6 @@
 <table>
   <tr><td colspan="2" class="thead"><%= timestamps(@trade_strategy) %></td></tr>
   <tr>
-    <td>交易对码：</td>
-    <td><%= f.select(:symbol, Currency.digitals.collect {|c| [ c.symbol, c.symbol ]}) %></td>
-  </tr>
-  <tr>
     <td>交易类型：</td>
     <td><%= f.select(:deal_type, trade_deal_type_arr) %></td>
   </tr>

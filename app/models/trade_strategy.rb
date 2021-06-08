@@ -3,10 +3,6 @@ class TradeStrategy < ApplicationRecord
   belongs_to :trade_param
 
   validates \
-    :symbol,
-      presence: {
-        message: $trade_strategy_symbol_blank_err }
-  validates \
     :deal_type,
       presence: {
         message: $trade_strategy_deal_type_blank_err }

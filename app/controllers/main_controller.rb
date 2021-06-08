@@ -1039,10 +1039,9 @@ class MainController < ApplicationController
 
   # 新增删除或修改交易策略后能同步更新两台服务器
   def sync_tstrategy_info
-    sync_host(TradeStrategy,'symbol,deal_type,trade_param_id',true) do
+    sync_host(TradeStrategy,'deal_type,trade_param_id',true) do
       if @rs and !params[:destroy]
         @rs.update_attributes(
-          symbol: params[:symbol],
           deal_type: params[:deal_type],
           param_value: params[:param_value],
           range_step: params[:range_step],
@@ -1052,7 +1051,6 @@ class MainController < ApplicationController
         @rs.destroy
       elsif !@rs and !params[:destroy]
         TradeStrategy.create(
-          symbol: params[:symbol],
           deal_type: params[:deal_type],
           param_value: params[:param_value],
           range_step: params[:range_step],
