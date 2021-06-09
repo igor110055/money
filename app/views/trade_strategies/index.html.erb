@@ -3,8 +3,9 @@
 <table>
   <tr class="thead">
     <td width="15"></td>
-    <td>交易类型</td>
-    <td>参数名称</td>
+    <td class="bold_red" title="数据ID:交易类型+参数名称">交易类型</td>
+    <td class="bold_red" title="数据ID:交易类型+参数名称">参数名称</td>
+    <td>参数标题</td>
     <td>参数的值</td>
     <td>范围步长</td>
   </tr>
@@ -13,6 +14,7 @@
   <tr <%= change_row_color %>>
     <td align="right"><%= n %></td>
     <td><%= trade_deal_type_arr.rassoc(trade_strategy.deal_type)[0] %></td>
+    <td><%= link_edit_to(trade_strategy,trade_strategy.trade_param.name) %></td>
     <td><%= link_edit_to(trade_strategy,trade_strategy.trade_param.title) %></td>
     <td align="right"><%= trade_strategy.param_value %></td>
     <td align="right"><%= trade_strategy.range_step %></td>

@@ -746,6 +746,7 @@ class ApplicationController < ActionController::Base
   def send_sync_request( url )
     begin
       resp = Net::HTTP.get_response(URI(url))
+      # return "#{url}:#{resp}"
       h = eval(resp.body)
       if h[:status].include? 'ok'
         return "(同步另一台服务器成功!)"

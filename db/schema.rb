@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_08_143130) do
+ActiveRecord::Schema.define(version: 2021_06_09_114406) do
 
   create_table "currencies", force: :cascade do |t|
     t.string "name"
@@ -160,6 +160,7 @@ ActiveRecord::Schema.define(version: 2021_06_08_143130) do
     t.integer "trade_param_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "param_name"
     t.index ["trade_param_id"], name: "index_trade_strategies_on_trade_param_id"
   end
 
