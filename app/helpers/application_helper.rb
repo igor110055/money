@@ -29,7 +29,7 @@ module ApplicationHelper
 
   # 交易策略的交易类型
   def trade_deal_type_arr
-    [ ['限价买','buy-limit'],['市价买','buy-market'],['限价卖','sell-limit'],['市价卖','sell-market'] ]
+    [ ['限价买','bl'],['市价买','bm'],['限价卖','sl'],['市价卖','sm'] ]
   end
 
   # 网站标题
@@ -500,6 +500,15 @@ module ApplicationHelper
   # 显示交易类别
   def show_deal_type( type )
     type.index('buy') ? '买进' : '卖出'
+  end
+
+  # 显示交易类别
+  def get_deal_type( type )
+    if rs = trade_deal_type_arr.rassoc(type)
+      return rs[0]
+    else
+      return ""
+    end
   end
 
   # 显示较长的文字数据
