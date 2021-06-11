@@ -377,9 +377,9 @@ class Property < ApplicationRecord
     investable_fund_records.sum {|p| p.amount_to(:cny)}
   end
 
-  # 跨账号所有生活的现值
+  # 跨账号所有备用金的现值
   def self.total_life_fund_records
-    Property.tagged_with('生活')
+    Property.tagged_with($reserve_fund_tag)
   end
 
   # 所有生活的人民币现值
