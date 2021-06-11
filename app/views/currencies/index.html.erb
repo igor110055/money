@@ -15,7 +15,7 @@
 <% @currencies.each do |currency| %>
   <tr <%= change_row_color %>>
     <td align="right"><%= n %></td>
-    <td><%= link_edit_to(currency) %></td>
+    <td><%= link_edit_to(currency) %> <%= show_ok(currency.auto_update_price,'自动更新报价') %></td>
     <td><%= currency.code %></td>
     <td><%= line_chart_link(currency) %></td>
     <td align="right"><%= to_n(currency.exchange_rate, 8) %></td>

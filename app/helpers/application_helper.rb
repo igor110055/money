@@ -493,8 +493,8 @@ module ApplicationHelper
   end
 
   # 是否显示打勾的图示
-  def show_ok( boolean )
-    image_tag('ok.png',width:15) if boolean
+  def show_ok( boolean, title = '', width = 15 )
+    image_tag('ok.png',width:width,title:title) if boolean
   end
 
   # 显示交易类别
