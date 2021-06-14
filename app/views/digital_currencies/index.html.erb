@@ -1,0 +1,23 @@
+<h2>交易对列表</h2>
+
+<table>
+  <tr class="thead">
+    <td width="15"></td>
+    <td>From</td>
+    <td>To</td>
+  </tr>
+<% n = 1 %>
+<% @digital_currencies.each do |digital_currency| %>
+  <tr <%= change_row_color %>>
+    <td align="right"><%= n %></td>
+    <td><%= link_edit_to(digital_currency,digital_currency.symbol_from) %></td>
+    <td><%= link_edit_to(digital_currency,digital_currency.symbol_to) %></td>
+  </tr>
+  <% n += 1 %>
+<% end %>
+  <tr>
+    <td colspan="6" class="thead"></td>
+  </tr>
+</table>
+<br/>
+<%= link_to '新增交易对', new_digital_currency_path, { id: 'add_new_digital_currency' } %>

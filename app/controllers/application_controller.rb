@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info, :sync_digital_currency ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 建立回到目录页的方法
@@ -742,7 +742,10 @@ class ApplicationController < ActionController::Base
     File.read($system_params_path)
   end
 
-  # 提交同步另一台服务器
+  # 提交同步另一台服务器,请记得更新以下文档,否则会报错!
+  # main_controller.rb --> 实作同步方法代码
+  # routes.rb --> 设定新方法名的路由
+  # application_controller.rb --> 让新方法名可以不需要登入
   def send_sync_request( url )
     begin
       resp = Net::HTTP.get_response(URI(url))

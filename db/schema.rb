@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_09_115344) do
+ActiveRecord::Schema.define(version: 2021_06_14_121303) do
 
   create_table "currencies", force: :cascade do |t|
     t.string "name"
@@ -39,6 +39,13 @@ ActiveRecord::Schema.define(version: 2021_06_09_115344) do
     t.string "order_id"
     t.decimal "real_profit"
     t.boolean "first_sell"
+  end
+
+  create_table "digital_currencies", force: :cascade do |t|
+    t.string "symbol_from"
+    t.string "symbol_to"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "interests", force: :cascade do |t|

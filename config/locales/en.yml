@@ -319,6 +319,8 @@ en:
   delete_trade_param: Delete This Param
   trade_strategy_index: Trade Strategies
   delete_trade_strategy: Delete This Strategy
+  digital_currency_index: Digital Currencies
+  delete_digital_currency: Delete This Digital Currency
   activerecord:
     attributes:
       property:

@@ -1058,6 +1058,25 @@ class MainController < ApplicationController
     end
   end
 
+  # 新增删除或修改交易对后能同步更新两台服务器
+  def sync_digital_currency
+    sync_host(DigitalCurrency,'symbol_from,symbol_to',true) do
+      if @rs and !params[:destroy]
+        @rs.update_attributes(
+          symbol_from: params[:symbol_from],
+          symbol_to: params[:symbol_to]
+        )
+      elsif @rs and params[:destroy]
+        @rs.destroy
+      elsif !@rs and !params[:destroy]
+        DigitalCurrency.create(
+          symbol_from: params[:symbol_from],
+          symbol_to: params[:symbol_to]
+        )
+      end
+    end
+  end
+
   private
 
     # 系统参数的更新必须确保每一行以钱号开头以免系统无法运作
