@@ -118,6 +118,7 @@ Rails.application.routes.draw do
   get 'mtrade', to: 'main#model_trade_test_single'
   get 'mtrade_log', to: 'main#show_mtrade_log'
   get 'save_kdata', to: 'main#save_kline_data'
+  get 'ori_usdt_amount_as_huobi', to: 'main#ori_usdt_amount_as_huobi'
   get 'sell_btc_amount_as_huobi', to: 'main#sell_btc_amount_as_huobi'
   get 'sell_eth_amount_as_huobi', to: 'main#sell_eth_amount_as_huobi'
   get 'check_open_order', to: 'open_orders#check_open_order'

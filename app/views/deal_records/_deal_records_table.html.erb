@@ -134,7 +134,8 @@
     <td width="15"><%= link_to '🏠', set_btc_as_home_path %></td>
     <td width="280">
       <% # 下单时间 %>
-      <%= link_to t(:deal_record_created), order_list_params('created_at') %>
+      <%= link_to t(:deal_record_created), order_list_params('created_at') %> |
+      <%= set_auto_invest_form_link('BTC','参数设定',dtype:'buy') %>
     </td>
     <td>
       <% # 成交价 %>

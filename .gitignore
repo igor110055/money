@@ -34,6 +34,7 @@
 /config/global_variables.txt
 /config/system_params.txt
 /app/views/layouts/global_variables.txt
+/py/smart_trade2.py
 /py/sell_btc.py
 /py/sell_eth.py
 /py/Utils.py

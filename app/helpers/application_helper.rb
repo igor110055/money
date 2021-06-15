@@ -288,13 +288,13 @@ module ApplicationHelper
   end
 
   # 设置定投参数表单链接
-  def set_auto_invest_form_link( code = "BTC", link_text = "参数设定" )
+  def set_auto_invest_form_link( code = "BTC", link_text = "参数设定", opt = {} )
     if code == "BTC"
-      link_to link_text, set_auto_invest_form_path, { id: 'set_auto_invest_form' }
+      link_to link_text, set_auto_invest_form_path(opt), { id: 'set_auto_invest_form' }
     elsif code == "SBTC"
-      link_to link_text, set_auto_sell_btc_form_path, { id: 'set_auto_sell_btc_form' }
+      link_to link_text, set_auto_sell_btc_form_path(opt), { id: 'set_auto_sell_btc_form' }
     elsif code == "SETH"
-      link_to link_text, set_auto_sell_eth_form_path, { id: 'set_auto_sell_eth_form' }
+      link_to link_text, set_auto_sell_eth_form_path(opt), { id: 'set_auto_sell_eth_form' }
     end
   end
 
@@ -616,7 +616,9 @@ module ApplicationHelper
 
   # 根据code回传文档路径
   def get_invest_params_path( code = "BTC" )
-    if code == "BTC" or code == "SBTC"
+    if code == "BTC"
+      return $auto_buy_btc_params_path
+    elsif code == "SBTC"
       return $auto_sell_btc_params_path
     elsif code == "ETH" or code == "SETH"
       return $auto_sell_eth_params_path
@@ -625,8 +627,10 @@ module ApplicationHelper
 
   # 获取定投参数的值
   def get_invest_params( index, code = "BTC" )
-    if code == "BTC" or code == "SBTC"
+    if code == "BTC"
       File.read(get_invest_params_path('BTC')).split(' ')[index]
+    elsif code == "SBTC"
+      File.read(get_invest_params_path('SBTC')).split(' ')[index]
     elsif code == "ETH" or code == "SETH"
       File.read(get_invest_params_path('ETH')).split(' ')[index]
     end

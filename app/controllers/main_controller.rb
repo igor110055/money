@@ -745,7 +745,11 @@ class MainController < ApplicationController
   end
 
   def prepare_btc_invest_form
-    @invest_params_value = File.read($auto_sell_btc_params_path)
+    if params[:dtype] == 'buy'
+      @invest_params_value = File.read($auto_buy_btc_params_path)
+    else
+      @invest_params_value = File.read($auto_sell_btc_params_path)
+    end
     @price_now = get_price_now
   end
 
@@ -970,6 +974,12 @@ class MainController < ApplicationController
     @keep = $btc_base_level # 想要保持的基准仓位
     @fund_usdt = Property.total_investable_fund_records_usdt # 跨账号所有可投资金USDT现值
     @btc_amount = Property.btc_amount # 比特币总数
+  end
+
+  # 将原有参与投资的泰达币设定成火币的泰达币资产余额
+  def ori_usdt_amount_as_huobi
+    execute_setup_invest_param('BTC',3,Property.find($huobi_usdt_property_id).amount)
+    redirect_to set_auto_invest_form_path
   end
 
   # 将原有参与卖出的比特币设定成火币的比特币资产余额
