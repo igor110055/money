@@ -667,7 +667,15 @@ module ApplicationHelper
 
   # 读取火币APP的账号ID
   def get_huobi_acc_id
-    return $huobi_acc_id
+    if $huobi_acc_id
+      return $huobi_acc_id
+    else
+      if __FILE__.index("/money/")
+        $huobi_acc_id = '135'
+      elsif __FILE__.index("/money2/")
+        $huobi_acc_id = '170'
+      end
+    end
   end
 
   # 显示定投参数的设定值链接(数字版)

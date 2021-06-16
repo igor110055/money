@@ -628,22 +628,29 @@ class ApplicationController < ActionController::Base
     return sec[-1] == '0' ? sec[0..-2]+'9' : sec[0..-2]+'0'
   end
 
-  # 读取火币APP的账号ID
-  def get_huobi_acc_id
-    if $huobi_acc_id
-      return $huobi_acc_id
-    else
-      if __FILE__.index("/money/")
-        $huobi_acc_id = '135'
-      elsif __FILE__.index("/money2/")
-        $huobi_acc_id = '170'
-      end
-    end
-  end
-
   # 设定是否自动刷新页面
   def setup_auto_refresh_sec
     @auto_refresh_sec = $auto_refresh_sec if $auto_refresh_sec > 0
+  end
+
+  # 系统参数的更新必须确保每一行以钱号开头以免系统无法运作
+  def pass_system_params_check(text)
+    regx = /^(\$)(\w)+(\s)+(=){1}(\s)+(.)+/
+    text.split("\n").each do |line|
+      return false if (line =~ regx) != 0
+    end
+    return true
+  end
+  
+  # 写入系统参数文档
+  def write_to_system_params_file( text )
+    if text and pass_system_params_check(text)
+      File.open($system_params_path, 'w+') do |f|
+        f.write(text)
+      end
+      return true
+    end
+    return false
   end
 
   # 置换系统参数内容
@@ -660,7 +667,6 @@ class ApplicationController < ActionController::Base
     ori_acc_id = get_huobi_acc_id
     new_acc_id = swap_acc_id(ori_acc_id)
     replace_system_params_content("$huobi_acc_id = '#{ori_acc_id}'","$huobi_acc_id = '#{new_acc_id}'")
-    # put_notice acc_id + "：" + `python py/update_assets.py` -- for debug
     `python py/update_assets.py`
     replace_system_params_content("$huobi_acc_id = '#{new_acc_id}'","$huobi_acc_id = '#{ori_acc_id}'")
   end

@@ -948,17 +948,6 @@ class MainController < ApplicationController
     redirect_to action: :system_params_form
   end
 
-  # 写入系统参数文档
-  def write_to_system_params_file( text )
-    if text and pass_system_params_check(text)
-      File.open($system_params_path, 'w+') do |f|
-        f.write(text)
-      end
-      return true
-    end
-    return false
-  end
-
   # 建立漲跌試算表列出可买币数、累计币数、等值台币及资产净值
   def rise_fall_list
     @price_now = get_price_now
@@ -1088,15 +1077,6 @@ class MainController < ApplicationController
   end
 
   private
-
-    # 系统参数的更新必须确保每一行以钱号开头以免系统无法运作
-    def pass_system_params_check(text)
-      regx = /^(\$)(\w)+(\s)+(=){1}(\s)+(.)+/
-      text.split("\n").each do |line|
-        return false if (line =~ regx) != 0
-      end
-      return true
-    end
 
     # 计算以现价购买的每笔投资金额
     def single_invest_cost
