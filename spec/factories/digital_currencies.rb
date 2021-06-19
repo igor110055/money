@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :digital_currency do
-    symbol_from { "MyString" }
-    symbol_to { "MyString" }
+    symbol_from { "btc" }
+    symbol_to { "usdt" }
+    symbol { "btcusdt" }
   end
 end

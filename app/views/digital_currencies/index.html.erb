@@ -3,6 +3,7 @@
 <table>
   <tr class="thead">
     <td width="15"></td>
+    <td>Symbol</td>
     <td>From</td>
     <td>To</td>
   </tr>
@@ -10,6 +11,7 @@
 <% @digital_currencies.each do |digital_currency| %>
   <tr <%= change_row_color %>>
     <td align="right"><%= n %></td>
+    <td><%= link_edit_to(digital_currency,digital_currency.symbol) %></td>
     <td><%= link_edit_to(digital_currency,digital_currency.symbol_from) %></td>
     <td><%= link_edit_to(digital_currency,digital_currency.symbol_to) %></td>
   </tr>
