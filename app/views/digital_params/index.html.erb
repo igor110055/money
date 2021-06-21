@@ -1,0 +1,29 @@
+<h2>交易对列表</h2>
+
+<table>
+  <tr class="thead">
+    <td width="15"></td>
+    <td>交易对</td>
+    <td>买卖别</td>
+    <td>参数名</td>
+    <td>参数标题</td>
+    <td>参数值</td>
+  </tr>
+<% n = 1 %>
+<% @digital_params.each do |digital_param| %>
+  <tr <%= change_row_color %>>
+    <td align="right"><%= n %></td>
+    <td><%= digital_param.symbol %></td>
+    <td><%= get_deal_type(digital_param.deal_type) %></td>
+    <td><%= link_edit_to(digital_param,digital_param.param_name) %></td>
+    <td><%= digital_param.trade_param.title %></td>
+    <td><%= digital_param.param_value %></td>
+  </tr>
+  <% n += 1 %>
+<% end %>
+  <tr>
+    <td colspan="6" class="thead"></td>
+  </tr>
+</table>
+<br/>
+<%= link_to '新增交易对参数', new_digital_param_path, { id: 'add_new_digital_param' } %>

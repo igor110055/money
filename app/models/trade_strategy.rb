@@ -20,8 +20,4 @@ class TradeStrategy < ApplicationRecord
       presence: {
         message: $trade_strategy_trade_param_id_blank_err }
 
-  def set_trade_param_id
-      self.trade_param_id = TradeParam.find_by_name(param_name).id if TradeParam.find_by_name(param_name)
-  end
-
 end

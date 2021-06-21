@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info, :sync_digital_currency ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info, :sync_digital_currency, :sync_digital_param ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 建立回到目录页的方法
@@ -641,7 +641,7 @@ class ApplicationController < ActionController::Base
     end
     return true
   end
-  
+
   # 写入系统参数文档
   def write_to_system_params_file( text )
     if text and pass_system_params_check(text)

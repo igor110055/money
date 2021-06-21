@@ -166,4 +166,9 @@ class ApplicationRecord < ActiveRecord::Base
     end
   end
 
+  # 设定交易参数ID
+  def set_trade_param_id
+    self.trade_param_id = TradeParam.find_by_name(param_name).id if TradeParam.find_by_name(param_name)
+  end
+
 end

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :digital_params
   resources :trial_lists
   root 'deal_records#index_btc'
 
@@ -19,6 +20,11 @@ Rails.application.routes.draw do
     end
   end
   resources :digital_currencies do
+    member do
+      get :delete
+    end
+  end
+  resources :digital_params do
     member do
       get :delete
     end
@@ -143,5 +149,6 @@ Rails.application.routes.draw do
   get 'sync_tparam_info', to: 'main#sync_tparam_info'
   get 'sync_tstrategy_info', to: 'main#sync_tstrategy_info'
   get 'sync_digital_currency', to: 'main#sync_digital_currency'
+  get 'sync_digital_param', to: 'main#sync_digital_param'
 
 end

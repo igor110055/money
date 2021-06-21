@@ -339,6 +339,8 @@ cn:
   delete_trade_strategy: 删除这个策略
   digital_currency_index: 交易对列表
   delete_digital_currency: 删除此交易对
+  digital_param_index: 交易对参数列表
+  delete_digital_param: 删除此交易对参数
   activerecord:
     attributes:
       property:

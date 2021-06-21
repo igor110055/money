@@ -1,0 +1,32 @@
+<%= render 'shared/error_messages', object: @digital_param %>
+
+<%= form_for(@digital_param) do |f| %>
+<table>
+  <tr><td colspan="2" class="thead"><%= timestamps(@digital_param) %></td></tr>
+  <tr>
+    <td>交易对</td>
+    <td><%= f.select(:symbol, DigitalCurrency.all.collect {|d| [ d.symbol, d.symbol ]}) %></td>
+  </tr>
+  <tr>
+    <td>买卖别</td>
+    <td><%= f.select(:deal_type, trade_deal_type_arr) %></td>
+  </tr>
+  <tr>
+    <td>参数名</td>
+    <td><%= f.select(:param_name, TradeParam.all.collect {|p| [ "#{p.title} #{p.name}", p.name ]}) %></td>
+  </tr>
+  <tr>
+    <td>参数值</td>
+    <td><%= f.text_field(:param_value, onclick: select_all) %></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right" class="tfoot">
+      <%= f.submit( submit,id: submit_id) %>
+    </td>
+  </tr>
+</table>
+<% end %>
+<br/>
+<%= link_back_to_digital_params %>
+<%= link_to_delete(@digital_param) %>
+<p/>

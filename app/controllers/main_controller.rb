@@ -1076,6 +1076,26 @@ class MainController < ApplicationController
     end
   end
 
+  # 新增删除或修改交易对参数后能同步更新两台服务器
+  def sync_digital_param
+    sync_host(DigitalParam,'symbol,deal_type,param_name',true) do
+      if @rs and !params[:destroy]
+        @rs.update_attributes(
+          param_value: params[:param_value]
+        )
+      elsif @rs and params[:destroy]
+        @rs.destroy
+      elsif !@rs and !params[:destroy]
+        DigitalParam.create(
+          symbol: params[:symbol],
+          deal_type: params[:deal_type],
+          param_name: params[:param_name],
+          param_value: params[:param_value]
+        )
+      end
+    end
+  end
+
   private
 
     # 计算以现价购买的每笔投资金额
