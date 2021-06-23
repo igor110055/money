@@ -1041,4 +1041,9 @@ module ApplicationHelper
     end
   end
 
+  # 读取交易参数数据集
+  def get_trade_params
+    TradeParam.all.order(:order_num).collect {|p| [ "#{p.title} #{p.name}", p.name ]}
+  end
+
 end

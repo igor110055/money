@@ -9,7 +9,7 @@
   </tr>
   <tr>
     <td>参数名称：</td>
-    <td><%= f.select(:param_name, TradeParam.all.collect {|p| [ "#{p.title} #{p.name}", p.name ]}) %></td>
+    <td><%= f.select(:param_name, get_trade_params) %></td>
   </tr>
   <tr>
     <td>默认的值：</td>

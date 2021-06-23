@@ -744,18 +744,10 @@ class MainController < ApplicationController
     end
   end
 
-  def prepare_btc_invest_form
-    if params[:dtype] == 'buy'
-      @invest_params_value = File.read($auto_buy_btc_params_path)
-    else
-      @invest_params_value = File.read($auto_sell_btc_params_path)
-    end
-    @price_now = get_price_now
-  end
-
   # 设置智投参数表单
   def set_auto_invest_form
-    prepare_btc_invest_form
+    @invest_params_value = File.read($auto_buy_btc_params_path)
+    @price_now = get_price_now
   end
 
   # 简化自动交易参数的输入界面以便将来支援多种交易对的设定
@@ -794,7 +786,8 @@ class MainController < ApplicationController
 
   # 设置智投参数表单
   def set_auto_sell_btc_form
-    prepare_btc_invest_form
+    @invest_params_value = File.read($auto_sell_btc_params_path)
+    @price_now = get_price_now
     @price_pos = 0              # 价格小数点位数
     @price_step = 200             # 价格递增值
   end
