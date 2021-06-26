@@ -63,7 +63,7 @@ class PropertiesController < ApplicationController
     params[:property][:amount].gsub!(',','')
     params[:property][:sync_code].downcase!
     if @property.update_attributes(property_params)
-      put_notice t(:property_updated_ok) + add_id(@property) + add_amount(@property) + ' ' + sync_amount(params[:property][:sync_code],params[:property][:amount])
+      put_notice t(:property_updated_ok) + add_id(@property) + add_amount(@property) + ' ' + sync_amount(params[:property][:sync_code],params[:property][:name],params[:property][:amount])
       session[:path] ? go_back : go_properties
     else
       render action: :edit
@@ -71,21 +71,25 @@ class PropertiesController < ApplicationController
   end
 
   # 同步另一台服务器的资产值
-  def sync_amount( sync_code, amount )
-    send_sync_request "#{$host2}sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&value=#{amount}"
+  def sync_amount( sync_code, name, amount )
+    send_sync_request "#{$host2}sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&name=#{u(name)}&value=#{amount}"
   end
 
   # 由外部链接而来更新资产的金额
   def sync_asset_amount
     sync_host(Property,'sync_code') do
-      @rs.update_attribute(:amount,params[:value])
+      @rs.update_attributes(
+        name: params[:name],
+        amount: params[:value]
+      )
     end
   end
 
   # 从列表中快速更新资产金额
   def update_amount
     update_property_amount
-    put_notice sync_amount(Property.find(params[:id]).sync_code,eval("params[:new_amount_#{params[:id]}]"))
+    rs = Property.find(params[:id])
+    put_notice sync_amount(rs.sync_code,rs.name,eval("params[:new_amount_#{params[:id]}]"))
   end
 
   # 删除资产
