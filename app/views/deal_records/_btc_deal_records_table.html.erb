@@ -84,7 +84,7 @@
     <td width="15"><%= link_to '🏠', set_sbtc_as_home_path %></td>
     <td width="320">
       <% # 显示现价与k线图链接 %>
-      <%= kline_chart_link(to_n(btc_now,2)) %> | <%= kline_chart_link to_n(eth_now,2), "ethusdt" %> | <%= kline_chart_link to_n(eth_btc_now,5), "ethbtc" %> | <%= kline_chart_link to_n(doge_now,5), "dogeusdt" %>
+      <%= show_prices_and_chart_links(to_n(btc_now,2),to_n(eth_now,2),to_n(eth_btc_now,5),to_n(doge_now,5)) %>
     </td>
     <td>
       <% # 成交价 %>

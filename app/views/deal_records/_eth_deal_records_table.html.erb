@@ -10,6 +10,10 @@
   btc_now = get_btc_price
   # 以太坊现价
   eth_now = get_eth_price
+  # 以太坊兑比特币现价
+  eth_btc_now = btc_now > 0 ? eth_now/btc_now : 0
+  # 狗狗币现价
+  doge_now = get_doge_price
   # 交易所内剩余的以太坊
   @eth_amount_ex = DealRecord.eth_amount
   # 原有参与卖出的以太坊
@@ -76,11 +80,8 @@
   <tr class="thead">
     <td width="15"><%= link_to '🏠', set_eth_as_home_path %></td>
     <td width="320">
-      <% # 下单时间 %>
-      <%= link_to t(:deal_record_created), order_list_params('created_at') %>
-      |
       <% # 显示现价与k线图链接 %>
-      <%= kline_chart_link(to_n(btc_now,2)) %> | <%= kline_chart_link to_n(eth_now,2), "ethusdt" %> | <%= kline_chart_link to_n(eth_now/btc_now,6), "ethbtc" %>
+      <%= show_prices_and_chart_links(to_n(btc_now,2),to_n(eth_now,2),to_n(eth_btc_now,5),to_n(doge_now,5)) %>
     </td>
     <td>
       <% # 成交价 %>

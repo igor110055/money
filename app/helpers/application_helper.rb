@@ -1046,4 +1046,9 @@ module ApplicationHelper
     TradeParam.all.order(:order_num).collect {|p| [ "#{p.title} #{p.name}", p.name ]}
   end
 
+  # 显示现价与k线图链接
+  def show_prices_and_chart_links(btc_p,eth_p,ethbtc_p,doge_p)
+    kline_chart_link(btc_p)+' | '+kline_chart_link(eth_p,"ethusdt")+' | '+kline_chart_link(ethbtc_p,"ethbtc")+' | '+kline_chart_link(doge_p,"dogeusdt")
+  end
+
 end

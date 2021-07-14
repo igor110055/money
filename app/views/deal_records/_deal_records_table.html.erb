@@ -7,9 +7,13 @@
   total_real_profit_btc = max_buy_price = 0
 
   # 比特币现价
-  price_now = get_btc_price
+  btc_now = get_btc_price
   # 以太坊现价
   eth_now = get_eth_price
+  # 以太坊兑比特币现价
+  eth_btc_now = btc_now > 0 ? eth_now/btc_now : 0
+  # 狗狗币现价
+  doge_now = get_doge_price
   # 原有参与投资的泰达币
   @ori_usdt = get_invest_params(3).to_f
   # 自动买入的最大仓位值
@@ -47,7 +51,7 @@
   end
 
   # 现价栏位是否按照比特币现价来执行计算
-  def cal_with_price_now?( dr )
+  def cal_with_btc_now?( dr )
     !dr.real_profit or dr.real_profit == 0
   end
 
@@ -134,8 +138,10 @@
     <td width="15"><%= link_to '🏠', set_btc_as_home_path %></td>
     <td width="280">
       <% # 下单时间 %>
-      <%= link_to t(:deal_record_created), order_list_params('created_at') %> |
-      <%= set_auto_invest_form_link('BTC','参数设定',dtype:'buy') %>
+      <%= link_to '时间', order_list_params('created_at') %> |
+      <%= set_auto_invest_form_link('BTC','参数设定',dtype:'buy') %> |
+      <% # 显示买入策略文字 %>
+      <%= show_buy_strategy %>
     </td>
     <td>
       <% # 成交价 %>
@@ -191,16 +197,16 @@
       </td>
       <td align="right">
         <% # 现值 %>
-        <%= cny_amount_now = cal_with_price_now?(dr) ? \
+        <%= cny_amount_now = cal_with_btc_now?(dr) ? \
         to_n(dr.cny_amount_now,1) : to_n(cny_amount.to_f + dr.real_profit.to_f,1) %>
       </td>
       <td align="right">
         <% # 盈亏 %>
-        <%= earn_or_loss = dr.earn_or_loss if cal_with_price_now?(dr) %>
+        <%= earn_or_loss = dr.earn_or_loss if cal_with_btc_now?(dr) %>
       </td>
       <td align="right">
         <% # 利率 %>
-        <%= profit = to_n(earn_or_loss.to_f/cny_amount.to_f*100) if cal_with_price_now?(dr) %>
+        <%= profit = to_n(earn_or_loss.to_f/cny_amount.to_f*100) if cal_with_btc_now?(dr) %>
       </td>
       <td align="right">
         <% # 成交量 %>
@@ -290,9 +296,7 @@
   <tr class="thead">
     <td colspan="2">
       <% # 显示现价与k线图链接 %>
-      <%= kline_chart_link(to_n(price_now,2)) %> | <%= kline_chart_link to_n(@eth_price), "ethusdt" %>
-      <% # 显示买入策略文字 %>
-      <%= show_buy_strategy %>
+      <%= show_prices_and_chart_links(to_n(btc_now,2),to_n(@eth_price),to_n(eth_btc_now,5),to_n(doge_now,5)) %>
     </td>
     <td align="right">
       <% # 显示成交均价|额度翻倍的最大购买价 %>
