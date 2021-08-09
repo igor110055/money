@@ -411,6 +411,18 @@ module ApplicationHelper
     @properties_net_value_cny = Property.net_value :cny, admin_hash(admin)
   end
 
+  def show_trial_cost_month_from_tag
+    $trial_cost_month_from_tag == '' ? '流动性资产' : $trial_cost_month_from_tag
+  end
+
+  def properties_tags_link
+    if $trial_cost_month_from_tag == ''
+      properties_path(extags:'贷款 房产',mode:'a',pid:13,portfolio_name:'流动性资产总值',tags:$total_flow_assets_tags)
+    else
+      properties_path(tags:$trial_cost_month_from_tag)
+    end
+  end
+
   # 显示资产净值链接
   def show_net_value_link
     reload_net_value
@@ -426,6 +438,7 @@ module ApplicationHelper
     loan_lixi_twd = Property.loan_lixi.to_i # 所有贷款含利息(135/170)
     month_cost_max = $trial_cost_month_grow_limit # 每月生活费上限
     keep_years = $keep_life_years # 至少保留几年的生活费
+    tag_value_twd = total_flow_assets_twd if $trial_cost_month_from_tag == '' # 空白表示显示流动性资产总值
     if admin?
       flow_subtract_loan_twd = total_flow_assets_twd - total_loan_lixi_twd # 总的流动性扣除贷款
       remain_months = (tag_value_twd*twd2cny/month_cost_max).to_i
@@ -437,7 +450,8 @@ module ApplicationHelper
     remain_money = tag_value_twd*twd2cny-(keep_years*12+1)*month_cost_max
     remain_bitcoin = remain_money*cny2btc
     @remain_money_to_invest = remain_money
-    @remain_invest_str = "扣除#{keep_years}年生活费后可用于投资的金额为:¥#{remain_money.to_i}(฿#{remain_bitcoin.floor(6)})"
+    @month_cost_str = "生活费(¥#{month_cost_max}/月)"
+    @remain_invest_str = "扣除#{keep_years}年#{@month_cost_str}后的投资额:¥#{remain_money.to_i}(฿#{remain_bitcoin.floor(4)})"
     flow_subtract_loan_cny = (flow_subtract_loan_twd*twd2cny).to_i
     if admin?
       main_info = "<span id=\"properties_net_value_twd\" title=\"总资产扣除贷款：#{@properties_net_value_twd.to_i}\n#{t(:cny)}资产净值：#{@properties_net_value_cny.to_i}\n流动性资产总值：#{flow_assets_twd}\n比特币资产总值：#{btc_value_twd}\n所有贷款含利息：#{total_loan_lixi_twd}\n流动性扣除贷款：#{flow_subtract_loan_twd}\">\
@@ -452,7 +466,7 @@ module ApplicationHelper
       flow_assets_info = "#{(flow_assets_twd*twd2cny).to_i}|#{flow_assets_twd}"
     end
     month_growth_rate =
-    raw "#{main_info}#{addon_info}|<span title=\"#{$trial_cost_month_from_tag}资产总值(¥#{flow_assets_info})可用于生活#{remain_months}月(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(to_n(remain_months/12.0,1),properties_path(tags:$trial_cost_month_from_tag))}年</span>"
+    raw "#{main_info}#{addon_info}|<span title=\"#{$show_trial_cost_month_from_tag}总值(¥#{flow_assets_info})可用于生活#{remain_months}月(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(to_n(remain_months/12.0,1),properties_tags_link)}年</span>"
   end
 
   # Fusioncharts属性大全: http://wenku.baidu.com/link?url=JUwX7IJwCbYMnaagerDtahulirJSr5ASDToWeehAqjQPfmRqFmm8wb5qeaS6BsS7w2_hb6rCPmeig2DBl8wzwb2cD1O0TCMfCpwalnoEDWa
