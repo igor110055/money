@@ -423,10 +423,16 @@ module ApplicationHelper
     end
   end
 
+  # 修正若分类名称遇到空白则显示默认的流动性资产总值
+  def trial_cost_month_name
+   $trial_cost_month_from_tag.empty? ? '流动性资产' : $trial_cost_month_from_tag
+ end
+
   # 显示资产净值链接
   def show_net_value_link
     reload_net_value
     twd2cny = Property.new.twd_to_cny
+    cny2twd = Property.new.cny_to_twd
     cny2btc = Property.new.cny_to_btc
     total_flow_assets_twd = Property.total_flow_assets_twd.to_i # 总的流动性资产总值
     total_flow_assets_cny = (total_flow_assets_twd*twd2cny).to_i
@@ -465,8 +471,12 @@ module ApplicationHelper
       addon_info = ''
       flow_assets_info = "#{(flow_assets_twd*twd2cny).to_i}|#{flow_assets_twd}"
     end
+    # 计算以现有资金均摊到每个月的生活费
+    ave_month_useable = (tag_value_twd*twd2cny/(keep_years*12)).to_i
+    # 计算以现有资金除以每个月生活费能撑几年
+    years_useable = to_n(remain_months/12.0,1)
     month_growth_rate =
-    raw "#{main_info}#{addon_info}|<span title=\"#{$show_trial_cost_month_from_tag}总值(¥#{flow_assets_info})可用于生活#{remain_months}月(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(to_n(remain_months/12.0,1),properties_tags_link)}年</span>"
+    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}</span>|<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{(ave_month_useable*cny2twd).to_i})\">#{ave_month_useable}</span>"
   end
 
   # Fusioncharts属性大全: http://wenku.baidu.com/link?url=JUwX7IJwCbYMnaagerDtahulirJSr5ASDToWeehAqjQPfmRqFmm8wb5qeaS6BsS7w2_hb6rCPmeig2DBl8wzwb2cD1O0TCMfCpwalnoEDWa
