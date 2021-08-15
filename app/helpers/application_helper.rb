@@ -476,7 +476,7 @@ module ApplicationHelper
     # 计算以现有资金除以每个月生活费能撑几年
     years_useable = to_n(remain_months/12.0,1)
     month_growth_rate =
-    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}</span>|<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{(ave_month_useable*cny2twd).to_i})\">#{ave_month_useable}</span>"
+    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}</span>|<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{(ave_month_useable*cny2twd).to_i})\">#{ave_month_useable}(#{keep_years})</span>"
   end
 
   # Fusioncharts属性大全: http://wenku.baidu.com/link?url=JUwX7IJwCbYMnaagerDtahulirJSr5ASDToWeehAqjQPfmRqFmm8wb5qeaS6BsS7w2_hb6rCPmeig2DBl8wzwb2cD1O0TCMfCpwalnoEDWa
