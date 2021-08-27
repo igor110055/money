@@ -466,7 +466,7 @@ module ApplicationHelper
       #{link_to(@properties_net_value_twd.to_i/10000, records_path(num:2,chart:1), target: :blank)}(¥#{@properties_net_value_cny.to_i/10000})</span>"
       addon_info = " |<span id=\"properties_net_value_cny\" title=\"流动性资产总值(不含贷款)：#{total_flow_assets_twd}(¥#{total_flow_assets_cny})\">\
       #{link_to(total_flow_assets_twd/10000,'/properties?extags=&mode=a&pid=13&portfolio_name=流动性资产总值&tags='+$total_flow_assets_tags)}(¥#{total_flow_assets_cny/10000})</span> | <span title=\"流动性资产扣除贷款的净值：#{flow_subtract_loan_twd}(¥#{flow_subtract_loan_cny})|#{t(:begin_profit_price)}:#{Property.begin_profit_price.to_i}\">\
-      #{flow_subtract_loan_twd/10000}(¥#{flow_subtract_loan_cny/10000})</span> ｜ <span id=\"net_growth_ave_month\" title=\"#{$net_start_date}起资产净值每月增加¥#{@properties_net_growth_ave_month_cny}(#{@properties_net_growth_ave_month})\">#{net_growth_ave_month_cny}</span>|<span title=\"#{Property.cal_year_profit}\">#{link_to(to_n((Property.cal_year_profit_p-1)*100,1)+'%',trial_lists_path)}</span>"
+      #{flow_subtract_loan_twd/10000}(¥#{flow_subtract_loan_cny/10000})</span> ｜ <span id=\"net_growth_ave_month\" title=\"#{$net_start_date}起资产净值每月增加¥#{@properties_net_growth_ave_month_cny}(#{@properties_net_growth_ave_month})\">#{net_growth_ave_month_cny}</span>"
       flow_assets_info = "#{(tag_value_twd*twd2cny).to_i}|#{tag_value_twd}"
     else
       main_info = "<span id=\"flow_subtract_loan_twd\" title=\"减去贷款后的流动性资产总值\">¥#{link_to((flow_subtract_loan_twd*twd2cny).to_i, records_path(num:2,chart:1), target: :blank)}</span>"
@@ -480,7 +480,7 @@ module ApplicationHelper
     # 计算以现有资金除以每个月生活费能撑几年
     years_useable = to_n(remain_months/12.0,1)
     month_growth_rate =
-    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}</span>|<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{(ave_month_useable*cny2twd).to_i})\">#{ave_month_useable}</span>|<span title=\"#{trial_cost_month_name}加新光保单ATM可借余额均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable_plus}|#{(ave_month_useable_plus*cny2twd).to_i})\">#{ave_month_useable_plus}(#{keep_years})</span>"
+    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}(#{remain_months})</span>|<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{(ave_month_useable*cny2twd).to_i})\">#{ave_month_useable}</span>|<span title=\"#{trial_cost_month_name}加新光保单ATM可借余额均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable_plus}|#{(ave_month_useable_plus*cny2twd).to_i})\">#{ave_month_useable_plus}(#{keep_years})</span>"
   end
 
   # Fusioncharts属性大全: http://wenku.baidu.com/link?url=JUwX7IJwCbYMnaagerDtahulirJSr5ASDToWeehAqjQPfmRqFmm8wb5qeaS6BsS7w2_hb6rCPmeig2DBl8wzwb2cD1O0TCMfCpwalnoEDWa
