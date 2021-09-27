@@ -479,8 +479,10 @@ module ApplicationHelper
     ave_month_useable_plus = ((tag_value_twd+$loan_max_twd)*twd2cny/(keep_years*12)).to_i
     # 计算以现有资金除以每个月生活费能撑几年
     years_useable = to_n(remain_months/12.0,1)
+    # 计算以(现有资金+新光保单ATM可借余额)除以每个月生活费能撑几个月
+    months_useable_plus = ((tag_value_twd+$loan_max_twd)*twd2cny/month_cost_max).to_i
     month_growth_rate =
-    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}(#{remain_months})</span>|<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{(ave_month_useable*cny2twd).to_i})\">#{ave_month_useable}</span>|<span title=\"#{trial_cost_month_name}加新光保单ATM可借余额均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable_plus}|#{(ave_month_useable_plus*cny2twd).to_i})\">#{ave_month_useable_plus}(#{keep_years})</span>"
+    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}个月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})加上贷款最多可生活#{months_useable_plus}个月或#{to_n(months_useable_plus/12.0,1)}年。#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}:(#{remain_months}|#{months_useable_plus})</span>|#{keep_years}:(<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{(ave_month_useable*cny2twd).to_i})\">#{ave_month_useable}</span>|<span title=\"#{trial_cost_month_name}加新光保单ATM可借余额均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable_plus}|#{(ave_month_useable_plus*cny2twd).to_i})\">#{ave_month_useable_plus}</span>)"
   end
 
   # Fusioncharts属性大全: http://wenku.baidu.com/link?url=JUwX7IJwCbYMnaagerDtahulirJSr5ASDToWeehAqjQPfmRqFmm8wb5qeaS6BsS7w2_hb6rCPmeig2DBl8wzwb2cD1O0TCMfCpwalnoEDWa
