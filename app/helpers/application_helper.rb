@@ -456,17 +456,22 @@ module ApplicationHelper
     remain_money = tag_value_twd*twd2cny-(keep_years*12+1)*month_cost_max
     remain_bitcoin = remain_money*cny2btc
     @remain_money_to_invest = remain_money
-    @month_cost_str = "生活费(¥#{month_cost_max}/月)"
+    # 依照统计币别显示每月生活费
+    month_cost_max_twd = (month_cost_max*cny2twd).to_i
+    show_month_cost_max = $show_value_cur == 'CNY' ? "¥#{month_cost_max}" : month_cost_max_twd
+    @month_cost_str = "生活费(#{show_month_cost_max}/月)"
     @remain_invest_str = "扣除#{keep_years}年#{@month_cost_str}后的投资额:¥#{remain_money.to_i}(฿#{remain_bitcoin.floor(4)})"
     flow_subtract_loan_cny = (flow_subtract_loan_twd*twd2cny).to_i
     net_growth_ave_month_twd = to_n(@properties_net_growth_ave_month/10000.0,1)
     net_growth_ave_month_cny = to_n(@properties_net_growth_ave_month_cny/10000.0,1)
+    # 依照统计币别显示资产净值平均每月增加多少
+    show_net_growth_month = $show_value_cur == 'CNY' ? net_growth_ave_month_cny : net_growth_ave_month_twd
     if admin?
       main_info = "<span id=\"properties_net_value_twd\" title=\"总资产扣除贷款：#{@properties_net_value_twd.to_i}\n#{t(:cny)}资产净值：#{@properties_net_value_cny.to_i}\n流动性资产总值：#{flow_assets_twd}\n比特币资产总值：#{btc_value_twd}\n所有贷款含利息：#{total_loan_lixi_twd}\n流动性扣除贷款：#{flow_subtract_loan_twd}\">\
       #{link_to(@properties_net_value_twd.to_i/10000, records_path(num:2,chart:1), target: :blank)}(¥#{@properties_net_value_cny.to_i/10000})</span>"
       addon_info = " |<span id=\"properties_net_value_cny\" title=\"流动性资产总值(不含贷款)：#{total_flow_assets_twd}(¥#{total_flow_assets_cny})\">\
       #{link_to(total_flow_assets_twd/10000,'/properties?extags=&mode=a&pid=13&portfolio_name=流动性资产总值&tags='+$total_flow_assets_tags)}(¥#{total_flow_assets_cny/10000})</span> | <span title=\"流动性资产扣除贷款的净值：#{flow_subtract_loan_twd}(¥#{flow_subtract_loan_cny})|#{t(:begin_profit_price)}:#{Property.begin_profit_price.to_i}\">\
-      #{flow_subtract_loan_twd/10000}(¥#{flow_subtract_loan_cny/10000})</span> ｜ <span id=\"net_growth_ave_month\" title=\"#{$net_start_date}起资产净值每月增加¥#{@properties_net_growth_ave_month_cny}(#{@properties_net_growth_ave_month})\">#{net_growth_ave_month_cny}</span>"
+      #{flow_subtract_loan_twd/10000}(¥#{flow_subtract_loan_cny/10000})</span> ｜ <span id=\"net_growth_ave_month\" title=\"#{$net_start_date}起资产净值每月增加¥#{@properties_net_growth_ave_month_cny}(#{@properties_net_growth_ave_month})\">#{show_net_growth_month}</span>"
       flow_assets_info = "#{(tag_value_twd*twd2cny).to_i}|#{tag_value_twd}"
     else
       main_info = "<span id=\"flow_subtract_loan_twd\" title=\"减去贷款后的流动性资产总值\">¥#{link_to((flow_subtract_loan_twd*twd2cny).to_i, records_path(num:2,chart:1), target: :blank)}</span>"
@@ -481,8 +486,13 @@ module ApplicationHelper
     years_useable = to_n(remain_months/12.0,1)
     # 计算以(现有资金+新光保单ATM可借余额)除以每个月生活费能撑几个月
     months_useable_plus = ((tag_value_twd+$loan_max_twd)*twd2cny/month_cost_max).to_i
+    ave_month_useable_twd = (ave_month_useable*cny2twd).to_i
+    ave_month_useable_plus_twd = (ave_month_useable_plus*cny2twd).to_i
+    # 依照统计币别显示 ave_month_useable 和 ave_month_useable_plus
+    show_ave_month_useable = $show_value_cur == 'CNY' ? "¥#{ave_month_useable}" : ave_month_useable_twd
+    show_ave_month_useable_plus = $show_value_cur == 'CNY' ? "¥#{ave_month_useable_plus}" : ave_month_useable_plus_twd
     month_growth_rate =
-    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}个月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})加上贷款最多可生活#{months_useable_plus}个月或#{to_n(months_useable_plus/12.0,1)}年。#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}:(#{remain_months}|#{months_useable_plus})</span>|#{keep_years}:(<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{(ave_month_useable*cny2twd).to_i})\">#{ave_month_useable}</span>|<span title=\"#{trial_cost_month_name}加新光保单ATM可借余额均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable_plus}|#{(ave_month_useable_plus*cny2twd).to_i})\">#{ave_month_useable_plus}</span>)"
+    raw "#{main_info}#{addon_info}|<span title=\"#{trial_cost_month_name}总值(¥#{flow_assets_info})可用于生活#{remain_months}个月或#{years_useable}年(每月¥#{month_cost_max}|#{(month_cost_max/twd2cny).to_i})加上贷款最多可生活#{months_useable_plus}个月或#{to_n(months_useable_plus/12.0,1)}年。#{@remain_invest_str}\">#{link_to(years_useable,properties_tags_link)}:(#{remain_months}|#{months_useable_plus})</span>|#{keep_years}:(<span title=\"#{trial_cost_month_name}均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable}|#{ave_month_useable_twd})\">#{show_ave_month_useable}</span>|<span title=\"#{trial_cost_month_name}加新光保单ATM可借余额均摊到#{keep_years}年的每月生活费(¥#{ave_month_useable_plus}|#{ave_month_useable_plus_twd})\">#{show_ave_month_useable_plus}</span>)"
   end
 
   # Fusioncharts属性大全: http://wenku.baidu.com/link?url=JUwX7IJwCbYMnaagerDtahulirJSr5ASDToWeehAqjQPfmRqFmm8wb5qeaS6BsS7w2_hb6rCPmeig2DBl8wzwb2cD1O0TCMfCpwalnoEDWa
