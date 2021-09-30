@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data, :sync_asset_amount, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info, :sync_digital_currency, :sync_digital_param ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_create_asset, :sync_update_asset, :sync_update_amount, :sync_destroy_asset, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info, :sync_digital_currency, :sync_digital_param ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 建立回到目录页的方法
@@ -776,7 +776,7 @@ class ApplicationController < ActionController::Base
   # 由外部链接而来更新某项数据
   def sync_host( class_name, field_name, include_new = false )
     if params[:key] == $api_key and params[:sync_code]
-      @rs = get_sync_record(class_name,field_name,params[:sync_code].downcase)
+      @rs = get_sync_record(class_name,field_name,params[:sync_code].downcase) if field_name
       # 如果只能更新
       if !include_new
         @rs = get_sync_record(class_name,field_name,params[:sync_code].downcase)
@@ -816,7 +816,11 @@ class ApplicationController < ActionController::Base
 
   # 将字符串编码后代入Net::HTTP.get_response(URI(url))
   def u( text )
-    URI::escape(text)
+    if !text.nil?
+      URI::escape(text)
+    else
+      return ''
+    end
   end
 
 end

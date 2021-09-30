@@ -1,7 +1,7 @@
 class PropertiesController < ApplicationController
 
   before_action :set_property, only: [:edit, :update, :update_amount, :destroy, :delete]
-  after_action :update_all_portfolio_attributes, only: [:create, :destroy]
+  # after_action :update_all_portfolio_attributes, only: [:create, :destroy]
 
   # 资产负债列表
   def index
@@ -43,10 +43,24 @@ class PropertiesController < ApplicationController
   def create
     @property = Property.new(property_params)
     if @property.save
-      put_notice t(:property_created_ok)
-      go_properties
+      put_notice t(:property_created_ok) + sync_create_property
+      back_last_page
     else
       render :new
+    end
+  end
+
+  # 同步另一台服务器的新建资产
+  def sync_create_property
+    send_sync_request "#{$host2}sync_create_asset.json#{url_params}"
+  end
+
+  # 由外部链接而来新建资产
+  def sync_create_asset
+    sync_host(Property,nil,true) do
+      if !Property.find_by_sync_code(params[:sync_code])
+        Property.new(data_params).save
+      end
     end
   end
 
@@ -63,45 +77,67 @@ class PropertiesController < ApplicationController
     params[:property][:amount].gsub!(',','')
     params[:property][:sync_code].downcase!
     if @property.update_attributes(property_params)
-      put_notice t(:property_updated_ok) + add_id(@property) + add_amount(@property) + ' ' + sync_amount(params[:property][:sync_code],params[:property][:name],params[:property][:amount])
-      session[:path] ? go_back : go_properties
+      put_notice t(:property_updated_ok) + add_id(@property) + add_amount(@property) + ' ' + sync_update_property
+      back_last_page
     else
       render action: :edit
     end
   end
 
-  # 同步另一台服务器的资产值
-  def sync_amount( sync_code, name, amount )
-    send_sync_request "#{$host2}sync_asset_amount.json?key=#{$api_key}&sync_code=#{sync_code.downcase}&name=#{u(name)}&value=#{amount}"
+  # 同步另一台服务器的资产
+  def sync_update_property
+    send_sync_request "#{$host2}sync_update_asset.json#{url_params}"
   end
 
-  # 由外部链接而来更新资产的金额
-  def sync_asset_amount
+  # 由外部链接而来更新资产
+  def sync_update_asset
     sync_host(Property,'sync_code') do
-      @rs.update_attributes(
-        name: params[:name],
-        amount: params[:value]
-      )
+      @rs.update_attributes(data_params)
     end
   end
 
   # 从列表中快速更新资产金额
   def update_amount
     update_property_amount
-    rs = Property.find(params[:id])
-    put_notice sync_amount(rs.sync_code,rs.name,eval("params[:new_amount_#{params[:id]}]"))
+    sync_code = Property.find(params[:id]).sync_code
+    new_amount = eval("params[:new_amount_#{params[:id]}]")
+    put_notice sync_amount(sync_code,new_amount)
+  end
+
+  # 同步另一台服务器的资产数值
+  def sync_amount( sync_code, new_amount )
+    send_sync_request "#{$host2}sync_update_amount.json?key=#{$api_key}&sync_code=#{sync_code}&amount=#{new_amount}"
+  end
+
+  # 由外部链接而来更新资产的数值
+  def sync_update_amount
+    sync_host(Property,'sync_code') do
+      @rs.update_attribute(:amount,params[:amount])
+    end
   end
 
   # 删除资产
   def destroy
     @property.destroy
-    put_notice t(:property_destroy_ok)
-    go_properties
+    put_notice t(:property_destroy_ok) + sync_destroy_property(@property.sync_code)
+    back_last_page
   end
 
   # 删除资产
   def delete
     destroy
+  end
+
+  # 同步另一台服务器的删除资产
+  def sync_destroy_property( sync_code )
+    send_sync_request "#{$host2}sync_destroy_asset.json?key=#{$api_key}&sync_code=#{sync_code}"
+  end
+
+  # 由外部链接而来更新资产的数值
+  def sync_destroy_asset
+    sync_host(Property,'sync_code') do
+      @rs.destroy
+    end
   end
 
   # 跳转至显示流动性资产总值画面
@@ -110,6 +146,11 @@ class PropertiesController < ApplicationController
   end
 
   private
+
+    # 返回上一页面
+    def back_last_page
+      session[:path] ? go_back : go_properties
+    end
 
     # 取出特定的某笔数据
     def set_property
@@ -128,6 +169,24 @@ class PropertiesController < ApplicationController
       else
         params.require(:property).permit(:name,:amount,:currency_id)
       end
+    end
+
+    # 组成网址参数
+    def url_params
+      "?key=#{$api_key}&sync_code=#{params[:property][:sync_code].downcase}&name=#{u(params[:property][:name])}&amount=#{params[:property][:amount]}&currency_id=#{params[:property][:currency_id]}&is_hidden=#{params[:property][:is_hidden]}&is_locked=#{params[:property][:is_locked]}&tag_list=#{u(params[:property][:tag_list])}"
+    end
+
+    # 组成数据库参数
+    def data_params
+      {
+        sync_code: params[:sync_code],
+        name: params[:name],
+        amount: params[:amount],
+        currency_id: params[:currency_id],
+        is_hidden: params[:is_hidden],
+        is_locked: params[:is_locked],
+        tag_list: params[:tag_list]
+      }
     end
 
 end
