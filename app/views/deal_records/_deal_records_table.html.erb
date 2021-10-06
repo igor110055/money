@@ -339,7 +339,7 @@
       %>
       <% # 显示比特币仓位现况 %>
       | <%= to_n(DealRecord.btc_level,2) %>/<span title="自动买入的最大仓位值"><%= @max_buy_level %>(¥<%=@max_buy_cny.to_i%>)</span>
-      | <span title="交易所内剩余的泰达币合人民币的值">¥<%= @usdt2cny_ex.to_i %>可投</span>
+      | <span title="交易所内剩余的泰达币合人民币的值">¥<%= @usdt2cny_ex.to_i %></span>
     </td>
     <td align="right" colspan="2">
       <% # 显示资产净值与走势图链接 %>
