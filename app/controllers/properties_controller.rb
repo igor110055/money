@@ -173,7 +173,7 @@ class PropertiesController < ApplicationController
 
     # 组成网址参数
     def url_params
-      "?key=#{$api_key}&sync_code=#{params[:property][:sync_code].downcase}&name=#{u(params[:property][:name])}&amount=#{params[:property][:amount]}&currency_id=#{params[:property][:currency_id]}&is_hidden=#{params[:property][:is_hidden]}&is_locked=#{params[:property][:is_locked]}&tag_list=#{u(params[:property][:tag_list])}"
+      "?key=#{$api_key}&sync_code=#{params[:property][:sync_code].downcase}&name=#{u(params[:property][:name])}&amount=#{params[:property][:amount]}&currency_id=#{params[:property][:currency_id]}&is_hidden=#{params[:property][:is_hidden]}&is_locked=#{params[:property][:is_locked]}&tag_list=#{u(params[:property][:tag_list])}&currency_code=#{get_currency_code(params[:property][:currency_id])}"
     end
 
     # 组成数据库参数
@@ -182,11 +182,19 @@ class PropertiesController < ApplicationController
         sync_code: params[:sync_code],
         name: params[:name],
         amount: params[:amount],
-        currency_id: params[:currency_id],
+        currency_id: get_currency_id(params[:currency_code]),
         is_hidden: params[:is_hidden],
         is_locked: params[:is_locked],
         tag_list: params[:tag_list]
       }
+    end
+
+    def get_currency_id( code )
+      Currency.find_by_code(code).id
+    end
+
+    def get_currency_code( id )
+      Currency.find(id).code
     end
 
 end

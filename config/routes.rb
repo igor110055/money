@@ -153,5 +153,8 @@ Rails.application.routes.draw do
   get 'sync_tstrategy_info', to: 'main#sync_tstrategy_info'
   get 'sync_digital_currency', to: 'main#sync_digital_currency'
   get 'sync_digital_param', to: 'main#sync_digital_param'
-
+  get 'sync_create_currency', to: 'currencies#sync_create_currency'
+  get 'sync_update_currency', to: 'currencies#sync_update_currency'
+  get 'sync_destroy_currency', to: 'currencies#sync_destroy_currency'
+  
 end

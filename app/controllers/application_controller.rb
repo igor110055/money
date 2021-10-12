@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  before_action :check_login, except: [ :login, :update_all_data, :sync_create_asset, :sync_update_asset, :sync_update_amount, :sync_destroy_asset, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info, :sync_digital_currency, :sync_digital_param ]
+  before_action :check_login, except: [ :login, :update_all_data, :sync_create_asset, :sync_update_asset, :sync_update_amount, :sync_destroy_asset, :sync_interest_info, :sync_tparam_info, :sync_tstrategy_info, :sync_create_currency, :sync_update_currency, :sync_destroy_currency, :sync_digital_currency, :sync_digital_param ]
   before_action :summary, :memory_back, only: [ :index ]
 
   # 建立回到目录页的方法
@@ -774,24 +774,25 @@ class ApplicationController < ActionController::Base
   end
 
   # 由外部链接而来更新某项数据
-  def sync_host( class_name, field_name, include_new = false )
+  def sync_host( class_name, field_name, include_new = false, do_upcase = false )
     if params[:key] == $api_key and params[:sync_code]
-      @rs = get_sync_record(class_name,field_name,params[:sync_code].downcase) if field_name
+      sync_code = do_upcase ? params[:sync_code].upcase : params[:sync_code].downcase
+      @rs = get_sync_record(class_name,field_name,sync_code) if field_name
       # 如果只能更新
       if !include_new
-        @rs = get_sync_record(class_name,field_name,params[:sync_code].downcase)
+        @rs = get_sync_record(class_name,field_name,sync_code)
         if @rs # 只能执行更新且找到数据记录
           if block_given?
             yield
             status_str = "updated_ok(#{Time.now})"
-            info_str = "sync_code:#{params[:sync_code]}"
+            info_str = "sync_code:#{sync_code}"
           else
             status_str = 'error'
             info_str = 'No block given'
           end
         else # 只能执行更新且找不到数据记录
           status_str = 'error'
-          info_str = 'Record not find'
+          info_str = "Record not find(sync_code:#{sync_code})"
         end
       end
       # 如果包含新增
@@ -799,7 +800,7 @@ class ApplicationController < ActionController::Base
         if block_given?
           yield
           status_str = "created_or_updated_ok(#{Time.now})"
-          info_str = "sync_code:#{params[:sync_code]}"
+          info_str = "sync_code:#{sync_code}"
         else
           status_str = 'error'
           info_str = 'No block given'
@@ -812,6 +813,11 @@ class ApplicationController < ActionController::Base
         render plain: "无效的请求，必须经由API来调用！"
       end
     end
+  end
+
+  # 判断字符串是否为全大写
+  def all_upcase?( string )
+    !string[/[[:lower:]]/]
   end
 
   # 将字符串编码后代入Net::HTTP.get_response(URI(url))
