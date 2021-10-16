@@ -426,7 +426,41 @@ module ApplicationHelper
   # 修正若分类名称遇到空白则显示默认的流动性资产总值
   def trial_cost_month_name
    $trial_cost_month_from_tag.empty? ? '流动性资产' : $trial_cost_month_from_tag
- end
+  end
+
+  # 回传比特币总数
+  def sum_of_btc
+    Property.tagged_with('比特币').sum {|p| p.amount}
+  end
+
+  # 回传以太坊总数
+  def sum_of_eth
+    Property.tagged_with('以太坊').sum {|p| p.amount}
+  end
+
+  # 比特币持有数相当于多少人民币
+  def btc_eq_cny
+    @p_btc ||= sum_of_btc
+   (@p_btc*get_btc_price*$usdt_to_cny).to_i
+  end
+
+  # 以太坊持有数相当于多少人民币
+  def eth_eq_cny
+    @p_eth ||= sum_of_eth
+   (@p_eth*get_eth_price*$usdt_to_cny).to_i
+  end
+
+  # 比特币持有数相当于多少台币
+  def btc_eq_twd
+    @cny2twd ||= Property.new.cny_to_twd
+   (btc_eq_cny*@cny2twd).to_i
+  end
+
+  # 以太坊持有数相当于多少台币
+  def eth_eq_twd
+    @cny2twd ||= Property.new.cny_to_twd
+   (eth_eq_cny*@cny2twd).to_i
+  end
 
   # 显示资产净值链接
   def show_net_value_link
@@ -434,6 +468,7 @@ module ApplicationHelper
     twd2cny = Property.new.twd_to_cny
     cny2twd = Property.new.cny_to_twd
     cny2btc = Property.new.cny_to_btc
+    cny2usdt = Property.new.cny_to_usdt
     total_flow_assets_twd = Property.total_flow_assets_twd.to_i # 总的流动性资产总值
     total_flow_assets_cny = (total_flow_assets_twd*twd2cny).to_i
     flow_assets_twd = Property.flow_assets_twd.to_i # 流动性资产总值(135/170)
@@ -459,7 +494,14 @@ module ApplicationHelper
     # 依照统计币别显示每月生活费
     month_cost_max_twd = (month_cost_max*cny2twd).to_i
     show_month_cost_max = $show_value_cur == 'CNY' ? "¥#{month_cost_max}" : month_cost_max_twd
-    @month_cost_str = "生活费(#{show_month_cost_max}/月)"
+    # 计算能维持生活费到设定的年数所需要的币价 (总费用-以太坊总值-新光保单ATM可借余额)/比特币个数/汇率
+    @p_btc ||= sum_of_btc
+    begin
+      btc_price_goal_of_keep_years = ((month_cost_max*keep_years*12-eth_eq_cny-($loan_max_twd*twd2cny))/@p_btc*cny2usdt).to_i
+    rescue
+      btc_price_goal_of_keep_years = 0
+    end
+    @month_cost_str = "生活费(#{show_month_cost_max}/月) 维持#{keep_years}年的目标币价为: #{btc_price_goal_of_keep_years}"
     @remain_invest_str = "扣除#{keep_years}年#{@month_cost_str}后的投资额:¥#{remain_money.to_i}(฿#{remain_bitcoin.floor(4)})"
     flow_subtract_loan_cny = (flow_subtract_loan_twd*twd2cny).to_i
     net_growth_ave_month_twd = to_n(@properties_net_growth_ave_month/10000.0,1)

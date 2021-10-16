@@ -4,18 +4,18 @@
   # 获得所有宏观统计数据
   p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit, total_unsell_profit, ave_hour_profit, total_real_p_24h, trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay_twd, p_ex_twd, p_mine_earn_twd, flow_assets_twd, flow_plus_mine_twd = Property.invest_to_btc( admin? )
 
-  @p_btc = p_btc
-  @p_eth = p_eth
-  @btc_p = btc_p
-  @eth_p = eth_p
-  @p_trezor_twd = p_trezor_twd.to_i
-  @p_trezor_cny = (@p_trezor_twd*@twd2cny).to_i
-  @p_alipay_twd = p_alipay_twd.to_i
-  @p_ex_twd = p_ex_twd.to_i
-  @p_mine_earn_twd = p_mine_earn_twd.to_i
-  @p_mine_cost_cny = total_mine_cost
-  @flow_assets_twd = flow_assets_twd
-  @flow_plus_mine_twd = flow_plus_mine_twd
+  @p_btc = p_btc  #比特币持有数
+  @p_eth = p_eth  #以太坊持有数
+  @btc_p = btc_p  #比特币所占比例
+  @eth_p = eth_p  #以太坊所占比例
+  @p_trezor_twd = p_trezor_twd.to_i               #冷钱包现值多少新台币
+  @p_trezor_cny = (@p_trezor_twd*@twd2cny).to_i   #冷钱包现值多少人民币
+  @p_alipay_twd = p_alipay_twd.to_i               #支付宝现值多少新台币
+  @p_ex_twd = p_ex_twd.to_i                       #交易所现值多少新台币
+  @p_mine_earn_twd = p_mine_earn_twd.to_i         #矿场资产现值多少新台币
+  @p_mine_cost_cny = total_mine_cost              #矿机资产现值多少人民币
+  @flow_assets_twd = flow_assets_twd              #流动资产现值多少新台币
+  @flow_plus_mine_twd = flow_plus_mine_twd        #流动资产+矿机资产现值多少新台币
   @title_table_margin = '0.3em'
   @set_bgcolor1 = '#EEE8AA'
   @set_bgcolor2 = '#E6E6FA'
@@ -46,26 +46,6 @@
   # 点击交易列表里的仓位值会带入下单页并自动计算价格与买卖数量
   def show_btc_p_link_order
     link_to "#{to_n(@btc_p,2)}%", controller: :main, action: :place_order_form, keep_level: 1
-  end
-
-  # 比特币持有数相当于多少人民币
-  def btc_eq_cny
-    (@p_btc*get_btc_price*$usdt_to_cny).to_i
-  end
-
-  # 以太坊持有数相当于多少人民币
-  def eth_eq_cny
-    (@p_eth*get_eth_price*$usdt_to_cny).to_i
-  end
-
-  # 比特币持有数相当于多少台币
-  def btc_eq_twd
-    (btc_eq_cny*@cny2twd).to_i
-  end
-
-  # 以太坊持有数相当于多少台币
-  def eth_eq_twd
-    (eth_eq_cny*@cny2twd).to_i
   end
 
   # 支付宝资产兑换人民币

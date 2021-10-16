@@ -127,6 +127,11 @@ class ApplicationRecord < ActiveRecord::Base
     target_rate(:usdt).to_f/target_rate(:twd)
   end
 
+  # 人民币换成USDT
+  def cny_to_usdt
+    1.0/$usdt_to_cny
+  end
+
   # 人民币换成新台币
   def cny_to_twd
     # 修复新建数据库时遇到的bug

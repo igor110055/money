@@ -144,7 +144,7 @@ class Property < ApplicationRecord
     price_now = new.fix_zero_price(new.get_btc_price)
     price_p = real_ave_cost > 0 ? (price_now/real_ave_cost-1)*100 : 0
     # 以比特币计算的总资产值
-    p_btc = btc_records.sum {|p| p.amount}
+    p_btc = Property.tagged_with('比特币').sum {|p| p.amount}
     p_eth = Property.tagged_with('以太坊').sum {|p| p.amount}
     p_trezor = Property.tagged_with('冷钱包').sum {|p| p.amount}
     p_trezor_twd = Property.tagged_with('冷钱包').sum {|p| p.amount_to(:twd)}
