@@ -964,6 +964,12 @@ class MainController < ApplicationController
     redirect_to set_auto_invest_form_path
   end
 
+  # 将原有参与投资的泰达币设定成火币的泰达币资产余额+原有值
+  def ori_usdt_amount_as_huobi_plus_ori
+    execute_setup_invest_param('BTC',3,Property.find($huobi_usdt_property_id).amount+get_invest_params(3).to_f)
+    redirect_to set_auto_invest_form_path
+  end
+
   # 将原有参与卖出的比特币设定成火币的比特币资产余额
   def sell_btc_amount_as_huobi
     execute_setup_invest_param('SBTC',23,Property.find($huobi_btc_property_id).amount)

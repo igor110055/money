@@ -146,8 +146,8 @@ class DealRecordsController < ApplicationController
   end
 
   # 更新BTC智投参数中的'原有参与投资的泰达币'
-  def update_invest_usdt( get_usdt )
-    new_usdt = to_n(get_invest_params(3).to_f+get_usdt,4)
+  def update_invest_usdt( add_usdt )
+    new_usdt = to_n(get_invest_params(3).to_f+add_usdt,4)
     set_invest_params('BTC',3,new_usdt)
     return new_usdt
   end
@@ -444,7 +444,7 @@ class DealRecordsController < ApplicationController
 
     # 显示更新BTC智投参数中的'原有参与投资的泰达币'
     def update_usdt_msg(usdt)
-      '原有投资BTC的USDT更新为'+update_invest_usdt(usdt)
+      '原有投资BTC的USDT已更新为'+update_invest_usdt(usdt)
     end
 
     # 依照参数返回正确的交易列表

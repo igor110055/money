@@ -125,6 +125,7 @@ Rails.application.routes.draw do
   get 'mtrade_log', to: 'main#show_mtrade_log'
   get 'save_kdata', to: 'main#save_kline_data'
   get 'ori_usdt_amount_as_huobi', to: 'main#ori_usdt_amount_as_huobi'
+  get 'ori_usdt_amount_as_huobi_plus_ori', to: 'main#ori_usdt_amount_as_huobi_plus_ori'
   get 'sell_btc_amount_as_huobi', to: 'main#sell_btc_amount_as_huobi'
   get 'sell_eth_amount_as_huobi', to: 'main#sell_eth_amount_as_huobi'
   get 'check_open_order', to: 'open_orders#check_open_order'
@@ -156,5 +157,5 @@ Rails.application.routes.draw do
   get 'sync_create_currency', to: 'currencies#sync_create_currency'
   get 'sync_update_currency', to: 'currencies#sync_update_currency'
   get 'sync_destroy_currency', to: 'currencies#sync_destroy_currency'
-  
+
 end
