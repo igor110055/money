@@ -36,7 +36,7 @@ code = "BTC"
     <tr valign="top">
       <td><%= n %></td>
       <td><%= link_to '原有参与投资的泰达币', ori_usdt_amount_as_huobi_path, {title:'将原有参与投资的泰达币设定成火币的泰达币资产余额'} %></td>
-      <td><%= show_invest_param_value(3) %> <%= link_to "(加入#{to_n(Property.find($huobi_usdt_property_id).amount,4)}USDT)", ori_usdt_amount_as_huobi_plus_ori_path, {title:'将原有参与投资的泰达币设定成火币的泰达币资产余额+原有值'} %></td>
+      <td><%= show_invest_param_value(3) %> <%= link_to "(加入#{to_n(Property.find($huobi_usdt_property_id).amount,8)}USDT)", ori_usdt_amount_as_huobi_plus_ori_path, {title:'将原有参与投资的泰达币设定成火币的泰达币资产余额+原有值'} %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_rose">
