@@ -81,10 +81,10 @@ code = "BTC"
       <td><%= show_invest_param_value(10) %></td>
       <% n += 1 %>
     </tr>
-    <tr valign="top" class="set_aif_bg_gold">
+    <tr valign="top">
       <td><%= n %></td>
       <td>用于测试的比特币价格</td>
-      <td><%= show_invest_param_value(11) %> <%= invest_params_setup_link(code,11,start_price2,end_price2,price_step) %></td>
+      <td>基本没用暂停设置<%#= show_invest_param_value(11) %> <%#= invest_params_setup_link(code,11,start_price2,end_price2,price_step) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
@@ -210,8 +210,8 @@ code = "BTC"
     <tr valign="top">
       <td><%= n %></td>
       <td>成本均价是否越买越低</td>
-      <td><%= show_invest_param_value(32) %> <%= invest_params_setup_link(code,32,0,1) %>
-      (完全没有交易记录时不能设成1，否则永远无法买进)</td>
+      <td>基本没用暂停设置<%#= show_invest_param_value(32) %> <%#= invest_params_setup_link(code,32,0,1) %>
+      <!--(完全没有交易记录时不能设成1，否则永远无法买进)//--></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
