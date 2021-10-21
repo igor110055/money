@@ -443,6 +443,11 @@ module ApplicationHelper
     Property.tagged_with('以太坊').sum {|p| p.amount}
   end
 
+  # 回传泰达币总数
+  def sum_of_usdt
+    Property.tagged_with('泰达币').sum {|p| p.amount}
+  end
+
   # 比特币持有数相当于多少人民币
   def btc_eq_cny
     @p_btc ||= sum_of_btc
@@ -453,6 +458,11 @@ module ApplicationHelper
   def eth_eq_cny
     @p_eth ||= sum_of_eth
    (@p_eth*get_eth_price*$usdt_to_cny).to_i
+  end
+
+  # 泰达币持有数相当于多少人民币
+  def usdt_eq_cny
+   (sum_of_usdt*$usdt_to_cny).to_i
   end
 
   # 比特币持有数相当于多少台币
@@ -499,10 +509,10 @@ module ApplicationHelper
     # 依照统计币别显示每月生活费
     month_cost_max_twd = (month_cost_max*cny2twd).to_i
     show_month_cost_max = $show_value_cur == 'CNY' ? "¥#{month_cost_max}" : month_cost_max_twd
-    # 计算能维持生活费到设定的年数所需要的币价 (总费用-以太坊总值-新光保单ATM可借余额)/比特币个数/汇率
+    # 计算能维持生活费到设定的年数所需要的币价 (总费用-以太坊总值-泰达币总值-新光保单ATM可借余额)/比特币个数/汇率
     @p_btc ||= sum_of_btc
     begin
-      btc_price_goal_of_keep_years = ((month_cost_max*keep_years*12-eth_eq_cny-($loan_max_twd*twd2cny))/@p_btc*cny2usdt).to_i
+      btc_price_goal_of_keep_years = ((month_cost_max*keep_years*12-eth_eq_cny-usdt_eq_cny-($loan_max_twd*twd2cny))/@p_btc*cny2usdt).to_i
     rescue
       btc_price_goal_of_keep_years = 0
     end
