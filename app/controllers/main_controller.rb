@@ -736,12 +736,7 @@ class MainController < ApplicationController
   # 依据文档路径读取Log
   def read_log_func(file_path)
     @content = File.read(file_path)
-    if $keep_invest_log_num > 0
-      line = $log_split_line
-      if @content.include? line
-        @content = @content.split(line).reverse.join(line)
-      end
-    end
+    setup_refresh_log_sec
   end
 
   # 设置智投参数表单

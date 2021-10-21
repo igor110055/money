@@ -60,7 +60,7 @@ code = "BTC"
     <tr valign="top">
       <td><%= n %></td>
       <td>单笔买入泰达币最小值</td>
-      <td><%= show_invest_param_value(7) %> <%= invest_params_setup_link(code,7,5.2,20.0,0.2,1) %></td>
+      <td><%= show_invest_param_value(7) %> <%= invest_params_setup_link(code,7,5.8,20.0,0.1,1) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
@@ -120,7 +120,7 @@ code = "BTC"
     <tr valign="top" class="set_aif_bg_rose">
       <td><%= n %></td>
       <td>买入几分钟内的最低价</td>
-      <td><%= show_invest_param_value(17) %> <%= invest_params_setup_link(code,17,0,60*24,10) %></td>
+      <td><%= show_invest_param_value(17) %> <%= invest_params_setup_link(code,17,0,60*12,5,0,false,(0..10).to_a+(20..60).step(10).to_a+(120..1440).step(60).to_a) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top" class="set_aif_bg_rose">
@@ -223,7 +223,7 @@ code = "BTC"
     <tr valign="top">
       <td><%= n %></td>
       <td>额度翻倍的最大购买价</td>
-      <td><%= show_invest_param_value(34) %> <%= invest_params_setup_link(code,34,start_price2,end_price2,price_step) %></td>
+      <td><%= show_invest_param_value(34) %> <%= invest_params_setup_link(code,34,start_price2,end_price2,500) %></td>
       <% n += 1 %>
     </tr>
     <% trace_rate_amp = 0.0035 %>

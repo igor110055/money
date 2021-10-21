@@ -6,6 +6,7 @@
       <% if admin? %>
         <%= link_back_to_portfolios %> |
         <%= system_params_form_link %> |
+        <%= set_auto_invest_form_link('BTC','买参设定',dtype:'buy') %> |
         <%= huobi_assets_link %> |
         <%= order_list_link %> |
         <%= link_back_to_currencies %> |
@@ -17,10 +18,7 @@
         <%= invest_log_link("BTC") %> |
         <%= invest_log_link("ETH") %> |
         <%= clear_invest_log_link %> |
-        <%= link_to "交易对表", digital_currencies_path %> |
-        <%= link_to "交易参数", trade_params_path %> |
-        <%= link_to "交易策略", trade_strategies_path %> |
-        <%= link_to "策略参数", digital_params_path %> |
+        <%= total_clear_invest_log_link %> |
         <%= link_to t(:record_index), records_path %> |
       <% end %>
       <%= logout_link %>

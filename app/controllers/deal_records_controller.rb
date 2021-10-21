@@ -171,10 +171,18 @@ class DealRecordsController < ApplicationController
     execute_delete_invest_log $auto_invest_log_path
     execute_delete_invest_log $auto_invest_eth_log_path, "SETH"
     put_notice t(:delete_two_invest_log_ok)
-    redirect_to invest_eth_log_path
+    redirect_to invest_log_path
   end
 
-  def execute_delete_invest_log( file_path, code = "BTC" )
+  # 清空日志
+  def clear_invest_log
+    execute_delete_invest_log $auto_invest_log_path, "BTC", true
+    execute_delete_invest_log $auto_invest_eth_log_path, "SETH", true
+    put_notice "BTC与SETH日志已彻底清空!"
+    redirect_to invest_log_path
+  end
+
+  def execute_delete_invest_log( file_path, code = "BTC", clear = false )
     text = nil
     if $keep_invest_log_num and $keep_invest_log_num > 0
       content = File.read(file_path)
@@ -185,7 +193,7 @@ class DealRecordsController < ApplicationController
     end
     if File.exist? file_path
         File.delete file_path
-        if text
+        if text and !clear
           File.open(file_path, 'w+') do |f|
             f.write(text)
           end

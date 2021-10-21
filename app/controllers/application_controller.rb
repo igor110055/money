@@ -628,9 +628,14 @@ class ApplicationController < ActionController::Base
     return sec[-1] == '0' ? sec[0..-2]+'9' : sec[0..-2]+'0'
   end
 
-  # 设定是否自动刷新页面
+  # 设定是否自动刷新报价页面
   def setup_auto_refresh_sec
-    @auto_refresh_sec = $auto_refresh_sec if $auto_refresh_sec > 0
+    @auto_refresh_sec = $auto_refresh_sec > 0 ? $auto_refresh_sec : 0
+  end
+
+  # 设定是否自动刷新Log页面
+  def setup_refresh_log_sec
+    @auto_refresh_sec = $log_refresh_sec > 0 ? $log_refresh_sec : 0
   end
 
   # 系统参数的更新必须确保每一行以钱号开头以免系统无法运作

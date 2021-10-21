@@ -267,6 +267,11 @@ module ApplicationHelper
     link_to t(:clear_invest_log), delete_invest_log_path(path: request.fullpath)
   end
 
+  # 彻底清空定投记录链接
+  def total_clear_invest_log_link
+    link_to '彻底清空', clear_invest_log_path(path: request.fullpath)
+  end
+
   # 撤消全部下单并清空记录链接
   def clear_open_orders_link
     link_to t(:clear_open_orders), clear_open_orders_path, { id: 'clear_open_orders' }
@@ -761,9 +766,10 @@ module ApplicationHelper
   end
 
   # 显示定投参数的设定值链接(数字版)
-  def invest_params_setup_link( code, index, min, max, step = 1, pos = 0, add_zero_value = false )
+  def invest_params_setup_link( code, index, min, max, step = 1, pos = 0, add_zero_value = false, step_arr = nil )
     result = ''
-    (min..max).step(step).each do |n|
+    arr = step_arr ? step_arr : (min..max).step(step)
+    arr.each do |n|
       value = to_n(n.floor(pos),pos)
       style = (!@already_show and value == get_invest_params(index,code)) ? 'invest_param_select' : ''
       result += link_to(value, setup_invest_param_path(i:index,v:value,c:code), class: style) + ' '
