@@ -222,7 +222,7 @@ cn:
   edit_deal_record: 编辑交易记录
   update_deal_record: 更新记录
   new_deal_record: 新建交易记录
-  deal_record_index: BTC
+  deal_record_index: 交易
   deal_record_index_btc: SBTC
   deal_record_index_eth: SETH
   delete_deal_record: 删除这笔交易记录

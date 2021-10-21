@@ -2,17 +2,16 @@
   <div id="<%= id %>" style="width:100%">
     <small>
       <%= link_back_to_trial_lists %> |
+      <%= link_back_to_deal_records %> |
       <%= link_back_to_properties %> |
       <% if admin? %>
         <%= link_back_to_portfolios %> |
         <%= system_params_form_link %> |
         <%= set_auto_invest_form_link('BTC','买参设定',dtype:'buy') %> |
         <%= huobi_assets_link %> |
-        <%= order_list_link %> |
         <%= link_back_to_currencies %> |
         <%= link_back_to_items %> |
         <%= link_back_to_interests %> |
-        <%= link_back_to_deal_records %> |
         <%= link_to_btc_deal_records %> |
         <%= link_to_eth_deal_records %> |
         <%= invest_log_link("BTC") %> |
