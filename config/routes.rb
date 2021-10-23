@@ -134,7 +134,7 @@ Rails.application.routes.draw do
   get 'huobi_assets', to: 'properties#huobi_assets'
   get 'save_trials_to_db', to: 'trial_lists#save_trials_to_db'
   get 'switch_show_value_cur', to: 'main#switch_show_value_cur'
-  %w(auto_update_btc_price auto_update_huobi_assets auto_refresh_sec).each do |name|
+  %w(auto_update_btc_price auto_update_huobi_assets auto_refresh_sec show_buy_sell_rate).each do |name|
     get "switch_#{name}", to: "main#switch_#{name}"
   end
   get 'rename_tag', to: 'main#rename_tag'

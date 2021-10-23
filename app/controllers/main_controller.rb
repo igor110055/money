@@ -912,6 +912,11 @@ class MainController < ApplicationController
     switch_system_param 'auto_refresh_sec', 0, 60, false, '自动更新交易列表切换成功！'
   end
 
+  # 参数页面新增开启或关闭多空比的文字显示
+  def switch_show_buy_sell_rate
+    switch_system_param 'show_buy_sell_rate', 0, 1, false, '多空比显示切换成功！'
+  end
+
   # 设定系统参数切换值
   def switch_system_param( name, value1, value2, is_str = true, msg = nil )
     eval_str1 = is_str ? "$#{name} == '#{value1}'" : "$#{name} == #{value1}"

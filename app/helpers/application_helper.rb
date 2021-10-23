@@ -1110,6 +1110,15 @@ module ApplicationHelper
     end
   end
 
+  # 切换是否开启多空比的文字显示
+  def get_show_buy_sell_rate_text
+    if $show_buy_sell_rate == 1
+      "关闭多空比显示"
+    elsif $show_buy_sell_rate == 0
+      "开启多空比显示"
+    end
+  end
+
   # 更新排序号
   def exe_update_order_num( class_name, order_field = :order_num, ids = class_name.all.order(order_field) )
     ids.each {|i| class_name.find(i).update_attribute( order_field, ids.index(i)+1 )}
