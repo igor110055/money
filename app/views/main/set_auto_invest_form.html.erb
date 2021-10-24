@@ -59,14 +59,14 @@ code = "BTC"
     </tr>
     <tr valign="top">
       <td><%= n %></td>
-      <td>单笔买入泰达币最小值</td>
-      <td><%= show_invest_param_value(7) %> <%= invest_params_setup_link(code,7,5.8,20.0,0.1,1) %></td>
+      <td>单笔买入人民币最小值</td>
+      <td><%= show_invest_param_value(7) %> <%= invest_params_setup_link(code,7,get_min_buy_cny,200,5) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
       <td><%= n %></td>
-      <td>单笔买入泰达币最大值</td>
-      <td><%= show_invest_param_value(8) %> <%= invest_params_setup_link(code,8,20,200,5) %></td>
+      <td>单笔买入人民币最大值</td>
+      <td><%= show_invest_param_value(8) %> <%= invest_params_setup_link(code,8,100,1000,50) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">

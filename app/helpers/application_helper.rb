@@ -1158,4 +1158,8 @@ module ApplicationHelper
     kline_chart_link(btc_p)+' | '+kline_chart_link(eth_p,"ethusdt")+' | '+kline_chart_link(ethbtc_p,"ethbtc")+' | '+kline_chart_link(doge_p,"dogeusdt")
   end
 
+  # 计算单笔买入人民币最小值
+  def get_min_buy_cny
+    (@price_now*0.0001*$usdt_to_cny/10).ceil * 10
+  end
 end
