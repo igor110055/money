@@ -18,10 +18,13 @@
   @ori_usdt = get_invest_params(3).to_f
   # 自动买入的最大仓位值
   @max_buy_level = get_invest_params(5).to_f
-  # 自动买入的最大仓位值合人民币
-  @max_buy_cny = @ori_usdt*@max_buy_level/100*$usdt_to_cny
   # 交易所内剩余的比特币
   @btc_amount_ex = DealRecord.btc_amount
+  # 目前的仓位值
+  @btc_level = DealRecord.btc_level
+  # 自动买入的最大仓位值合人民币
+  @max_buy_cny = @ori_usdt*@max_buy_level/100*$usdt_to_cny
+  @max_buy_cny_remain = @max_buy_cny - @ori_usdt*@btc_level/100*$usdt_to_cny
   # 交易所内剩余的泰达币的人民币价值
   @usdt2cny_ex = DealRecord.usdt_amount*$usdt_to_cny
   # 人民币兑换比特币
@@ -86,9 +89,10 @@
   def show_buy_strategy
     every_minute = get_invest_params(0).to_i/60
     buy_under_price = get_invest_params(1).to_i
+    min_buy_cny = get_invest_params(7).to_i
     buy_when_minutes = get_invest_params(17).to_i
     buy_period_max_price = get_invest_params(31).to_i
-    max_price_str = buy_period_max_price > 0 ? "|<span title=\"买入最低价时的最高价\">#{buy_period_max_price}</span>" : ""
+    max_price_str = buy_period_max_price > 0 ? "|<span title=\"买入最低价时的最高价\">#{buy_period_max_price}</span>|<span title=\"单笔买入人民币最小值\">#{min_buy_cny}</span>" : ""
     result = "低于#{buy_under_price}|#{every_minute}分" if buy_under_price > 0
     result = "#{buy_when_minutes}低|#{every_minute}分#{max_price_str}" if buy_when_minutes > 0
     result = "<u>#{result}</u>" if DealRecord.enable_to_buy?
@@ -338,8 +342,7 @@
         end
       %>
       <% # 显示比特币仓位现况 %>
-      | <%= to_n(DealRecord.btc_level,2) %>/<span title="自动买入的最大仓位值"><%= @max_buy_level %>(¥<%=@max_buy_cny.to_i%>)</span>
-      | <span title="交易所内剩余的泰达币合人民币的值">¥<%= @usdt2cny_ex.to_i %></span>
+      | <%= to_n(@btc_level,1) %>/<span title="自动买入的最大仓位值"><%= to_n(@max_buy_level,1) %></span>(<span title="再买多少就达到自动买入的最大仓位值"><%=@max_buy_cny_remain.to_i%></span>/<span title="交易所内剩余的泰达币合人民币的值"><%= @usdt2cny_ex.to_i %></span>)
     </td>
     <td align="right" colspan="2">
       <% # 显示资产净值与走势图链接 %>

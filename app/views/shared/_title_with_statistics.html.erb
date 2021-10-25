@@ -172,8 +172,12 @@
   @btc_add_eth_cny = (btc_eq_cny + eth_eq_cny).to_i
   @btc_add_eth_twd = (btc_eq_twd + eth_eq_twd).to_i
   # 比特币和以太坊各自占比特币和以太坊总和的比例
-  btc_p2 = btc_eq_cny.to_f/(btc_eq_cny+eth_eq_cny)*100
-  eth_p2 = eth_eq_cny.to_f/(btc_eq_cny+eth_eq_cny)*100
+  if btc_eq_cny+eth_eq_cny > 0
+    btc_p2 = btc_eq_cny.to_f/(btc_eq_cny+eth_eq_cny)*100
+    eth_p2 = eth_eq_cny.to_f/(btc_eq_cny+eth_eq_cny)*100
+  else
+    btc_p2 = eth_p2 = 0
+  end
 %>
 <h3>
   <% if admin? %>
