@@ -725,11 +725,11 @@ module ApplicationHelper
   # 获取定投参数的值
   def get_invest_params( index, code = "BTC" )
     if code == "BTC"
-      File.read(get_invest_params_path('BTC')).split(' ')[index]
+      return File.read(get_invest_params_path("BTC")).split(' ')[index]
     elsif code == "SBTC"
-      File.read(get_invest_params_path('SBTC')).split(' ')[index]
+      return File.read(get_invest_params_path("SBTC")).split(' ')[index]
     elsif code == "ETH" or code == "SETH"
-      File.read(get_invest_params_path('ETH')).split(' ')[index]
+      return File.read(get_invest_params_path("ETH")).split(' ')[index]
     end
   end
 

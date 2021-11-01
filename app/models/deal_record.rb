@@ -291,7 +291,7 @@ class DealRecord < ApplicationRecord
 
   # 超出可买入时间的秒数
   def self.over_buy_time_sec( code = 'BTC' )
-    buy_sec = get_invest_params(0,code).to_i
+    buy_sec = self.new.get_invest_params(0,code).to_i
     begin
       last_buy_time = unsell_records.order("created_at desc").first.created_at
     rescue
