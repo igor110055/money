@@ -528,7 +528,7 @@ module ApplicationHelper
       #{link_to(@properties_net_value_twd.to_i/10000, records_path(num:2,chart:1), target: :blank)}(¥#{@properties_net_value_cny.to_i/10000})</span>"
       addon_info = " |<span id=\"properties_net_value_cny\" title=\"流动性资产总值(不含贷款)：#{total_flow_assets_twd}(¥#{total_flow_assets_cny})\">\
       #{link_to(total_flow_assets_twd/10000,'/properties?extags=&mode=a&pid=13&portfolio_name=流动性资产总值&tags='+$total_flow_assets_tags)}(¥#{total_flow_assets_cny/10000})</span> | <span title=\"流动性资产扣除贷款的净值：#{flow_subtract_loan_twd}(¥#{flow_subtract_loan_cny})|#{t(:begin_profit_price)}:#{Property.begin_profit_price.to_i}\">\
-      #{flow_subtract_loan_twd/10000}(¥#{flow_subtract_loan_cny/10000})</span> ｜ <span id=\"net_growth_ave_month\" title=\"#{$net_start_date}起资产净值每月增加¥#{@properties_net_growth_ave_month_cny}(#{@properties_net_growth_ave_month})\">#{show_net_growth_month}</span>"
+      #{flow_subtract_loan_twd}(¥#{flow_subtract_loan_cny})</span> ｜ <span id=\"net_growth_ave_month\" title=\"#{$net_start_date}起资产净值每月增加¥#{@properties_net_growth_ave_month_cny}(#{@properties_net_growth_ave_month})\">#{show_net_growth_month}</span>"
       flow_assets_info = "#{(tag_value_twd*twd2cny).to_i}|#{tag_value_twd}"
     else
       main_info = "<span id=\"flow_subtract_loan_twd\" title=\"减去贷款后的流动性资产总值\">¥#{link_to((flow_subtract_loan_twd*twd2cny).to_i, records_path(num:2,chart:1), target: :blank)}</span>"
