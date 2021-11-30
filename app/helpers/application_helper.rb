@@ -455,9 +455,13 @@ module ApplicationHelper
   end
 
   # 以太坊持有数相当于多少人民币
-  def eth_eq_cny
+  def eth_eq_cny( eth_price = 0 )
     @p_eth ||= sum_of_eth
-   (@p_eth*get_eth_price*$usdt_to_cny).to_i
+    if eth_price > 0
+      return (@p_eth*eth_price*$usdt_to_cny).to_i
+    else
+      return (@p_eth*get_eth_price*$usdt_to_cny).to_i
+    end
   end
 
   # 泰达币持有数相当于多少人民币
@@ -512,7 +516,14 @@ module ApplicationHelper
     # 计算能维持生活费到设定的年数所需要的币价 (总费用-以太坊总值-泰达币总值-新光保单ATM可借余额)/比特币个数/汇率
     @p_btc ||= sum_of_btc
     begin
-      btc_price_goal_of_keep_years = ((month_cost_max*keep_years*12-eth_eq_cny-usdt_eq_cny-($loan_max_twd*twd2cny))/@p_btc*cny2usdt).to_i
+      # btc_price_goal_of_keep_years = ((month_cost_max*keep_years*12-eth_eq_cny-usdt_eq_cny-($loan_max_twd*twd2cny))/@p_btc*cny2usdt).to_i
+      # x = (a-ex-b-c)*d
+      a = month_cost_max*keep_years*12
+      b = usdt_eq_cny
+      c = $loan_max_twd*twd2cny
+      d = cny2usdt/@p_btc
+      e = sum_of_eth*get_ethbtc_price.floor(6)*$usdt_to_cny
+      btc_price_goal_of_keep_years = ((a-b-c)*d/(1+e*d)).to_i
     rescue
       btc_price_goal_of_keep_years = 0
     end
@@ -1003,7 +1014,7 @@ module ApplicationHelper
 
   # 取得以太坊兑比特币的现价
   def get_ethbtc_price
-    get_huobi_price('ethbtc','%.6f')
+    return get_eth_price/get_btc_price
   end
 
   # 取得狗狗币现价
