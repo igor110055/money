@@ -1063,7 +1063,10 @@ module ApplicationHelper
   # 资产净值变化值
   def show_net_value_change_text
     net_value_change, net_value_change_rate = Record.net_value_change_from($send_to_trezor_time) # 资产净值变化值, 资产净值变化率
-    raw "#{show_num_h_profit(:day)}资产变化: #{add_plus(net_value_change)}(#{net_value_change_rate}%|¥#{(net_value_change*Currency.new.twd_to_cny).to_i})"
+    net_value_change_cny = (net_value_change*Currency.new.twd_to_cny).to_i
+    net_value_change_twd_day = (net_value_change/$recent_days).to_i
+    net_value_change_cny_day = (net_value_change_cny/$recent_days).to_i
+    raw "#{show_num_h_profit(:day)}资产变化: #{add_plus(net_value_change_rate)}%(¥#{net_value_change_cny}|#{net_value_change}) ¥#{net_value_change_cny_day}|#{net_value_change_twd_day}/天 ¥#{net_value_change_cny_day*30}|#{net_value_change_twd_day*30}/月"
   end
 
   def eth2bi
