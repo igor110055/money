@@ -513,14 +513,14 @@ module ApplicationHelper
     # 依照统计币别显示每月生活费
     month_cost_max_twd = (month_cost_max*cny2twd).to_i
     show_month_cost_max = $show_value_cur == 'CNY' ? "¥#{month_cost_max}" : month_cost_max_twd
-    # 计算能维持生活费到设定的年数所需要的币价 (总费用-以太坊总值-泰达币总值-新光保单ATM可借余额)/比特币个数/汇率
+    # 计算能维持生活费到设定的年数所需要的币价 (总费用-以太坊总值-泰达币总值-保单可借余额)/比特币个数/汇率
     @p_btc ||= sum_of_btc
     begin
       # btc_price_goal_of_keep_years = ((month_cost_max*keep_years*12-eth_eq_cny-usdt_eq_cny-($loan_max_twd*twd2cny))/@p_btc*cny2usdt).to_i
       # x = (a-ex-b-c)*d
       a = month_cost_max*keep_years*12
       b = usdt_eq_cny
-      c = $loan_max_twd*twd2cny
+      c = $loan_max_twd*twd2cny + $loan_max_cny
       d = cny2usdt/@p_btc
       e = sum_of_eth*get_ethbtc_price.floor(6)*$usdt_to_cny
       btc_price_goal_of_keep_years = ((a-b-c)*d/(1+e*d)).to_i
@@ -552,8 +552,8 @@ module ApplicationHelper
     ave_month_useable_plus = ((tag_value_twd+$loan_max_twd)*twd2cny/(keep_years*12)).to_i
     # 计算以现有资金除以每个月生活费能撑几年
     years_useable = to_n(remain_months/12.0,1)
-    # 计算以(现有资金+新光保单ATM可借余额)除以每个月生活费能撑几个月
-    months_useable_plus = ((tag_value_twd+$loan_max_twd)*twd2cny/month_cost_max).to_i
+    # 计算以(现有资金+保单可借余额)除以每个月生活费能撑几个月
+    months_useable_plus = (((tag_value_twd+$loan_max_twd)*twd2cny+$loan_max_cny)/month_cost_max).to_i
     ave_month_useable_twd = (ave_month_useable*cny2twd).to_i
     ave_month_useable_plus_twd = (ave_month_useable_plus*cny2twd).to_i
     # 依照统计币别显示 ave_month_useable 和 ave_month_useable_plus
