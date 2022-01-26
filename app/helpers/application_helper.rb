@@ -546,14 +546,16 @@ module ApplicationHelper
       addon_info = ''
       flow_assets_info = "#{(flow_assets_twd*twd2cny).to_i}|#{flow_assets_twd}"
     end
+    # 可贷款余额 = 新光保单ATM可借余额 + 太平保单可借余额
+    loan_max_twd = $loan_max_twd + $loan_max_cny*cny2twd
     # 计算以现有资金均摊到每个月的生活费
     ave_month_useable = (tag_value_twd*twd2cny/(keep_years*12)).to_i
-    # 计算以现有资金均摊到每个月的生活费 + 新光保单ATM可借余额
-    ave_month_useable_plus = ((tag_value_twd+$loan_max_twd)*twd2cny/(keep_years*12)).to_i
+    # 计算以现有资金均摊到每个月的生活费 + 可贷款余额
+    ave_month_useable_plus = ((tag_value_twd+loan_max_twd)*twd2cny/(keep_years*12)).to_i
     # 计算以现有资金除以每个月生活费能撑几年
     years_useable = to_n(remain_months/12.0,1)
     # 计算以(现有资金+保单可借余额)除以每个月生活费能撑几个月
-    months_useable_plus = (((tag_value_twd+$loan_max_twd)*twd2cny+$loan_max_cny)/month_cost_max).to_i
+    months_useable_plus = (((tag_value_twd+loan_max_twd)*twd2cny)/month_cost_max).to_i
     ave_month_useable_twd = (ave_month_useable*cny2twd).to_i
     ave_month_useable_plus_twd = (ave_month_useable_plus*cny2twd).to_i
     # 依照统计币别显示 ave_month_useable 和 ave_month_useable_plus
