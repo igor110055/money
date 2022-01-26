@@ -8,39 +8,68 @@
     <td width="100"><%= t(:interest_start_date) %></td>
     <td width="50"><%= t(:interest_rate) %></td>
     <td width="80"><%= t(:interest_amount) %></td>
-    <td width="70"><%= t(:interest_currency) %></td>
-    <td width="80"><%= t(:exchange_to_twd) %></td>
     <td width="80">3<%= t(:interest_amount_year) %></td>
     <td width="80"><%= t(:interest_amount_year) %></td>
     <td width="80"><%= t(:interest_amount_month) %></td>
     <td width="80"><%= t(:interest_amount_day) %></td>
     <td width="50"><%= t(:chart) %></td>
   </tr>
-<% n = 1 %>
+<%
+  n = 1
+  loan_principal_twd = 0 # 贷款本金总和(新台币)
+  loan_principal_cny = 0 # 贷款本金总和(人民币)
+  loan_interest_twd = 0 # 贷款利息总和(新台币)
+  loan_interest_cny = 0 # 贷款利息总和(人民币)
+  interest_3y_twd = 0 # 3年付息总和(新台币)
+  interest_3y_cny = 0 # 3年付息总和(人民币)
+  interest_1y_twd = 0 # 1年付息总和(新台币)
+  interest_1y_cny = 0 # 1年付息总和(人民币)
+  interest_1m_twd = 0 # 1月付息总和(新台币)
+  interest_1m_cny = 0 # 1月付息总和(人民币)
+  interest_1d_twd = 0 # 1日付息总和(新台币)
+  interest_1d_cny = 0 # 1日付息总和(人民币)
+%>
 <% @interests.each do |interest| %>
   <tr <%= change_row_color %>>
     <td align="right"><%= n %></td>
     <td><%= link_edit_to(interest, interest.property.name) %></td>
-    <td align="right"><%= to_n(interest.property.amount.abs,1) %></td>
+    <td align="right"><%= amount_twd = interest.property.amount_to(:twd).abs.floor(1) %><br>¥<%= amount_cny = interest.property.amount_to(:cny).abs.floor(1) %></td>
     <td align="right"><%= interest.start_date.to_s(:db) %></td>
     <td align="right"><%= to_n(interest.rate, 2) %></td>
-    <td align="right"><%= to_n(interest.amount, 2) %></td>
-    <td align="center"><%= interest.currency_name %></td>
-    <td align="right"><%= interest.amount_to(:twd,2) %></td>
-    <td align="right"><%= interest.ave_year(:twd,2)*3 %><br>¥<%= interest.ave_year(:cny,2)*3 %></td>
-    <td align="right"><%= interest.ave_year(:twd,2) %><br>¥<%= interest.ave_year(:cny,2) %></td>
-    <td align="right"><%= interest.ave_month(:twd,2) %><br>¥<%= interest.ave_month(:cny,2) %></td>
-    <td align="right"><%= interest.ave_day(:twd,2) %><br>¥<%= interest.ave_day(:cny,2) %></td>
+    <td align="right"><%= interest_twd = interest.amount_to(:twd,2).abs %><br>¥<%= interest_cny = interest.amount_to(:cny,2).abs %></td>
+    <td align="right"><%= i3yt = interest.ave_year(:twd,2)*3 %><br>¥<%= i3yc = interest.ave_year(:cny,2)*3 %></td>
+    <td align="right"><%= i1yt = interest.ave_year(:twd,2) %><br>¥<%= i1yc = interest.ave_year(:cny,2) %></td>
+    <td align="right"><%= i1mt = interest.ave_month(:twd,2) %><br>¥<%= i1mc = interest.ave_month(:cny,2) %></td>
+    <td align="right"><%= i1dt = interest.ave_day(:twd,2) %><br>¥<%= i1dc = interest.ave_day(:cny,2) %></td>
     <td align="center"><%= chart_link(interest) %></td>
   </tr>
-  <% n += 1 %>
+  <%
+    n += 1
+    loan_principal_twd += amount_twd
+    loan_principal_cny += amount_cny
+    loan_interest_twd += interest_twd
+    loan_interest_cny += interest_cny
+    interest_3y_twd += i3yt
+    interest_3y_cny += i3yc
+    interest_1y_twd += i1yt
+    interest_1y_cny += i1yc
+    interest_1m_twd += i1mt
+    interest_1m_cny += i1mc
+    interest_1d_twd += i1dt
+    interest_1d_cny += i1dc
+  %>
 <% end %>
-  <tr>
-    <td colspan="13" class="thead">
-      <%= t(:total_interests_amount) %>：
-      <span id="interest_total_twd"><%= @interest_total_twd %></span> <%= t(:twd) %>
-      (<span id="interest_total_cny"><%= @interest_total_cny %></span> <%= t(:cny) %>)
-    </td>
+  <tr class="thead">
+    <td colspan="2" align="right">合计</td>
+    <td align="right"><%= loan_principal_twd %><br>¥<%= loan_principal_cny %></td>
+    <td align="right"></td>
+    <td align="right"></td>
+    <td align="right"><%= loan_interest_twd %><br>¥<%= loan_interest_cny %></td>
+    <td align="right"><%= interest_3y_twd %><br>¥<%= interest_3y_cny %></td>
+    <td align="right"><%= interest_1y_twd %><br>¥<%= interest_1y_cny %></td>
+    <td align="right"><%= interest_1m_twd %><br>¥<%= interest_1m_cny %></td>
+    <td align="right"><%= interest_1d_twd %><br>¥<%= interest_1d_cny %></td>
+    <td align="center"></td>
   </tr>
 </table>
 <br/>
