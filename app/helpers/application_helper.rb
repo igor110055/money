@@ -516,18 +516,20 @@ module ApplicationHelper
     # 计算能维持生活费到设定的年数所需要的币价 (总费用-以太坊总值-泰达币总值-保单可借余额)/比特币个数/汇率
     @p_btc ||= sum_of_btc
     begin
-      # btc_price_goal_of_keep_years = ((month_cost_max*keep_years*12-eth_eq_cny-usdt_eq_cny-($loan_max_twd*twd2cny))/@p_btc*cny2usdt).to_i
+      # @btc_price_goal_of_keep_years = ((month_cost_max*keep_years*12-eth_eq_cny-usdt_eq_cny-($loan_max_twd*twd2cny))/@p_btc*cny2usdt).to_i
       # x = (a-ex-b-c)*d
+      ethbtc_ex_rate = get_ethbtc_price.floor(6)
       a = month_cost_max*keep_years*12
       b = usdt_eq_cny
       c = $loan_max_twd*twd2cny + $loan_max_cny
       d = cny2usdt/@p_btc
-      e = sum_of_eth*get_ethbtc_price.floor(6)*$usdt_to_cny
-      btc_price_goal_of_keep_years = ((a-b-c)*d/(1+e*d)).to_i
+      e = sum_of_eth*ethbtc_ex_rate*$usdt_to_cny
+      @btc_price_goal_of_keep_years = ((a-b-c)*d/(1+e*d)).to_i
+      @eth_price_goal_of_keep_years = (@btc_price_goal_of_keep_years*ethbtc_ex_rate).to_i
     rescue
-      btc_price_goal_of_keep_years = 0
+      @btc_price_goal_of_keep_years = @eth_price_goal_of_keep_years = 0
     end
-    @month_cost_str = "生活费(#{show_month_cost_max}/月) 维持#{keep_years}年的目标币价为: #{btc_price_goal_of_keep_years}"
+    @month_cost_str = "维持#{keep_years}年生活(#{show_month_cost_max}/月): #{@btc_price_goal_of_keep_years}(BTC) #{@eth_price_goal_of_keep_years}(ETH)"
     @remain_invest_str = "扣除#{keep_years}年#{@month_cost_str}后的投资额:¥#{remain_money.to_i}(฿#{remain_bitcoin.floor(4)})"
     flow_subtract_loan_cny = (flow_subtract_loan_twd*twd2cny).to_i
     net_growth_ave_month_twd = to_n(@properties_net_growth_ave_month/10000.0,1)

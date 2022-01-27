@@ -73,27 +73,36 @@ end
   <% # 更新交易记录 %>
   | <%= link_to t(:update_deal_record), update_deal_records_path(code:code), { id: 'update_deal_records' } %>
   <% # 卖出记录 %>
-  | <%= link_to t(:show_sell_deal_records), deal_records_path(show_sell:1) %>
+  | <%= link_to '卖出', deal_records_path(show_sell:1) %>
   <% # 全部未卖 %>
   | <%= link_to t(:show_unsell_deal_records), deal_records_path(show_unsell:1) %>
     <%#= show_total_unsell_count if not @max_sell_count > 0 %>
+<!--
   <% # 优卖记录 %>
   | <%= link_to t(:show_first_sell_deal_records), deal_records_path(show_first:1) %>
   <% # 凑消帐 %>
   | <%= link_to t(:make_balance_count), deal_records_path(make_balance_count:1) %>
   <% # 消帐记录 %>
-  | <%= link_to t(:make_balance_records), deal_records_path(show_balance:1) %>
+  | <%= link_to '消帐', deal_records_path(show_balance:1) %>
   <% # 凑钱包 %>
   | <%= link_to t(:make_trezor_count), deal_records_path(make_trezor_count:1) %>
   <% # 钱包记录 %>
-  | <%= link_to t(:trezor_records), deal_records_path(show_trezor:1) %>
+  | <%= link_to '钱包', deal_records_path(show_trezor:1) %>
+//-->  
   <% # 全部记录 %>
-  | <%= link_to t(:show_all_deal_records), show_all_path %>
+  | <%= link_to '全部', show_all_path %>
   <% # 可投资金 %>
   |
 <% if @remain_money_to_invest > 0 %>
   <%= link_to @remain_invest_str, properties_tags_link %>
 <% else %>
-  <%= @month_cost_str %>
+  <%
+    class_name = hit_msg = ''
+    if @btc_price.to_i > @btc_price_goal_of_keep_years
+      class_name = 'red_bg'
+      hit_msg = $reach_goal_message
+    end
+  %>
+  <span class="<%= class_name %>"><%= @month_cost_str %> <%= hit_msg %></span>
 <% end %>
 </div>
