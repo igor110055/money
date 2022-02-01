@@ -16,6 +16,8 @@
   @p_mine_cost_cny = total_mine_cost              #矿机资产现值多少人民币
   @flow_assets_twd = flow_assets_twd              #流动资产现值多少新台币
   @flow_plus_mine_twd = flow_plus_mine_twd        #流动资产+矿机资产现值多少新台币
+  @total_loan_max_twd = total_loan_max_twd        #可贷款总余额
+  @flow_plus_loan_twd = (Property.total_flow_assets_twd+@total_loan_max_twd) #流动资产+可贷款总余额
   @title_table_margin = '0.3em'
   @set_bgcolor1 = '#EEE8AA'
   @set_bgcolor2 = '#E6E6FA'
@@ -69,9 +71,9 @@
   end
 
   # 某项人民币资产占流动性资产比值
-  def get_flow_assets_p( input_value, ex_rate = @cny2twd, include_mine_cost = false )
-    if include_mine_cost
-      input_value*ex_rate/@flow_plus_mine_twd*100
+  def get_flow_assets_p( input_value, ex_rate = @cny2twd, include_loan_max = false )
+    if include_loan_max
+      input_value*ex_rate/@flow_plus_loan_twd*100
     else
       input_value*ex_rate/@flow_assets_twd*100
     end
@@ -95,6 +97,11 @@
   # 显示矿机总成本
   def show_mine_cost
     swap_twd_cny( total_mine_cost*@cny2twd, total_mine_cost )
+  end
+
+  # 显示矿机总回本
+  def show_mine_back
+    swap_twd_cny( $mine_money_back*@cny2twd, $mine_money_back )
   end
 
   # 显示统计总值
@@ -151,10 +158,11 @@
   life_fund = Property.total_life_fund_records_cny.to_f
   life_months = (life_fund/$trial_cost_month_grow_limit)
   # 加上贷款额度后的可生活月数
-  life_fund_plus = life_fund+$loan_max_twd*@twd2cny+$loan_max_cny
+  life_fund_plus = life_fund+total_loan_max_cny
   life_months_plus = (life_fund_plus/$trial_cost_month_grow_limit)
   @life_fund_plus_cny = life_fund_plus
   @life_fund_plus_twd = life_fund_plus*@cny2twd
+  life_fund_plus_p = @life_fund_plus_twd/@flow_plus_loan_twd*100
   # 狗狗币
   doge_value = Property.doge_records_cny.to_i
   # 狗狗币占流动性资产比值
@@ -165,9 +173,9 @@
   buy_mine_fund_p = buy_mine_fund/$buy_mine_fund_target.to_f*100
   # 生活占流动性资产比值
   life_fund_p = get_flow_assets_p(life_fund,@cny2twd,true)
-  # 持币总值
+  # 持仓总值
   hold_shares_value = Property.hold_shares_records_cny.to_i
-  # 持币总值占流动性资产比值
+  # 持仓总值占流动性资产比值
   hold_shares_p = get_flow_assets_p(hold_shares_value,@cny2twd,true)
   # 银行总值
   bank_value = Property.bank_records_cny.to_i
@@ -200,18 +208,19 @@
     <%= raw("\
     <table width='#{$title_table_width}' style='text-align:right'><tr> \
       <td class='thead' title='流动性资产总值:¥#{(@flow_assets_twd*@twd2cny).to_i}(#{@flow_assets_twd.to_i})'>#{show_title_head}</td><td title='#{show_title_value_note}'>#{link_to( show_title_value, switch_show_value_cur_path)}</td> \
-      <td class='thead' title='冷钱包(¥#{@p_trezor_cny}|#{@p_trezor_twd})占总流动资产比例(#{to_n(trezor_p,4)}%)'>#{link_to '冷钱包','/properties?tags=冷钱包'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(trezor_p,pos)}%<td title='¥#{@p_trezor_cny}(#{@p_trezor_twd})'>#{link_to( show_trezor, switch_show_value_cur_path)}</td></td> \
+      <td class='thead' title='矿机总投入成本'>矿机</td><td>#{link_to( show_mine_cost, switch_show_value_cur_path)}</td><td class='thead' title='矿机总回本'>回本</td><td>#{link_to( show_mine_back, switch_show_value_cur_path)}</td> \
+      <td class='thead' title='冷钱包(¥#{@p_trezor_cny}|#{@p_trezor_twd})占总流动资产比例(#{to_n(trezor_p,4)}%)'>#{link_to '冷钱包','/properties?tags=冷钱包'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(trezor_p,pos)}%<td bgcolor='#{@set_bgcolor1}' title='¥#{@p_trezor_cny}(#{@p_trezor_twd})'>#{link_to( show_trezor, switch_show_value_cur_path)}</td></td> \
       <td class='thead' title='交易所(¥#{p_ex_cny}|#{@p_ex_twd})占总流动资产比例(#{to_n(ex_p,4)}%)'>#{link_to '交易所','/properties?tags=交易所'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(ex_p,pos)}%</td> \
       <td class='thead' title='矿场(¥#{p_mine_earn_cny}|#{@p_mine_earn_twd})占总流动资产比例(#{to_n(mine_earn_p,4)}%)'>#{link_to '矿场','/properties?tags=矿场'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(mine_earn_p,pos)}%</td> \
       <td class='thead' title='¥#{bank_value}(#{(bank_value*@cny2twd).to_i})'>#{link_to '银行','/properties?tags=银行'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(bank_value_p,pos)}%</td> \
-      <td class='thead'>矿机</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(mine_p,pos)}%</td><td bgcolor='#{@set_bgcolor2}' title='矿机成本(¥#{@p_mine_cost_cny}|#{p_mine_cost_twd})占总流动资产比例(#{to_n(mine_p,4)}%)'>#{link_to( show_mine_cost, switch_show_value_cur_path)}</td></tr></table> \
+      </tr></table> \
     <table width='#{$title_table_width}' style='margin-top:#{@title_table_margin};text-align:right'><tr>#{buy_sell_rate_html} \
-      <td class='thead' title='#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})'>#{link_to 'BTC','/properties?tags=比特币'}</td><td>#{add_zero(btc_p.to_i,2)}% | #{add_zero(btc_p2.to_i,2)}%</td> \
-      <td class='thead' title='#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})'>#{link_to 'ETH','/properties?tags=以太坊'}</td><td>#{add_zero(eth_p.to_i,2)}% | #{add_zero(eth_p2.to_i,2)}%</td> \
-      <td class='thead'>#{link_to '合计', '/properties?extags=&mode=a&pid=28&portfolio_name=比特币加以太坊&tags=比特币+以太坊'}</td><td title='¥#{@btc_add_eth_cny}(#{@btc_add_eth_twd})'>#{link_to( show_btc_add_eth_value, switch_show_value_cur_path)}</td> \
-      <td class='thead' title='持币总值: ¥#{hold_shares_value}(#{(hold_shares_value*@cny2twd).to_i})'>#{link_to '持币','/properties?tags=持币'}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(hold_shares_p,pos)}%</td> \
-      <td class='thead' title='#{$cash_field_tag}: ¥#{investable_cny.to_i}(#{(investable_cny*@cny2twd).to_i})'>#{link_to $cash_field_tag[0,2],'/properties?tags='+$cash_field_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(capital_p,pos)}%</td>\
-      <td class='thead' title='#{$reserve_fund_tag}总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_cost_month_grow_limit}(#{($trial_cost_month_grow_limit*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)'>#{link_to $reserve_fund_tag,'/properties?tags='+$reserve_fund_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(life_fund_p,pos)}%</td><td bgcolor='#{@set_bgcolor2}' title='#{$reserve_fund_tag}标签可生活月数'>#{life_months.to_i}/<span title='#{$reserve_fund_tag}标签+保单可贷余额的可生活月数'>#{life_months_plus.to_i}月</span></td><td bgcolor='#{@set_bgcolor2}' title='#{$reserve_fund_tag}标签+保单可贷余额的总值'>#{link_to( show_life_fund_plus_value, switch_show_value_cur_path)}</td></tr></table> \
+      <td class='thead' title='#{$cash_field_tag}: ¥#{investable_cny.to_i}(#{(investable_cny*@cny2twd).to_i})'>#{link_to $cash_field_tag[0,2],'/properties?tags='+$cash_field_tag}</td><td>#{to_n(capital_p,pos)}%</td>\
+      <td class='thead' title='#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})'>#{link_to 'BTC','/properties?tags=比特币'}</td><td bgcolor='#{@set_bgcolor2}'>#{add_zero(btc_p.to_i,2)}% | #{add_zero(btc_p2.to_i,2)}%</td> \
+      <td class='thead' title='#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})'>#{link_to 'ETH','/properties?tags=以太坊'}</td><td bgcolor='#{@set_bgcolor2}'>#{add_zero(eth_p.to_i,2)}% | #{add_zero(eth_p2.to_i,2)}%</td> \
+      <td class='thead'>#{link_to '合计', '/properties?extags=&mode=a&pid=28&portfolio_name=比特币加以太坊&tags=比特币+以太坊'}</td><td bgcolor='#{@set_bgcolor2}' title='¥#{@btc_add_eth_cny}(#{@btc_add_eth_twd})'>#{link_to( show_btc_add_eth_value, switch_show_value_cur_path)}</td> \
+      <td class='thead' title='#{$level_field_tag}总值: ¥#{hold_shares_value}(#{(hold_shares_value*@cny2twd).to_i})'>#{link_to $level_field_tag,'/properties?tags='+$level_field_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(hold_shares_p,pos)}%</td> \
+      <td class='thead' title='#{$reserve_fund_tag}总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_cost_month_grow_limit}(#{($trial_cost_month_grow_limit*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)'>#{link_to $reserve_fund_tag,'/properties?tags='+$reserve_fund_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(life_fund_plus_p,pos)}%</td><td bgcolor='#{@set_bgcolor2}' title='#{$reserve_fund_tag}标签可生活月数'>#{life_months.to_i}/<span title='#{$reserve_fund_tag}标签+保单可贷余额的可生活月数'>#{life_months_plus.to_i}月</span></td><td bgcolor='#{@set_bgcolor2}' title='#{$reserve_fund_tag}标签+保单可贷余额的总值'>#{link_to( show_life_fund_plus_value, switch_show_value_cur_path)}</td></tr></table> \
       ") %>
     <% end %>
 </h3>

@@ -153,6 +153,8 @@ class Property < ApplicationRecord
     p_alipay = Property.tagged_with('支付宝').sum {|p| p.amount_to(:twd)}
     flow_assets_twd = Property.total_flow_assets_twd # 流动性资产总值
     eq_btc = flow_assets_twd*(new.twd_to_btc)
+    # 流动资产+可贷款总额
+    flow_plus_loan_twd = flow_assets_twd+ApplicationController.helpers.total_loan_max_twd
     # 矿机占流动资产比例
     flow_plus_mine_twd = flow_assets_twd+mine_costs_twd
     mine_p = mine_costs_twd/flow_plus_mine_twd*100
@@ -175,8 +177,8 @@ class Property < ApplicationRecord
     investable = total_investable_fund_records # 所有可投资金数据集
     investable_cny = investable.sum {|p| p.amount_to(:cny)}
     if eq_btc > 0
-      # 加上矿机成本计算占比
-      capital_p = (investable.sum {|p| p.amount_to(:twd)})/flow_plus_mine_twd*100
+      # 加上可贷款总额计算占比
+      capital_p = (investable.sum {|p| p.amount_to(:twd)})/flow_plus_loan_twd*100
     else
       capital_p = 0
     end
@@ -424,7 +426,7 @@ class Property < ApplicationRecord
 
   # 数字货币持仓的现值
   def self.hold_shares_records
-    Property.tagged_with('持币')
+    Property.tagged_with($level_field_tag)
   end
 
   # 数字货币持仓的人民币现值
@@ -560,9 +562,9 @@ class Property < ApplicationRecord
   end
 
   # 回传BTC总仓位值 = 比特币资产总值/流动性资产总值
-  def self.btc_level( btc_price = nil, include_mine_cost = false )
-    if include_mine_cost
-      btc_value_twd(btc_price)/(total_flow_assets_twd(btc_price)+mine_costs_twd)*100
+  def self.btc_level( btc_price = nil, include_loan_max = false )
+    if include_loan_max
+      btc_value_twd(btc_price)/(total_flow_assets_twd(btc_price)+ApplicationController.helpers.total_loan_max_twd)*100
     else
       btc_value_twd(btc_price)/total_flow_assets_twd(btc_price)*100
     end

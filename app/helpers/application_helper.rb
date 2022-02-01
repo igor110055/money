@@ -1098,7 +1098,7 @@ module ApplicationHelper
 
   # 计算矿机总成本
   def total_mine_cost
-    ($mine_ori_cost+$mine_other_cost).to_i
+    ($mine_ori_cost+$mine_other_cost-$mine_money_back).to_i
   end
 
   # 切换自动报价的文字显示
@@ -1179,5 +1179,15 @@ module ApplicationHelper
   # 计算单笔买入人民币最小值
   def get_min_buy_cny
     (@price_now*0.0001*$usdt_to_cny/10).ceil * 10
+  end
+
+  # 回传可贷款总值
+  def total_loan_max_cny
+    $loan_max_twd*Property.new.twd_to_cny+$loan_max_cny
+  end
+
+  # 回传可贷款总值
+  def total_loan_max_twd
+    $loan_max_twd+$loan_max_cny*Property.new.cny_to_twd
   end
 end
