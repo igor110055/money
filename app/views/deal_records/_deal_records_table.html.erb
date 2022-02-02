@@ -323,26 +323,30 @@
       <%= to_n(total_earn_or_loss.to_f/total_cny_amount.to_f*100) if total_cny_amount > 0 %>
     </td>
     <td align="right">
+      B: ¥<%= @cny_value_for_btcusdt %>(<%= @twd_value_for_btcusdt %>)
+      E: ¥<%= @cny_value_for_ethusdt %>(<%= @twd_value_for_ethusdt %>)
+      <!--
       <%
         # 计算交易所是否有足够的量以卖出下一笔记录
-        amount_remain_if_sell = @btc_amount_ex - next_sell_amount
+        # amount_remain_if_sell = @btc_amount_ex - next_sell_amount
         # 计算交易所是否有足够的量以卖出所有记录
-        amount_remain_if_clear = @btc_amount_ex - total_amount_fee
+        # amount_remain_if_clear = @btc_amount_ex - total_amount_fee
         # 是否显示8位的比特币数量
-        if show_long_btc_amount %>
-          <%= to_n(total_amount,8) %>
+        # if show_long_btc_amount %>
+          <%#= to_n(total_amount,8) %>
       <%
-        else
+        # else
       %>
           <% # 显示比特币总和 %>
-          <%= link_to "#{to_n(total_amount_fee,amount_pos)}/#{to_n(@btc_amount_ex,amount_pos)}",\
+          <%#= link_to "#{to_n(total_amount_fee,amount_pos)}/#{to_n(@btc_amount_ex,amount_pos)}",\
           place_order_form_path(amount:to_n(@btc_amount_ex,6)), \
           title: "#{to_n(total_amount_fee,8)}/#{to_n(next_sell_amount,8)}/#{to_n(@btc_amount_ex,8)}\n 差值: #{to_n(amount_remain_if_sell,8)}(卖)|#{to_n(amount_remain_if_clear,8)}(总)" %>
       <%
-        end
+        # end
       %>
       <% # 显示比特币仓位现况 %>
-      | <%= to_n(@btc_level,1) %>/<span title="自动买入的最大仓位值"><%= to_n(@max_buy_level,1) %></span>(<span title="再买多少就达到自动买入的最大仓位值"><%=@max_buy_cny_remain.to_i%></span>/<span title="交易所内剩余的泰达币合人民币的值"><%= @usdt2cny_ex.to_i %></span>)
+      | <%#= to_n(@btc_level,1) %>/<span title="自动买入的最大仓位值"><%#= to_n(@max_buy_level,1) %></span>(<span title="再买多少就达到自动买入的最大仓位值"><%#=@max_buy_cny_remain.to_i%></span>/<span title="交易所内剩余的泰达币合人民币的值"><%#= @usdt2cny_ex.to_i %></span>)
+      //-->
     </td>
     <td align="right" colspan="2">
       <% # 显示资产净值与走势图链接 %>

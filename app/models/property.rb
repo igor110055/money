@@ -176,9 +176,10 @@ class Property < ApplicationRecord
     # 计算可投资金的实际比例
     investable = total_investable_fund_records # 所有可投资金数据集
     investable_cny = investable.sum {|p| p.amount_to(:cny)}
+    investable_twd = investable_cny*(new.cny_to_twd)
     if eq_btc > 0
       # 加上可贷款总额计算占比
-      capital_p = (investable.sum {|p| p.amount_to(:twd)})/flow_plus_loan_twd*100
+      capital_p = investable_twd/flow_plus_loan_twd*100
     else
       capital_p = 0
     end
@@ -203,7 +204,7 @@ class Property < ApplicationRecord
       trezor_p = huobi_p = yuebao_p = 0
     end
     if is_admin
-      return p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit.to_i.to_s + ' ', total_unsell_profit.to_i.to_s + ' ', ave_hour_profit.to_i.to_s + ' ', total_real_p_24h.to_s + ' ', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd, flow_plus_mine_twd
+      return p_btc, eq_btc, btc_p, eth_p, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, total_real_profit.to_i.to_s + ' ', total_unsell_profit.to_i.to_s + ' ', ave_hour_profit.to_i.to_s + ' ', total_real_p_24h.to_s + ' ', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd, flow_plus_mine_twd, investable_twd
     else
       p_fbtc = Property.tagged_with('家庭比特币').sum {|p| p.amount_to(:btc)}
       p_finv = Property.tagged_with('家庭投资').sum {|p| p.amount_to(:btc)}
@@ -212,7 +213,7 @@ class Property < ApplicationRecord
       else
         p_fbtc_finv = 0
       end
-      return p_fbtc, p_finv.floor(8), p_fbtc_finv, 0, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, '', '', '', '', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd, flow_plus_mine_twd
+      return p_fbtc, p_finv.floor(8), p_fbtc_finv, 0, sim_ave_cost, real_ave_cost, trezor_ave_cost, total_ave_cost, price_p, one_btc2cny, '', '', '', '', trezor_p, huobi_p, yuebao_p, capital_p, btc_ex_p, investable_cny, p_eth, ex_p, mine_p, mine_buy_cny, mine_earn_p, alipay_p, p_trezor_twd, p_alipay, p_ex, p_mine_earn, flow_assets_twd, flow_plus_mine_twd, investable_twd
     end
   end
 

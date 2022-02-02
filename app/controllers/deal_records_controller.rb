@@ -31,7 +31,7 @@ class DealRecordsController < ApplicationController
       @deal_records = DealRecord.where("#{pre_condts} auto_sell = 1 and real_profit = 0 and account = '#{get_huobi_acc_id}'").order(params[:order_field])
     else
       params[:order_field] ||= 'created_at desc'
-      @deal_records = DealRecord.where("#{pre_condts} auto_sell = 0 and account = '#{get_huobi_acc_id}'").order(params[:order_field])
+      @deal_records = DealRecord.where("#{pre_condts} auto_sell = 0 and account = '#{get_huobi_acc_id}'").order(params[:order_field]).limit($deal_records_limit_sql)
     end
     index_footer
   end
