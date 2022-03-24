@@ -1,5 +1,5 @@
 <h2>
-  系统参数设定
+  <%= link_to '系统参数设定', "#{$host2}system_params_form" %>
   <small style="margin-left:1em"> |
     <% %w(auto_update_btc_price auto_update_huobi_assets auto_refresh_sec show_buy_sell_rate).each do |name| %>
       <%= link_to eval("get_#{name}_text"), eval("switch_#{name}_path") %> |
