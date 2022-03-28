@@ -117,25 +117,25 @@ fix_start_month_cost # 修正生活费计算的错误
 total_mine_sell = 0 # 当月挖矿后立刻卖出的累计收益
 mine_income_twd = mine_income_cny = 0 # 挖矿总收益
 %>
-<table width="<%=$default_table_width*0.95%>" style="font-size:0.7em">
+<table width="<%=$default_table_width%>" style="font-size:0.7em">
   <tr class="thead">
     <td><%= t(:myage)%></td>
     <td><%= t(:date)%></td>
     <td><%= t(:begin_price)%></td>
-    <!-- <td><%= t(:goal_price)%></td> -->
-    <td><%= t(:reach_goal_price)%></td>
+    <td><%= t(:goal_price)%></td>
+    <!-- <td><%= t(:reach_goal_price)%></td> -->
     <td><%= t(:begin_amount)%></td>
     <td title="每月生活费与矿机的支出(¥)加底线表示以冷钱包支付生活费"><%= t(:month_cost)%></td>
     <td>月末量</td>
-    <td>增减</td>
+    <!-- <td>增减</td> -->
     <td><%= t(:month_grow_rate)%></td>
     <td><%= t(:end_price)%></td>
     <td title="<%= t(:end_balance)%>(¥)"><%= t(:end_balance)%></td>
     <!-- <td title="以最高生活费计算的可生活月数">月数</td> -->
-    <td title="<%= t(:balance_now)%>(¥)"><%= t(:balance_now)%></td>
     <% if admin? %>
       <td title="<%= t(:goal_balance)%>(¥)"><%= t(:goal_balance)%></td>
-      <td title="<%= t(:have_reached)%>(¥)"><%= t(:have_reached)%></td>
+      <td title="<%= t(:balance_now) %>(¥)"><%= t(:balance_now)%></td>
+      <!-- <td title="<%= t(:have_reached)%>(¥)"><%= t(:have_reached)%></td> -->
     <% end %>
     <% # 如果有矿机收益 %>
     <% if have_mine or have_mine_eth %>
@@ -144,7 +144,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
       <td title="扣除每月生活费后的挖矿累计收益(¥)">挖矿累计</td>
       <td>矿机数</td>
       <% if admin? %>
-        <td>占比(%)</td>
+        <!-- <td>占比(%)</td> -->
       <% end %>
     <% end %>
   </tr>
@@ -181,14 +181,15 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
       <!-- 日期 //-->
       <td align="center"><%= this_date.to_s(:db) %></td>
       <!-- 月初价 //-->
+      <% init_btc_price = @btc_price %>
       <td align="right" title="¥<%=btc_to_cny(@btc_price).to_i%>"><%= to_n(@btc_price,0) %></td>
       <!-- 目标价 //-->
-      <!-- <td align="right"><%= to_n(goal_price,0) %></td> -->
+      <td align="right" title="¥<%=btc_to_cny(goal_price).to_i%>"><%= to_n(goal_price,0) %></td>
       <!-- 达标价 //-->
-      <td align="right"><%= to_n(reach_goal_price,0) %></td>
+      <!-- <td align="right"><%= to_n(reach_goal_price,0) %></td> -->
       <!-- 月初量 //-->
-      <% begin_amount = @btc_amount %>
-      <td align="right"><%= to_n(@btc_amount,8) %></td>
+      <% begin_amount = @btc_total_amount %>
+      <td align="right"><%= to_n(@btc_total_amount,8) %></td>
       <% # 如果有BTC矿机收益 %>
       <%  if have_mine
             # 回本后每月得到的币数会减少
@@ -224,7 +225,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
             mine_amount += mine_earn_remain if mine_earn_remain > 0
             mine_income_cny = mine_amount*btc_to_cny(@btc_price)
             mine_income_twd = (mine_income_cny*@cny2twd).to_i
-            @btc_amount += mine_earn_remain
+            @btc_total_amount += mine_earn_remain
             # 如果价值大于每台矿机价格则自动购入矿机$mine_each_buy台
             $mine_buy_dates.each_index do |i|
               buy_date = $mine_buy_dates[i].split(':')[0]
@@ -234,7 +235,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
               # 如果到达购买日则加购
               if buy_date == this_date.to_s(:db)
                 if buy_using_btc > 0
-                  @btc_amount -= (mine_cost/btc_to_cny(@btc_price))*buy_num
+                  @btc_total_amount -= (mine_cost/btc_to_cny(@btc_price))*buy_num
                 end
                 $mine_num += buy_num
                 buy_num_this_month = buy_num
@@ -290,7 +291,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
               mine_amount += mine_earn_remain  if mine_earn_remain > 0
               mine_income_cny += mine_amount*btc_to_cny(@btc_price)
               mine_income_twd += (mine_income_cny*@cny2twd).to_i
-              @btc_amount += mine_earn_remain
+              @btc_total_amount += mine_earn_remain
             else
               $mine_num_eth = 0
               have_mine_eth = false
@@ -309,7 +310,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
       <% begin_balance = @btc_capital %>
       <% begin_balance_twd = btc_capital_twd %>
       <!-- 月末量 //-->
-      <% @btc_amount -= month_sell if cost_by_trezor # 扣除生活费 %>
+      <% @btc_total_amount -= month_sell if cost_by_trezor # 扣除生活费 %>
       <%
         # 若有输入卖币日期则卖币
         $mine_sell_dates.each_index do |i|
@@ -317,15 +318,15 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
           sell_amount = $mine_sell_dates[i].split(':')[1].to_f
           # 如果到达卖币日期则卖币
           if sell_date == this_date.to_s(:db)
-            @btc_amount -= sell_amount
+            @btc_total_amount -= sell_amount
             sell_mine_note = "\n卖币#{sell_amount}枚, 共¥#{(sell_amount*btc_to_cny(@btc_price)).to_i}元"
           end
         end
       %>
-      <td class="<%= (btc_diff_flag and reach_btc_amount_goal) ? 'trial_goal_reach' : 'end_balance' %>" title="冷钱包余额:<%=to_n(@trezor_btc_amount,8)%> 与目标(<%=$trial_btc_amount_goal%>)相差:<%=to_n(@trezor_btc_amount-$trial_btc_amount_goal,8)%><%=sell_mine_note%>" align="right"><%= to_n(@btc_amount,8) %></td>
+      <td align="right"><%= to_n(@btc_total_amount,8) %></td>
       <!-- 增减 //-->
       <% # 查看极客挖矿余额是否已经大于增减量
-          btc_diff_goal = @btc_amount-begin_amount
+          btc_diff_goal = @btc_total_amount-begin_amount
           if btc_diff_flag
             btc_goal_diff = jike_balance+huobi_balance-btc_diff_goal
             reach_btc_diff_goal = true if btc_goal_diff > 0
@@ -342,9 +343,6 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
             btc_diff_title += "极客+火币:#{to_n(jike_balance+huobi_balance,8)} 相差:#{to_n(btc_goal_diff,8)}"
           end
       %>
-      <td align="right" class="<%= (btc_diff_flag and reach_btc_diff_goal and !reach_btc_amount_goal) ? 'trial_goal_reach' : ((btc_diff_flag and !reach_btc_amount_goal) ? 'trial_goal_unreach' : '') %>" title="<%=btc_diff_title%>"><%= to_n(btc_diff_goal,8) %>
-      <% btc_diff_flag = false # 只使用一次(看看当月矿场余额是否达标) %>
-      </td>
       <!-- 增长 //-->
       <% month_grow_rate = btc_month_grow_rate*100 %>
       <td align="right"><%= to_n(month_grow_rate) %>%</td>
@@ -363,7 +361,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
       <% cal_month_cost # 计算新的生活费 %>
       <!-- 月末价 //-->
       <% end_price = @btc_price %>
-      <td align="right"><%= to_n(end_price,0) %></td>
+      <td align="right" title="¥<%=btc_to_cny(end_price).to_i%>"><%= to_n(end_price,0) %></td>
       <!-- 月末值 //-->
       <% end_balance = cal_btc_capital %>
       <% end_balance_twd = btc_capital_twd %>
@@ -373,24 +371,17 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
       <% net_end_balance_cny = end_balance_cny - loan_lixi_cny %>
       <% life_months = (net_end_balance_cny/max_month_cost).to_i %>
       <!--td align="right" title="<%=end_balance_cny%>-<%=loan_lixi_cny%>=<%=net_end_balance_cny%>/<%=max_month_cost%>(<%=to_n(life_months.to_f/12,1)%>年)"><%=life_months%></td-->
-      <!-- 目前值 //-->
-      <td class="balance_now" align="right"><%= show_balance_now %></td>
       <% if admin? %>
         <!-- 月末目标 //-->
-        <td align="right" title="<%=goal_balance%>"><%= (goal_balance*twd_to_cny).to_i %></td>
+        <td class="balance_now" align="right" title="<%=goal_balance%>"><%= (goal_balance*twd_to_cny).to_i %></td>
+        <!-- 目前值 //-->
+        <td align="right" class="<%= @flow_assets_twd > goal_balance ? 'trial_goal_reach' : '' %>"><%= (@flow_assets_twd*twd_to_cny).to_i %></td>
         <!-- 距离目标 //-->
         <% # 如果当月有支出购买矿机的费用，则先减去该费用再判定正负
           diff_balance -= (mine_cost_this_date*cny_to_twd).to_i if mine_cost_this_date > 0
           # 一旦有一个月没达成目标，即使后面的月份达成也不显示了
           highlight_goal = false if diff_balance <= 0
         %>
-        <td align="right" class="<%= diff_balance > 0 and highlight_goal ? 'trial_goal_reach' : '' %>">
-          <% if diff_balance != 0 %>
-            <span title="<%= "资产总值目标：#{goal_balance} 差距：#{diff_balance.to_i} 新台币\n比特币目标价：#{goal_price.floor(2)} 差距：#{to_n(diff_price)} 泰达币"%>">
-              <%= (diff_balance*twd_to_cny).to_i %>
-            </span>
-          <% end %>
-        </td>
       <% end %>
       <% # 如果有矿机收益 %>
       <% if show_mine_td %>
@@ -426,7 +417,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
           flow_mine_p = (mine_total_cost+$mine_other_cost).to_f/(balance_cost+other_balance_cost)*100
         %>
         <% if admin? %>
-          <td align="center" class="<%= flow_mine_p > $mine_buy_limit*100 ? 'trial_goal_unreach' : '' %>"><%# add_zero(acc_mine_p.to_i,2) %><%= add_zero(to_n(flow_mine_p,2),2) %></td>
+          <!-- <td align="center" class="<%= flow_mine_p > $mine_buy_limit*100 ? 'trial_goal_unreach' : '' %>"><%# add_zero(acc_mine_p.to_i,2) %><%= add_zero(to_n(flow_mine_p,2),2) %></td> //-->
         <% end %>
       <% end %>
     </tr>
@@ -450,26 +441,26 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
     %>
   <% end %>
   <tr class="thead">
-    <td colspan="3" align="right">
+    <td colspan="3" align="center">
       <% # 显示现价与k线图链接 %>
-      <%= kline_chart_link %> | <%= kline_chart_link to_n(@eth_price), "ethusdt" %>
+      <%=
+      btc_now = get_btc_price
+      eth_btc_now = @eth_price/btc_now
+      doge_now = get_doge_price
+       show_prices_and_chart_links(to_n(btc_now,2),to_n(@eth_price),to_n(eth_btc_now,5),to_n(doge_now,5)) %>
     </td>
-    <td colspan="8" align="right">
+    <td colspan="8" align="left">
       <% # 显示资产净值与走势图链接 %>
       <%= show_net_value_link if admin? %>
     </td>
     <% # 如果有矿机收益 %>
     <% if admin? %>
       <% if show_mine_td %>
-        <td colspan="8" align="right">
-      <% else %>
-        <td colspan="3" align="right">
+        <td colspan="5" align="right">
       <% end %>
     <% else %>
       <% if show_mine_td %>
-        <td colspan="5" align="right">
-      <% else %>
-        <td colspan="1" align="right">
+        <td colspan="4" align="right">
       <% end %>
     <% end %>
       <% if admin? %>

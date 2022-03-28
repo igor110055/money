@@ -1,10 +1,9 @@
 <% if login? %>
   <div id="<%= id %>" style="width:100%">
     <small>
-      <%= link_back_to_trial_lists %> |
-      <%= link_back_to_deal_records %> |
       <%= link_back_to_properties %> |
       <% if admin? %>
+        <%= link_back_to_trial_lists %> |
         <%= link_back_to_portfolios %> |
         <%= system_params_form_link %> |
         <%= set_auto_invest_form_link('BTC','买参设定',dtype:'buy') %> |

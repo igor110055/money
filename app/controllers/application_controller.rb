@@ -732,6 +732,7 @@ class ApplicationController < ActionController::Base
     @flow_assets_twd = Property.flow_assets_twd
     @flow_assets_btc = Property.flow_assets_btc
     @btc_amount, @trezor_btc_amount = get_btc_amounts
+    @btc_total_amount = get_btc_eth_amounts
     @btc_amount_now = Property.btc_amount_of_flow_assets
     @usdt_to_twd = usdt_to_twd
     @investable_fund_records_twd = Property.investable_fund_records_twd

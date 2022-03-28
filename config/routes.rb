@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   resources :digital_params
   resources :trial_lists
-  root 'deal_records#index'
+  root 'trial_lists#index'
 
   resources :properties do
     member do

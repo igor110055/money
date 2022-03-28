@@ -499,7 +499,7 @@ module ApplicationHelper
     investable_fund_twd = Property.total_investable_fund_records_twd.to_i # 可买币资产总值
     total_loan_lixi_twd = Property.total_loan_lixi.to_i # 总的所有贷款含利息
     loan_lixi_twd = Property.loan_lixi.to_i # 所有贷款含利息(135/170)
-    month_cost_max = $trial_cost_month_grow_limit # 每月生活费上限
+    month_cost_max = $trial_life_month_cost_cny_admin # 每个月生活费
     keep_years = $keep_life_years # 至少保留几年的生活费
     tag_value_twd = total_flow_assets_twd if $trial_cost_month_from_tag == '' # 空白表示显示流动性资产总值
     if admin?
@@ -829,7 +829,7 @@ module ApplicationHelper
 
   # 用于收支试算函数
   def cal_btc_capital
-    @btc_capital = (@btc_price*@btc_amount*$usdt_to_cny).to_i
+    @btc_capital = (@btc_price*@btc_total_amount*$usdt_to_cny).to_i
   end
 
   # 用于收支试算函数
@@ -912,6 +912,18 @@ module ApplicationHelper
     rescue
       return 0
     end
+  end
+
+  # 比特币总数量
+  def get_total_btc_amounts
+    Property.tagged_with('比特币').sum {|p| p.amount}
+  end
+
+  # 比特币+以太坊总数量=多少比特币
+  def get_btc_eth_amounts
+    b = Property.tagged_with('比特币').sum {|p| p.amount}
+    e = Property.tagged_with('以太坊').sum {|p| p.amount_to(:btc)}
+    return b+e
   end
 
   # 理财目标的月末目标能连接到流动性资产总值一览表
