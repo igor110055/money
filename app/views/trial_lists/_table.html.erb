@@ -135,7 +135,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
     <% if admin? %>
       <td title="<%= t(:goal_balance)%>(¥)"><%= t(:goal_balance)%></td>
       <td title="<%= t(:balance_now) %>(¥)"><%= t(:balance_now)%></td>
-      <!-- <td title="<%= t(:have_reached)%>(¥)"><%= t(:have_reached)%></td> -->
+      <td title="<%= t(:have_reached)%>(¥)"><%= t(:have_reached)%></td>
     <% end %>
     <% # 如果有矿机收益 %>
     <% if have_mine or have_mine_eth %>
@@ -189,7 +189,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
       <!-- <td align="right"><%= to_n(reach_goal_price,0) %></td> -->
       <!-- 月初量 //-->
       <% begin_amount = @btc_total_amount %>
-      <td align="right"><%= to_n(@btc_total_amount,8) %></td>
+      <td align="right"><%= to_n(@btc_total_amount,6) %></td>
       <% # 如果有BTC矿机收益 %>
       <%  if have_mine
             # 回本后每月得到的币数会减少
@@ -375,13 +375,10 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
         <!-- 月末目标 //-->
         <td class="balance_now" align="right" title="<%=goal_balance%>"><%= (goal_balance*twd_to_cny).to_i %></td>
         <!-- 目前值 //-->
-        <td align="right" class="<%= @flow_assets_twd > goal_balance ? 'trial_goal_reach' : '' %>"><%= (@flow_assets_twd*twd_to_cny).to_i %></td>
+        <% show_goal_diff_calss = @flow_assets_twd > goal_balance ? 'trial_goal_reach' : '' %>
+        <td align="right" class="<%= show_goal_diff_calss %>"><%= (@flow_assets_twd*twd_to_cny).to_i %></td>
         <!-- 距离目标 //-->
-        <% # 如果当月有支出购买矿机的费用，则先减去该费用再判定正负
-          diff_balance -= (mine_cost_this_date*cny_to_twd).to_i if mine_cost_this_date > 0
-          # 一旦有一个月没达成目标，即使后面的月份达成也不显示了
-          highlight_goal = false if diff_balance <= 0
-        %>
+        <td align="right" class="<%= show_goal_diff_calss %>"><%= ((@flow_assets_twd-goal_balance)*twd_to_cny).to_i %></td>
       <% end %>
       <% # 如果有矿机收益 %>
       <% if show_mine_td %>
@@ -456,7 +453,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
     <% # 如果有矿机收益 %>
     <% if admin? %>
       <% if show_mine_td %>
-        <td colspan="5" align="right">
+        <td colspan="6" align="right">
       <% end %>
     <% else %>
       <% if show_mine_td %>
