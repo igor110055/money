@@ -26,7 +26,7 @@ end
   </tr>
   <% cal_btc_capital %>
   <% birthday = "1974-12-02".to_date %>
-  <% (0..12*$trial_total_years).each do |n| %>
+  <% (0..$trial_total_months).each do |n| %>
     <tr <%= change_row_color %>>
       <% this_date = Date.today.at_beginning_of_month+n.month %>
       <% month_sell = @month_cost/@usdt2cny/@btc_price %>

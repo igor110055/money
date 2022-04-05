@@ -323,7 +323,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
           end
         end
       %>
-      <td align="right"><%= to_n(@btc_total_amount,8) %></td>
+      <td align="right"><%= to_n(@btc_total_amount,6) %></td>
       <!-- 增减 //-->
       <% # 查看极客挖矿余额是否已经大于增减量
           btc_diff_goal = @btc_total_amount-begin_amount

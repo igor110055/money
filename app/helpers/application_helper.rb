@@ -853,7 +853,7 @@ module ApplicationHelper
 
   # 理财目标显示的笔数
   def trial_records_number( show_all = false )
-    (params[:show_all] == '1' or show_all) ? 12*$trial_save_years : 12*$trial_total_years
+    (params[:show_all] == '1' or show_all) ? $trial_save_months : $trial_total_months
   end
 
   # 显示无定投参数选项的精确值
