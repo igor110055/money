@@ -120,6 +120,7 @@ Rails.application.routes.draw do
   post 'update_system_params', to: 'main#update_system_params'
   get 'test_huobi', to: 'main#get_huobi_assets_test'
   get 'kdata', to: 'main#kline_data'
+  get 'kdata_db', to: 'main#db_kline_data'
   get 'mtrades', to: 'main#model_trade_test_set'
   get 'mtrades_log', to: 'main#show_mtrades_log'
   get 'mtrade', to: 'main#model_trade_test_single'

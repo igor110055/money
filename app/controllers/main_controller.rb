@@ -291,6 +291,11 @@ class MainController < ApplicationController
     render json: get_kline
   end
 
+  # 从数据库读取历史报价
+  def db_kline_data
+    @prices = get_kline_db($kline_show_from,$kline_show_to,$kline_data_period,$kline_data_symbol,$kline_show_limit)
+  end
+
   # 检查是否超过火币WebSocket所能容许的查询期间
   # 1min, 5min, 15min, 30min, 60min, 4hour, 1day, 1mon, 1week, 1year
   def get_kline_time( from_time, to_time, period = '60min', max_size = 300 )
@@ -364,17 +369,8 @@ class MainController < ApplicationController
         break
       end
     end
-    flash.now[:notice] = "已将#{count}笔#{symbol}(#{period})的数据存入数据库！(#{now})"
-    @text = <<-EOF
-              如有需要，请到系统参数页面修改下列参数后执行:
-              <ol>
-                <li>$kline_data_period = '#{$kline_data_period}'</li>
-                <li>$kline_data_symbol = '#{$kline_data_symbol}'</li>
-                <li>$kline_data_from = '#{$kline_data_from}'</li>
-                <li>$kline_data_to = '#{$kline_data_to}'</li>
-              </ol>
-    EOF
-    render template: 'shared/blank'
+    flash[:notice] = "已将#{count}笔#{symbol}(#{period})的数据存入数据库！(#{now})"
+    redirect_to kdata_db_path
   end
 
   # 取得报价资料

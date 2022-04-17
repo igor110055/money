@@ -1,0 +1,27 @@
+<h2>
+  <%= link_to "比特币历史收盘价(#{@prices.size}笔)", "#{kdata_db_path(only_price:true)}" %>
+</h2>
+<%= form_tag id: 'prices_form' do %>
+  <%
+    denominator = 100000000.0
+    if params[:only_price]
+      content = @prices.map { |p| "#{p.close.to_i}" }.join("\n")
+    else
+      content = @prices.map { |p| "#{Time.at(p.tid).strftime("%Y-%m-%d %H:%M")},#{p.close.to_i},#{(p.vol/denominator).floor(2)}" }.join("\n")
+    end
+  %>
+  <%= text_area_tag 'kdata_from_db', content, rows: 17, cols: 80 %>
+<% end %>
+<div style="padding:1.2em;margin-top: -1em">
+  <h4 style="margin-bottom: -1em">储存报价参数</h4>
+  <ol>
+    <li>币种($kline_data_symbol) : <%= $kline_data_symbol %></li>
+    <li>间隔($kline_data_period) : <%= $kline_data_period %></li>
+    <li>开始($kline_data_from) : <%= $kline_data_from %></li>
+    <li>结束($kline_data_to) : <%= $kline_data_to %></li>
+    <li>开始($kline_show_from) : <%= $kline_show_from %></li>
+    <li>结束($kline_show_to) : <%= $kline_show_to %></li>
+    <li>笔数($kline_show_limit) : <%= $kline_show_limit %></li>
+  </ol>
+  <%= button_to "按参数储存报价至数据库", save_kdata_path, :method => "get" %>
+</div>
