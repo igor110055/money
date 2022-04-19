@@ -125,6 +125,7 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
     <td><%= t(:goal_price)%></td>
     <!-- <td><%= t(:reach_goal_price)%></td> -->
     <td><%= t(:begin_amount)%></td>
+    <td title="每月投资比特币的金额(¥)">定投</td>
     <td title="每月生活费与矿机的支出(¥)加底线表示以冷钱包支付生活费"><%= t(:month_cost)%></td>
     <td>月末量</td>
     <!-- <td>增减</td> -->
@@ -142,10 +143,6 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
       <td title="以月末比特币价格估算的当月挖矿收益(¥)">当月挖矿</td>
       <td title="当月挖矿后立刻卖出的累计收益(¥)">卖出累计</td>
       <td title="扣除每月生活费后的挖矿累计收益(¥)">挖矿累计</td>
-      <td>矿机数</td>
-      <% if admin? %>
-        <!-- <td>占比(%)</td> -->
-      <% end %>
     <% end %>
   </tr>
   <%
@@ -297,6 +294,16 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
               have_mine_eth = false
             end
           %>
+      <!-- 定投 //-->
+      <td align="right">
+        <%
+          if this_date > $trial_month_invest_begin and this_date < $trial_month_invest_end
+            invest_btc_amount = $trial_month_invest/btc_to_cny(@btc_price)
+            @btc_total_amount += invest_btc_amount
+        %>
+          <span title="฿<%=invest_btc_amount.floor(5)%>"><%= $trial_month_invest %></span>
+        <% end %>
+      </td>
       <!-- 支出 //-->
       <td align="right">
         <% if this_date > @month_cost_start %>
@@ -400,22 +407,6 @@ mine_income_twd = mine_income_cny = 0 # 挖矿总收益
             mine_total_twd = (mine_total_cny*@cny2twd).to_i %>
         <!-- 挖矿累计 //-->
         <td class="end_balance" align="right" title="฿<%=mine_amount.floor(4)%>(NT$<%= mine_total_twd %>)"><%=mine_total_cny%></td>
-        <!-- 矿机数 //-->
-        <td align="center" title="未回本: <%=unback_num%> 已回本: <%=backed_num%><%=show_br(buy_mine_note)%><%=buy_mine_note%>"><%= $mine_num+$mine_num_eth %></td>
-        <%
-          # 计算矿机两种占比:135/170账号占比，总体占比(135+170)
-          # 账号占比
-          mine_total_cost = $mine_ori_cost + total_buy_num*mine_cost # 矿机成本(CNY)
-          balance_cost = end_balance_cny+mine_total_cost # 本账号的月末值+矿机成本
-          acc_mine_p = mine_total_cost.to_f/balance_cost*100
-          # 总体占比
-          other_asset = Property.tagged_with($mine_other_asset_tag).sum {|p| p.amount_to(:cny,end_price)}
-          other_balance_cost = other_asset+$mine_other_cost # 另一账号的月末值+矿机成本
-          flow_mine_p = (mine_total_cost+$mine_other_cost).to_f/(balance_cost+other_balance_cost)*100
-        %>
-        <% if admin? %>
-          <!-- <td align="center" class="<%= flow_mine_p > $mine_buy_limit*100 ? 'trial_goal_unreach' : '' %>"><%# add_zero(acc_mine_p.to_i,2) %><%= add_zero(to_n(flow_mine_p,2),2) %></td> //-->
-        <% end %>
       <% end %>
     </tr>
     <%
