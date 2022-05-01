@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_21_140644) do
+ActiveRecord::Schema.define(version: 2022_04_28_003730) do
 
   create_table "currencies", force: :cascade do |t|
     t.string "name"
@@ -195,6 +195,7 @@ ActiveRecord::Schema.define(version: 2021_06_21_140644) do
     t.decimal "end_price"
     t.integer "end_balance"
     t.integer "end_balance_twd"
+    t.integer "month_invest"
   end
 
 end

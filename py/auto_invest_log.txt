@@ -1,0 +1,60 @@
+----------------------------------------------------------------------
+2022-05-01 20:43:19 Price Now: 37956.82
+*** Double Buy Every 1000 Calculated ***
+BTC Level: 8.40% (FORCE_BUY:True) for AccId: 135(6565695)
+Total  USDT: 1141.6611 USDT (7436.57 CNY)
+Invest Cost: 6.1400 USDT (39.99 CNY)
+Buy Amount: 0.000162 BTC (39.99 CNY)
+Get Amount: 0.00016144 BTC (39.99 CNY)
+Next Time: 2022-05-01 22:43:28 (120.15 M | 2.00 H)
+Zero Time: 2022-05-17 09:03:48 (372.34 H | 15.51 D)
+Send Order(529688827003516) successfully
+2 Deal Records added
+USDT Trade Now: 1135.5121 (7396.52 CNY)
+BTC Now: 0.00291916 (721.9 CNY) Total: 8118.4 CNY Level: 8.89%
+5 Huobi Assets Updated, Send Order Process Completed
+----------------------------------------------------------------------
+2022-05-01 22:43:31 Price Now: 37991.35
+*** Double Buy Every 1000 Calculated ***
+BTC Level: 8.90% (FORCE_BUY:True) for AccId: 135(6565695)
+Total  USDT: 1135.5121 USDT (7396.52 CNY)
+Invest Cost: 6.1400 USDT (39.99 CNY)
+Buy Amount: 0.000162 BTC (39.99 CNY)
+Get Amount: 0.00016129 BTC (39.99 CNY)
+Next Time: 2022-05-02 00:43:40 (120.15 M | 2.00 H)
+Zero Time: 2022-05-17 09:03:41 (370.34 H | 15.43 D)
+Send Order(529689808044745) successfully
+1 Deal Records added
+USDT Trade Now: 1129.3575 (7356.43 CNY)
+BTC Now: 0.00308083 (762.6 CNY) Total: 8119.0 CNY Level: 9.39%
+5 Huobi Assets Updated, Send Order Process Completed
+----------------------------------------------------------------------
+2022-05-02 02:54:11 Price Now: 37990.63
+*** Double Buy Every 1000 Calculated ***
+BTC Level: 9.39% (FORCE_BUY:True) for AccId: 135(6565695)
+Total  USDT: 1129.3575 USDT (7356.43 CNY)
+Invest Cost: 6.1400 USDT (39.99 CNY)
+Buy Amount: 0.000162 BTC (39.99 CNY)
+Get Amount: 0.00016130 BTC (39.99 CNY)
+Next Time: 2022-05-02 04:54:20 (120.15 M | 2.00 H)
+Zero Time: 2022-05-17 11:13:54 (368.33 H | 15.35 D)
+Send Order(529691955101989) successfully
+1 Deal Records added
+USDT Trade Now: 1123.2041 (7316.35 CNY)
+BTC Now: 0.00324251 (802.6 CNY) Total: 8118.9 CNY Level: 9.89%
+5 Huobi Assets Updated, Send Order Process Completed
+----------------------------------------------------------------------
+2022-05-02 04:54:21 Price Now: 37961.22
+*** Double Buy Every 1000 Calculated ***
+BTC Level: 9.88% (FORCE_BUY:True) for AccId: 135(6565695)
+Total  USDT: 1123.2041 USDT (7316.35 CNY)
+Invest Cost: 6.1400 USDT (39.99 CNY)
+Buy Amount: 0.000162 BTC (39.99 CNY)
+Get Amount: 0.00016142 BTC (39.99 CNY)
+Next Time: 2022-05-02 06:54:30 (120.15 M | 2.00 H)
+Zero Time: 2022-05-17 11:13:40 (366.32 H | 15.26 D)
+Send Order(529692937099887) successfully
+1 Deal Records added
+USDT Trade Now: 1117.0544 (7276.29 CNY)
+BTC Now: 0.00340418 (841.9 CNY) Total: 8118.2 CNY Level: 10.37%
+5 Huobi Assets Updated, Send Order Process Completed

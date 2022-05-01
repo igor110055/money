@@ -843,11 +843,12 @@ module ApplicationHelper
     if rs = TrialList.find_by_trial_date(trial_date)
       goal_price = rs.end_price
       goal_balance = rs.end_balance_twd
+      month_invest = rs.month_invest.nil? ? 0 : rs.month_invest
       # 計算理財目標的达标价
       reach_goal_price = (rs.end_balance - @investable_fund_records_cny)/(@btc_amount_now*$usdt_to_cny)
-      return goal_price, @begin_price_for_trial - goal_price, goal_balance, @flow_assets_twd - goal_balance, reach_goal_price
+      return goal_price, @begin_price_for_trial - goal_price, goal_balance, @flow_assets_twd - goal_balance, reach_goal_price, month_invest
     else
-      return 0, 0, 0, 0, 0
+      return 0, 0, 0, 0, 0, 0
     end
   end
 

@@ -1,11 +1,23 @@
+<%
+def get_time_plan( input_time = Time.now )
+  $time_plan.each do |item|
+    from_time = item.split('-')[0].to_time
+    to_time = item.split('-')[1].to_time
+    todo = item.split('-')[2]
+    if input_time > from_time and input_time <= to_time
+      return todo
+    end
+  end
+  return '欠缺計劃'
+end
+%>
 <span id="site_title">
     <h1 style="width: <%= $default_table_width %>px">
-      <%= site_logo %>
+      <%#= site_logo %>
+      ⏰ <%= link_to get_time_plan, :trial_lists %>
       <% if admin? %>
-        <%= link_to get_huobi_acc_id, $host2 %>
-        <% link_name = "trial_lists" %>
-        <a href="<%= session[:home_url] %>"><%= site_name %></a>
-        <%= link_to raw($site_slogon), "#{$host2}#{link_name}" %>
+         | <a href="<%= session[:home_url] %>"><%= site_name %></a>
+        <%= link_to raw($site_slogon)+raw(" <small>#{get_huobi_acc_id}</small>"), $host2 %>
       <% end %>
     </h1>
 </span>

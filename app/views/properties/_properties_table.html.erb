@@ -46,9 +46,6 @@
   <% lixis += lixi %>
   <% proportions += proportion.to_f %>
 <% end %>
-<% if show_summary %>
-  <%= show_summary_tr(11) %>
-<% else %>
   <tr class="thead" id="properties_total_info">
     <td colspan="2"></td>
     <td colspan="3" align="right"><%= to_amount(amounts,properties.last.currency.is_digital?) %>&nbsp;</td>
@@ -58,5 +55,4 @@
     <td align="right"><%= lixis.to_i %></td>
     <td align="right" colspan="2"><%= to_n(proportions) %></td>
   </tr>
-<% end %>
 </table>

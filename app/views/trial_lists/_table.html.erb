@@ -127,7 +127,8 @@ yn_rate = 1.017 # 一诺千金年还本递增率
     <td><%= t(:date)%></td>
     <td><%= t(:begin_price)%></td>
     <td><%= t(:begin_amount)%></td>
-    <td title="每月投资比特币的金额(¥)">定投</td>
+    <td title="试算每月投资比特币的金额(¥)">定投试算</td>
+    <td title="储存在数据库里每月投资比特币的金额(¥)">定投目标</td>
     <td title="每月生活费与矿机的支出(¥)加底线表示以冷钱包支付生活费"><%= t(:month_cost)%></td>
     <td>月末量</td>
     <!-- <td>增减</td> -->
@@ -168,7 +169,7 @@ yn_rate = 1.017 # 一诺千金年还本递增率
     mine_cost_this_date = 0 # 这个月购买矿机所支付的人民币
     mine_earn = 0 # 当月可挖的总币数
     loan_lixi_cny = (Property.loan_lixi(this_date)*twd_to_cny).to_i # 这个月的贷款加利息
-    goal_price, diff_price, goal_balance, diff_balance, reach_goal_price  = check_trial_reached(this_date)
+    goal_price, diff_price, goal_balance, diff_balance, reach_goal_price, month_invest  = check_trial_reached(this_date)
     # 若有输入卖币日期则以高亮显示整列
     $mine_sell_dates.each_index do |i|
       sell_date = $mine_sell_dates[i].split(':')[0]
@@ -298,6 +299,7 @@ yn_rate = 1.017 # 一诺千金年还本递增率
       <!-- 定投 //-->
       <td align="right">
         <%
+          this_month_invest_cny = this_month_invest_twd = 0
           if this_date > $trial_month_invest_begin and this_date < $trial_month_invest_end
             this_month_invest_cny = $trial_month_invest[invest_index%($trial_month_invest.size)]
             invest_btc_amount = this_month_invest_cny/btc_to_cny(@btc_price)
@@ -313,6 +315,17 @@ yn_rate = 1.017 # 一诺千金年还本递增率
         %>
           <span title="<%=this_month_invest_twd%> ¥<%=this_month_invest_cny%> ฿<%=invest_btc_amount.floor(5)%>"><%= show_this_month_invest %></span>
         <% end %>
+      </td>
+      <!-- 定投计划 //-->
+      <td align="right" class="balance_now">
+        <%
+          if $show_value_cur == 'TWD'
+            show_month_invest_plan = (month_invest*cny_to_twd).to_i
+          else
+            show_month_invest_plan = month_invest
+          end
+        %>
+        <%= show_month_invest_plan %>
       </td>
       <!-- 支出 //-->
       <td align="right">
@@ -381,7 +394,7 @@ yn_rate = 1.017 # 一诺千金年还本递增率
       <% end_price = @btc_price %>
       <td align="right" title="¥<%=btc_to_cny(end_price).to_i%>"><%= to_n(end_price,0) %></td>
       <!-- 目标价 //-->
-      <td align="right" title="¥<%=btc_to_cny(goal_price).to_i%>"><%= to_n(goal_price,0) %></td>
+      <td align="right" class="balance_now" title="¥<%=btc_to_cny(goal_price).to_i%>"><%= to_n(goal_price,0) %></td>
       <!-- 月末值 //-->
       <% end_balance = cal_btc_capital %>
       <% end_balance_twd = btc_capital_twd %>
@@ -418,7 +431,7 @@ yn_rate = 1.017 # 一诺千金年还本递增率
             mine_total_twd = (mine_total_cny*@cny2twd).to_i %>
         <!-- 挖矿累计 //-->
         <td align="right" title="฿<%=mine_amount.floor(4)%>(NT$<%= mine_total_twd %>)"><%=mine_total_cny%></td>
-        <!-- 可定投余额 //-->
+        <!-- 储备余额 //-->
         <%
           back_note = ""
           # 查看是否为金如意还本年月
@@ -433,8 +446,13 @@ yn_rate = 1.017 # 一诺千金年还本递增率
             back_note += "一诺千金+¥#{yn_back}"
             yn_back = (yn_back*yn_rate).to_i
           end
+          if $show_value_cur == 'TWD'
+            show_invest_remain = (invest_remain_cny*cny_to_twd).to_i
+          else
+            show_invest_remain = invest_remain_cny
+          end
         %>
-        <td align="right" title="<%=back_note%>"><%=invest_remain_cny%></td>
+        <td align="right" title="<%=back_note%>"><%=show_invest_remain%></td>
         <td class="end_balance" align="center"><%=(invest_remain_cny/@month_cost).to_i%></td>
       <% end %>
     </tr>
@@ -452,7 +470,8 @@ yn_rate = 1.017 # 一诺千金年还本递增率
           month_grow_rate: month_grow_rate,
           end_price: end_price,
           end_balance: end_balance,
-          end_balance_twd: end_balance_twd
+          end_balance_twd: end_balance_twd,
+          month_invest: this_month_invest_cny
         )
       end
     %>
@@ -473,11 +492,11 @@ yn_rate = 1.017 # 一诺千金年还本递增率
     <% # 如果有矿机收益 %>
     <% if admin? %>
       <% if show_mine_td %>
-        <td colspan="7" align="right">
+        <td colspan="8" align="right">
       <% end %>
     <% else %>
       <% if show_mine_td %>
-        <td colspan="5" align="right">
+        <td colspan="6" align="right">
       <% end %>
     <% end %>
       <% if admin? %>

@@ -11,8 +11,10 @@
     <td><%= t(:updated_time) %></td>
     <td width="50"><%= t(:chart) %></td>
   </tr>
-<% n = 1 %>
+<% n = twd_rate = cny_rate = 1 %>
 <% @currencies.each do |currency| %>
+  <% twd_rate = currency.exchange_rate if currency.code == 'TWD' %>
+  <% cny_rate = currency.exchange_rate if currency.code == 'CNY' %>
   <tr <%= change_row_color %>>
     <td align="right"><%= n %></td>
     <td><%= link_edit_to(currency) %> <%= show_ok(currency.auto_update_price,'自动更新报价') %></td>
@@ -35,4 +37,5 @@
 | <%= update_all_digital_exchange_rates_link %>
 | <%= update_btc_exchange_rates_link %>
 | <%= update_all_portfolios_link %>
+| 人民币兑新台币汇率: <%= (twd_rate/cny_rate).floor(4) %>
 <p><p>
