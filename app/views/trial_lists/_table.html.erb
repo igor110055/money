@@ -38,11 +38,6 @@ def cal_mine_unback_num( this_date, back_num = $mine_back_months )
   return num
 end
 
-# 比特币转人民币
-def btc_to_cny( btc_price )
-  Currency.new.btc_to_cny(btc_price)
-end
-
 # 计算新的生活费
 def cal_month_cost
   temp = (@month_cost.to_f * (1+$trial_cost_month_grow_rate)).to_i

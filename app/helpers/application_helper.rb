@@ -1206,4 +1206,9 @@ module ApplicationHelper
   def total_loan_max_twd
     $loan_max_twd+$loan_max_cny*Property.new.cny_to_twd
   end
+
+  # 比特币转人民币
+  def btc_to_cny( btc_price )
+    Currency.new.btc_to_cny(btc_price)
+  end
 end
