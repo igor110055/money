@@ -151,9 +151,9 @@ yn_rate = 1.017 # 一诺千金年还本递增率
     this_date = @today.at_beginning_of_month+n.month
     account_date = @today.end_of_month+n.month # 挖矿收益结算日
     # month_cost 已加上日期的判断，后面使用该变数无需考虑日期了
-    month_cost = (this_date > $trial_month_cost_start_date_admin) ? @month_cost.to_i : 0
-    month_sell = month_cost/@usdt2cny/@btc_price
-    total_month_cost_cny += month_cost
+    @month_cost = get_month_cost(this_date)
+    month_sell = @month_cost/@usdt2cny/@btc_price
+    total_month_cost_cny += @month_cost
     begin_price = @btc_price
     cost_by_trezor = true # 默认以冷钱包扣抵生活费
     buy_mine_note = '' # 矿机购买讯息
@@ -206,7 +206,7 @@ yn_rate = 1.017 # 一诺千金年还本递增率
             # 当月可挖的总币数
             mine_earn = day_earn*pass_days
             # 生活费换算成比特币
-            month_cost_to_btc = month_cost/$usdt_to_cny/@btc_price
+            month_cost_to_btc = @month_cost/$usdt_to_cny/@btc_price
             # 如果挖出来的币不足以抵扣生活费则以冷钱包的币抵扣
             if mine_earn - month_cost_to_btc < 0
               mine_earn_remain = mine_earn
@@ -277,7 +277,7 @@ yn_rate = 1.017 # 一诺千金年还本递增率
               # 当月可挖的总币数
               mine_earn += day_earn_eth*pass_days_eth
               # 生活费换算成比特币
-              month_cost_to_btc = month_cost/$usdt_to_cny/@btc_price
+              month_cost_to_btc = @month_cost/$usdt_to_cny/@btc_price
               # ETH挖矿不抵扣生活费
               mine_earn_remain = mine_earn
               cost_by_trezor = false
@@ -384,7 +384,6 @@ yn_rate = 1.017 # 一诺千金年还本递增率
           end
         end
       %>
-      <% cal_month_cost # 计算新的生活费 %>
       <!-- 月末价 //-->
       <% end_price = @btc_price %>
       <td align="right" title="¥<%=btc_to_cny(end_price).to_i%>"><%= to_n(end_price,0) %></td>
@@ -458,7 +457,7 @@ yn_rate = 1.017 # 一诺千金年还本递增率
           trial_date: this_date,
           begin_price: begin_price,
           begin_amount: begin_amount,
-          month_cost: month_cost,
+          month_cost: @month_cost,
           month_sell: month_sell,
           begin_balance: begin_balance,
           begin_balance_twd: begin_balance_twd,

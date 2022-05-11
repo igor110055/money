@@ -1211,4 +1211,17 @@ module ApplicationHelper
   def btc_to_cny( btc_price )
     Currency.new.btc_to_cny(btc_price)
   end
+
+  # 回传某个月的生活费预算
+  def get_month_cost( input_date = Date.today )
+    $trial_month_costs.each do |item|
+      from_date = item.split('-')[0].to_date
+      to_date = item.split('-')[1].to_date
+      plan_cost = item.split('-')[2].to_i
+      if input_date >= from_date and input_date < to_date
+        return plan_cost
+      end
+    end
+    return 0
+  end
 end

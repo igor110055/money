@@ -739,10 +739,10 @@ class ApplicationController < ActionController::Base
     @investable_fund_records_twd = Property.investable_fund_records_twd
     @investable_fund_records_cny = Property.investable_fund_records_cny
     if admin?
-      @month_cost = $trial_life_month_cost_cny_admin
+      @month_cost = get_month_cost
       @month_cost_start = $trial_month_cost_start_date_admin
     else
-      @month_cost = $trial_life_month_cost_cny
+      @month_cost = get_month_cost
       @month_cost_start = $trial_month_cost_start_date
     end
     @usdt2cny = $usdt_to_cny
