@@ -440,6 +440,13 @@ yn_rate = 1.017 # 一诺千金年还本递增率
             back_note += "一诺千金+¥#{yn_back}"
             yn_back = (yn_back*yn_rate).to_i
           end
+          # 查看是否需要以储备资产支付生活费
+          if @btc_capital <= 0
+            invest_remain_cny -= @month_cost
+            back_note += "生活-¥#{@month_cost}"
+          end
+          # 查看是否小于0
+          invest_remain_cny = 0 if invest_remain_cny < 0
           if $show_value_cur == 'TWD'
             show_invest_remain = (invest_remain_cny*cny_to_twd).to_i
           else

@@ -829,7 +829,11 @@ module ApplicationHelper
 
   # 用于收支试算函数
   def cal_btc_capital
-    @btc_capital = (@btc_price*@btc_total_amount*$usdt_to_cny).to_i
+    if @btc_total_amount > 0
+      @btc_capital = (@btc_price*@btc_total_amount*$usdt_to_cny).to_i
+    else
+      @btc_capital = 0
+    end
   end
 
   # 用于收支试算函数
