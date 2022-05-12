@@ -115,6 +115,7 @@ invest_index = 0 # 用来判断定投金额
 invest_remain_cny = ($loan_max_twd*twd_to_cny).to_i + $loan_max_cny
 yn_back = 13625 # 一诺千金第一年领取金额
 yn_rate = 1.017 # 一诺千金年还本递增率
+trial_invest_next_flag = false # 开启下一波定投旗标
 %>
 <table width="<%=$default_table_width%>" style="font-size:0.7em">
   <tr class="thead">
@@ -122,29 +123,29 @@ yn_rate = 1.017 # 一诺千金年还本递增率
     <td><%= t(:date)%></td>
     <td><%= t(:begin_price)%></td>
     <td><%= t(:begin_amount)%></td>
-    <td title="试算每月投资比特币的金额(¥)">定投试算</td>
-    <td title="储存在数据库里每月投资比特币的金额(¥)">定投目标</td>
-    <td title="每月生活费与矿机的支出(¥)加底线表示以冷钱包支付生活费"><%= t(:month_cost)%></td>
+    <td title="试算每月投资比特币的金额">定投试算</td>
+    <td title="储存在数据库里每月投资比特币的金额">定投目标</td>
+    <td title="每月生活费与矿机的支出(加底线表示以冷钱包支付生活费)"><%= t(:month_cost)%></td>
     <td>月末量</td>
     <!-- <td>增减</td> -->
     <td><%= t(:month_grow_rate)%></td>
     <td><%= t(:end_price)%></td>
     <td><%= t(:goal_price)%></td>
-    <td title="<%= t(:end_balance)%>(¥)"><%= t(:end_balance)%></td>
+    <td title="<%= t(:end_balance)%>"><%= t(:end_balance)%></td>
     <!-- <td title="以最高生活费计算的可生活月数">月数</td> -->
     <% if admin? %>
-      <td title="<%= t(:goal_balance)%>(¥)"><%= t(:goal_balance)%></td>
-      <td title="<%= t(:balance_now) %>(¥)"><%= t(:balance_now)%></td>
-      <td title="<%= t(:have_reached)%>(¥)"><%= t(:have_reached)%></td>
+      <td title="<%= t(:goal_balance)%>"><%= t(:goal_balance)%></td>
+      <td title="<%= t(:balance_now) %>"><%= t(:balance_now)%></td>
+      <td title="<%= t(:have_reached)%>"><%= t(:have_reached)%></td>
     <% end %>
     <% # 如果有矿机收益 %>
     <% if have_mine or have_mine_eth %>
-      <td title="以月末比特币价格估算的当月挖矿收益(¥)">当月挖矿</td>
-      <!-- <td title="当月挖矿后立刻卖出的累计收益(¥)">卖出累计</td> -->
-      <td title="扣除每月生活费后的挖矿累计收益(¥)">挖矿累计</td>
-      <td title="新光金如意保单+太平一诺千金资产总额(¥)">储备余额</td>
-      <td title="储备余额的可生活月数">生活月数</td>
+      <td title="以月末比特币价格估算的当月挖矿收益">当月挖矿</td>
     <% end %>
+      <td title="新光金如意保单+太平一诺千金资产总额">储备余额</td>
+      <td title="储备余额的可生活月数">生活月数</td>
+      <td title="月末值+储备余额">资产总值</td>
+
   </tr>
   <%
   rs_trial.each do |n|
@@ -295,8 +296,15 @@ yn_rate = 1.017 # 一诺千金年还本递增率
       <td align="right">
         <%
           this_month_invest_cny = this_month_invest_twd = 0
-          if this_date > $trial_month_invest_begin and this_date < $trial_month_invest_end
-            this_month_invest_cny = $trial_month_invest[invest_index%($trial_month_invest.size)]
+          if this_date > $trial_month_invest_begin
+            # 判断本月定投多少
+            if this_date < $trial_month_invest_end
+              this_month_invest_cny = $trial_month_invest[invest_index%($trial_month_invest.size)]
+            elsif trial_invest_next_flag
+              this_month_invest_cny = $trial_month_invest_next
+            else
+              this_month_invest_cny = 0
+            end
             invest_btc_amount = this_month_invest_cny/btc_to_cny(@btc_price)
             @btc_total_amount += invest_btc_amount
             invest_remain_cny -= this_month_invest_cny
@@ -326,9 +334,17 @@ yn_rate = 1.017 # 一诺千金年还本递增率
       <td align="right">
         <% if this_date > @month_cost_start %>
           <!-- 加底线表示以冷钱包支付生活费 //-->
-          <% cost_str = to_n(@month_cost+mine_cost_this_date,0) %>
-          <% cost_str = raw("<u>#{cost_str}</u>") if cost_by_trezor %>
-          <%= cost_str %>
+          <%
+            cost_str = (@month_cost+mine_cost_this_date).to_i
+            # 按币别显示
+            if $show_value_cur == 'TWD'
+              show_cost_str = (cost_str*cny_to_twd).to_i
+            else
+              show_cost_str = cost_str
+            end
+            show_cost_str = raw("<u>#{show_cost_str}</u>") if cost_by_trezor
+           %>
+          <%= show_cost_str %>
           <!-- span title="生活费:¥<%#=@month_cost.to_i%> <%#=buy_num_this_month%>台矿机费:¥<%#=mine_cost_this_date%>(每台¥<%#=mine_cost%>)"></span //-->
         <% end %>
       </td>
@@ -390,22 +406,54 @@ yn_rate = 1.017 # 一诺千金年还本递增率
       <!-- 目标价 //-->
       <td align="right" class="balance_now" title="¥<%=btc_to_cny(goal_price).to_i%>"><%= to_n(goal_price,0) %></td>
       <!-- 月末值 //-->
-      <% end_balance = cal_btc_capital %>
-      <% end_balance_twd = btc_capital_twd %>
-      <% end_balance_cny = (end_balance_twd*twd_to_cny).to_i %>
-      <td class="end_balance" align="right" title="<%=end_balance_twd%>"><%= end_balance_cny %></td>
+      <%
+        end_balance = cal_btc_capital
+        end_balance_twd = btc_capital_twd
+        end_balance_cny = (end_balance_twd*twd_to_cny).to_i
+        # 按币别显示
+        if $show_value_cur == 'TWD'
+          show_end_balance = end_balance_twd
+        else
+          show_end_balance = end_balance_cny
+        end
+      %>
+      <td class="end_balance" align="right"><%= show_end_balance %></td>
       <!-- 月数 //-->
       <% net_end_balance_cny = end_balance_cny - loan_lixi_cny %>
       <% life_months = (net_end_balance_cny/max_month_cost).to_i %>
       <!--td align="right" title="<%=end_balance_cny%>-<%=loan_lixi_cny%>=<%=net_end_balance_cny%>/<%=max_month_cost%>(<%=to_n(life_months.to_f/12,1)%>年)"><%=life_months%></td-->
       <% if admin? %>
         <!-- 月末目标 //-->
-        <td class="balance_now" align="right" title="<%=goal_balance%>"><%= (goal_balance*twd_to_cny).to_i %></td>
+        <%
+          # 按币别显示
+          if $show_value_cur == 'TWD'
+            show_goal_balance = goal_balance
+          else
+            show_goal_balance = (goal_balance*twd_to_cny).to_i
+          end
+        %>
+        <td class="balance_now" align="right"><%= show_goal_balance %></td>
         <!-- 目前值 //-->
         <% show_goal_diff_calss = @flow_assets_twd > goal_balance ? 'trial_goal_reach' : '' %>
-        <td align="right" class="<%= show_goal_diff_calss %>"><%= (@flow_assets_twd*twd_to_cny).to_i %></td>
+        <%
+          # 按币别显示
+          if $show_value_cur == 'TWD'
+            show_now_value = @flow_assets_twd.to_i
+          else
+            show_now_value = (@flow_assets_twd*twd_to_cny).to_i
+          end
+        %>
+        <td align="right" class="<%= show_goal_diff_calss %>"><%= show_now_value %></td>
         <!-- 距离目标 //-->
-        <td align="right" class="<%= show_goal_diff_calss %>"><%= ((@flow_assets_twd-goal_balance)*twd_to_cny).to_i %></td>
+        <%
+          # 按币别显示
+          if $show_value_cur == 'TWD'
+            show_diff_value = (@flow_assets_twd-goal_balance).to_i
+          else
+            show_diff_value = ((@flow_assets_twd-goal_balance)*twd_to_cny).to_i
+          end
+        %>
+        <td align="right" class="<%= show_goal_diff_calss %>"><%= show_diff_value %></td>
       <% end %>
       <% # 如果有矿机收益 %>
       <% if show_mine_td %>
@@ -418,13 +466,19 @@ yn_rate = 1.017 # 一诺千金年还本递增率
         mine_month_income_cny = (mine_earn*btc_to_cny(end_price)).to_i
         # 每月的产币值累加
         total_mine_sell += mine_month_income_cny
+        # 按币别显示
+        if $show_value_cur == 'TWD'
+          show_mine_month_income = (mine_month_income_cny*@cny2twd).to_i
+        else
+          show_mine_month_income = mine_month_income_cny
+        end
         %>
-        <td align="right" title="月挖: <%= mine_earn.floor(4) %> 共挖: <%= mine_amount.floor(4) %> <%=show_br%>月末可存: <%=mine_earn_remain.floor(4)%>(¥<%=mine_earn_remain_cny%>|<%=mine_earn_remain_twd%>)"><%= mine_month_income_cny %></td>
+        <td align="right" title="月挖: <%= mine_earn.floor(4) %> 共挖: <%= mine_amount.floor(4) %> <%=show_br%>月末可存: <%=mine_earn_remain.floor(4)%>(¥<%=mine_earn_remain_cny%>|<%=mine_earn_remain_twd%>)"><%= show_mine_month_income %></td>
         <%  # 累计挖矿总收益
             mine_total_cny = (mine_amount*btc_to_cny(end_price)).to_i
             mine_total_twd = (mine_total_cny*@cny2twd).to_i %>
         <!-- 挖矿累计 //-->
-        <td align="right" title="฿<%=mine_amount.floor(4)%>(NT$<%= mine_total_twd %>)"><%=mine_total_cny%></td>
+        <!-- td align="right" title="฿<%#=mine_amount.floor(4)%>(NT$<%#= mine_total_twd %>)"><%#=mine_total_cny%></td //-->
         <!-- 储备余额 //-->
         <%
           back_note = ""
@@ -447,14 +501,26 @@ yn_rate = 1.017 # 一诺千金年还本递增率
           end
           # 查看是否小于0
           invest_remain_cny = 0 if invest_remain_cny < 0
+          # 按币别显示
           if $show_value_cur == 'TWD'
             show_invest_remain = (invest_remain_cny*cny_to_twd).to_i
+            total_balance = ((end_balance_cny+invest_remain_cny)*cny_to_twd).to_i
           else
             show_invest_remain = invest_remain_cny
+            total_balance = end_balance_cny+invest_remain_cny
+          end
+          # 储备值可生活月数
+          invest_remain_months = (invest_remain_cny/@month_cost).to_i
+          # 是否开启下一波定投
+          if this_date > $trial_month_invest_end and invest_remain_months >= $trial_invest_next_start
+            trial_invest_next_flag = true
+          else
+            trial_invest_next_flag = false
           end
         %>
         <td align="right" title="<%=back_note%>"><%=show_invest_remain%></td>
-        <td class="end_balance" align="center"><%=(invest_remain_cny/@month_cost).to_i%></td>
+        <td align="center" title="总值: <%=%>"><%=invest_remain_months%></td>
+        <td class="end_balance" align="right"><%=total_balance%></td>
       <% end %>
     </tr>
     <%
