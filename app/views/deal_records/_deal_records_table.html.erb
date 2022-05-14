@@ -12,6 +12,8 @@
   eth_now = get_eth_price
   # 以太坊兑比特币现价
   eth_btc_now = btc_now > 0 ? eth_now/btc_now : 0
+  # MANA币现价
+  mana_now = get_mana_price
   # 狗狗币现价
   doge_now = get_doge_price
   # 原有参与投资的泰达币
@@ -296,7 +298,7 @@
   <tr class="thead">
     <td colspan="2">
       <% # 显示现价与k线图链接 %>
-      <%= show_prices_and_chart_links(to_n(btc_now,2),to_n(@eth_price),to_n(eth_btc_now,5),to_n(doge_now,5)) %>
+      <%= show_prices_and_chart_links(to_n(btc_now,2),to_n(@eth_price),to_n(eth_btc_now,3),to_n(mana_now,3),to_n(doge_now,4)) %>
     </td>
     <td align="right" title="额度翻倍的最大购买价: <%= get_invest_params(34) %>">
       <% # 显示成交均价 %>

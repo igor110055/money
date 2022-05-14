@@ -1041,6 +1041,17 @@ module ApplicationHelper
     return get_eth_price/get_btc_price
   end
 
+  # 取得MANA币现价
+  def get_mana_price
+    if rate = eval("$MANA_exchange_rate")
+      return 1.0/rate
+    elsif mana = Currency.find_by_code('MANA')
+      return 1.0/mana.exchange_rate
+    else
+      return 0
+    end
+  end
+
   # 取得狗狗币现价
   def get_doge_price
     if rate = eval("$DOGE_exchange_rate")
@@ -1192,8 +1203,8 @@ module ApplicationHelper
   end
 
   # 显示现价与k线图链接
-  def show_prices_and_chart_links(btc_p,eth_p,ethbtc_p,doge_p)
-    kline_chart_link(btc_p)+' | '+kline_chart_link(eth_p,"ethusdt")+' | '+kline_chart_link(ethbtc_p,"ethbtc")+' | '+kline_chart_link(doge_p,"dogeusdt")
+  def show_prices_and_chart_links( btc_p,eth_p,ethbtc_p,mana_p,doge_p )
+    kline_chart_link(btc_p)+' | '+kline_chart_link(eth_p,"ethusdt")+' | '+kline_chart_link(ethbtc_p,"ethbtc")+' | '+kline_chart_link(mana_p,"manausdt")+' | '+kline_chart_link(doge_p,"dogeusdt")
   end
 
   # 计算单笔买入人民币最小值
