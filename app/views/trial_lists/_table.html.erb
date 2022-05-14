@@ -546,11 +546,7 @@ trial_invest_next_flag = false # 开启下一波定投旗标
   <tr class="thead">
     <td colspan="3" align="center">
       <% # 显示现价与k线图链接 %>
-      <%=
-      btc_now = get_btc_price
-      eth_btc_now = @eth_price/btc_now
-      doge_now = get_doge_price
-       show_prices_and_chart_links(to_n(btc_now,2),to_n(@eth_price),to_n(eth_btc_now,5),to_n(doge_now,5)) %>
+      <%= show_prices_and_chart_links %>
     </td>
     <td colspan="8" align="left">
       <% # 显示资产净值与走势图链接 %>

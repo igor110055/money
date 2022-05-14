@@ -1203,8 +1203,13 @@ module ApplicationHelper
   end
 
   # 显示现价与k线图链接
-  def show_prices_and_chart_links( btc_p,eth_p,ethbtc_p,mana_p,doge_p )
-    kline_chart_link(btc_p)+' | '+kline_chart_link(eth_p,"ethusdt")+' | '+kline_chart_link(ethbtc_p,"ethbtc")+' | '+kline_chart_link(mana_p,"manausdt")+' | '+kline_chart_link(doge_p,"dogeusdt")
+  def show_prices_and_chart_links
+    btc_price = get_btc_price.floor(2)
+    eth_price = get_eth_price.floor(2)
+    ethbtc_price = (eth_price/btc_price).floor(3)
+    mana_price = get_mana_price.floor(3)
+    doge_price = get_doge_price.floor(4)
+    kline_chart_link(btc_price)+' | '+kline_chart_link(eth_price,"ethusdt")+' | '+kline_chart_link(ethbtc_price,"ethbtc")+' | '+kline_chart_link(mana_price,"manausdt")+' | '+kline_chart_link(doge_price,"dogeusdt")
   end
 
   # 计算单笔买入人民币最小值
