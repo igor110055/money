@@ -236,7 +236,7 @@ module ApplicationHelper
     pos = text.to_f > 100 ? 0 : 2
     eval("@cny_value_for_#{symbol} = (text.to_f*$usdt_to_cny).floor(pos)")
     eval("@twd_value_for_#{symbol} = (text.to_f*$usdt_to_twd).floor(pos)")
-    link_to text, {controller: :main, action: :kline_chart, symbol: symbol}, {target: :blank, title: "¥#{eval("@cny_value_for_#{symbol}")}｜#{eval("@twd_value_for_#{symbol}")}" }
+    link_to text, {controller: :main, action: :kline_chart, symbol: symbol}, {target: :blank, title: "#{symbol.upcase}: ¥#{eval("@cny_value_for_#{symbol}")}｜#{eval("@twd_value_for_#{symbol}")}" }
   end
 
   # K线图链接
@@ -1014,53 +1014,38 @@ module ApplicationHelper
     ((price/pos).to_i+1)*pos
   end
 
-  # 取得比特币现价
-  def get_btc_price
-    if rate = eval("$BTC_exchange_rate")
+  # 快速读取数字货币报价
+  def get_digital_price( code )
+    if rate = eval("$#{code}_exchange_rate")
       return 1.0/rate
-    elsif btc = Currency.find_by_code('BTC')
-      return 1.0/btc.exchange_rate
+    elsif item = Currency.find_by_code(code)
+      return 1.0/item.exchange_rate
     else
       return 0
     end
   end
+  # 取得比特币现价
+  def get_btc_price
+    get_digital_price 'BTC'
+  end
 
   # 取得以太坊现价
   def get_eth_price
-    if rate = eval("$ETH_exchange_rate")
-      return 1.0/rate
-    elsif eth = Currency.find_by_code('ETH')
-      return 1.0/eth.exchange_rate
-    else
-      return 0
-    end
+    get_digital_price 'ETH'
+  end
+  # 取得MANA币现价
+  def get_mana_price
+    get_digital_price 'MANA'
+  end
+
+  # 取得狗狗币现价
+  def get_doge_price
+    get_digital_price 'DOGE'
   end
 
   # 取得以太坊兑比特币的现价
   def get_ethbtc_price
     return get_eth_price/get_btc_price
-  end
-
-  # 取得MANA币现价
-  def get_mana_price
-    if rate = eval("$MANA_exchange_rate")
-      return 1.0/rate
-    elsif mana = Currency.find_by_code('MANA')
-      return 1.0/mana.exchange_rate
-    else
-      return 0
-    end
-  end
-
-  # 取得狗狗币现价
-  def get_doge_price
-    if rate = eval("$DOGE_exchange_rate")
-      return 1.0/rate
-    elsif doge = Currency.find_by_code('DOGE')
-      return 1.0/doge.exchange_rate
-    else
-      return 0
-    end
   end
 
   # USDT >> TWD
@@ -1204,12 +1189,13 @@ module ApplicationHelper
 
   # 显示现价与k线图链接
   def show_prices_and_chart_links
-    btc_price = get_btc_price.floor(2)
-    eth_price = get_eth_price.floor(2)
-    ethbtc_price = (eth_price/btc_price).floor(3)
-    mana_price = get_mana_price.floor(3)
-    doge_price = get_doge_price.floor(4)
-    kline_chart_link(btc_price)+' | '+kline_chart_link(eth_price,"ethusdt")+' | '+kline_chart_link(ethbtc_price,"ethbtc")+' | '+kline_chart_link(mana_price,"manausdt")+' | '+kline_chart_link(doge_price,"dogeusdt")
+    results = []
+    $show_digital_prices.each do |c|
+      code = c.split(':')[0]
+      pos = c.split(':')[1].to_i
+      results << kline_chart_link(get_digital_price(code).floor(pos),"#{code.downcase}usdt")
+    end
+    return raw(results.join(' | '))
   end
 
   # 计算单笔买入人民币最小值
