@@ -116,6 +116,7 @@ invest_remain_cny = ($loan_max_twd*twd_to_cny).to_i + $loan_max_cny
 yn_back = 13625 # 一诺千金第一年领取金额
 yn_rate = 1.017 # 一诺千金年还本递增率
 trial_invest_next_flag = false # 开启下一波定投旗标
+trial_cost_from_trezor = false # 是否开始以冷钱包支付
 %>
 <table width="<%=$default_table_width%>" style="font-size:0.7em">
   <tr class="thead">
@@ -156,7 +157,7 @@ trial_invest_next_flag = false # 开启下一波定投旗标
     month_sell = @month_cost/@usdt2cny/@btc_price
     total_month_cost_cny += @month_cost
     begin_price = @btc_price
-    cost_by_trezor = true # 默认以冷钱包扣抵生活费
+    fund_note = '' # 储备资产附加讯息
     buy_mine_note = '' # 矿机购买讯息
     sell_mine_note = '' # 卖币讯息
     tr_class = change_row_color # 以高亮显示整列
@@ -209,13 +210,13 @@ trial_invest_next_flag = false # 开启下一波定投旗标
             # 生活费换算成比特币
             month_cost_to_btc = @month_cost/$usdt_to_cny/@btc_price
             # 如果挖出来的币不足以抵扣生活费则以冷钱包的币抵扣
-            if mine_earn - month_cost_to_btc < 0
-              mine_earn_remain = mine_earn
+            # if mine_earn - month_cost_to_btc < 0
+            # 挖出的币100%存入，以储备资产扣抵生活费
+            mine_earn_remain = mine_earn
             # 以挖出来的币抵扣生活费
-            else
-              cost_by_trezor = false
-              mine_earn_remain = mine_earn - month_cost_to_btc
-            end
+            # else
+            #   mine_earn_remain = mine_earn - month_cost_to_btc
+            # end
             # 累加实际能储存的币
             mine_amount += mine_earn_remain if mine_earn_remain > 0
             mine_income_cny = mine_amount*btc_to_cny(@btc_price)
@@ -281,7 +282,6 @@ trial_invest_next_flag = false # 开启下一波定投旗标
               month_cost_to_btc = @month_cost/$usdt_to_cny/@btc_price
               # ETH挖矿不抵扣生活费
               mine_earn_remain = mine_earn
-              cost_by_trezor = false
               # 累加实际能储存的币
               mine_amount += mine_earn_remain  if mine_earn_remain > 0
               mine_income_cny += mine_amount*btc_to_cny(@btc_price)
@@ -308,6 +308,7 @@ trial_invest_next_flag = false # 开启下一波定投旗标
             invest_btc_amount = this_month_invest_cny/btc_to_cny(@btc_price)
             @btc_total_amount += invest_btc_amount
             invest_remain_cny -= this_month_invest_cny
+            fund_note += "定投-¥#{this_month_invest_cny}" if this_month_invest_cny > 0
             invest_index += 1
             this_month_invest_twd = (this_month_invest_cny*cny_to_twd).to_i
             if $show_value_cur == 'TWD'
@@ -342,7 +343,7 @@ trial_invest_next_flag = false # 开启下一波定投旗标
             else
               show_cost_str = cost_str
             end
-            show_cost_str = raw("<u>#{show_cost_str}</u>") if cost_by_trezor
+            show_cost_str = raw("<u>#{show_cost_str}</u>") if trial_cost_from_trezor
            %>
           <%= show_cost_str %>
           <!-- span title="生活费:¥<%#=@month_cost.to_i%> <%#=buy_num_this_month%>台矿机费:¥<%#=mine_cost_this_date%>(每台¥<%#=mine_cost%>)"></span //-->
@@ -352,7 +353,7 @@ trial_invest_next_flag = false # 开启下一波定投旗标
       <% begin_balance = @btc_capital %>
       <% begin_balance_twd = btc_capital_twd %>
       <!-- 月末量 //-->
-      <% @btc_total_amount -= month_sell if cost_by_trezor # 扣除生活费 %>
+      <% @btc_total_amount -= month_sell if trial_cost_from_trezor # 扣除生活费 %>
       <%
         # 若有输入卖币日期则卖币
         $mine_sell_dates.each_index do |i|
@@ -481,23 +482,22 @@ trial_invest_next_flag = false # 开启下一波定投旗标
         <!-- td align="right" title="฿<%#=mine_amount.floor(4)%>(NT$<%#= mine_total_twd %>)"><%#=mine_total_cny%></td //-->
         <!-- 储备余额 //-->
         <%
-          back_note = ""
           # 查看是否为金如意还本年月
           if this_date.month == 12 and this_date.year%3 == 0
             jry_back = (300000*twd_to_cny).to_i
             invest_remain_cny += jry_back
-            back_note += "金如意+¥#{jry_back} "
+            fund_note += "金如意+¥#{jry_back} "
           end
           # 查看是否为一诺千金还本年月
           if this_date.month == 10 and this_date.year >= 2030
             invest_remain_cny += yn_back
-            back_note += "一诺千金+¥#{yn_back}"
+            fund_note += "一诺千金+¥#{yn_back}"
             yn_back = (yn_back*yn_rate).to_i
           end
           # 查看是否需要以储备资产支付生活费
-          if @btc_capital <= 0
+          if this_date >= $trial_month_cost_start_date_admin and (@btc_capital <= 0 or !trial_cost_from_trezor)
             invest_remain_cny -= @month_cost
-            back_note += "生活-¥#{@month_cost}"
+            fund_note += "生活-¥#{@month_cost}"
           end
           # 查看是否小于0
           invest_remain_cny = 0 if invest_remain_cny < 0
@@ -510,15 +510,21 @@ trial_invest_next_flag = false # 开启下一波定投旗标
             total_balance = end_balance_cny+invest_remain_cny
           end
           # 储备值可生活月数
-          invest_remain_months = (invest_remain_cny/@month_cost).to_i
+          invest_remain_months = (invest_remain_cny/@month_cost).to_i if @month_cost > 0
           # 是否开启下一波定投
           if this_date > $trial_month_invest_end and invest_remain_months >= $trial_invest_next_start
             trial_invest_next_flag = true
           else
             trial_invest_next_flag = false
           end
+          # 是否开启以冷钱包支付生活费
+          if invest_remain_months <= $trial_cost_limit_month
+            trial_cost_from_trezor = true
+          else
+            trial_cost_from_trezor = false
+          end
         %>
-        <td align="right" title="<%=back_note%>"><%=show_invest_remain%></td>
+        <td align="right" title="<%=fund_note%>"><%=show_invest_remain%></td>
         <td align="center" title="总值: <%=%>"><%=invest_remain_months%></td>
         <td class="end_balance" align="right"><%=total_balance%></td>
       <% end %>
