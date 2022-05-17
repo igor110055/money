@@ -87,8 +87,13 @@ class Property < ApplicationRecord
   end
 
   # 贷款(含利息)的总额
-  def self.total_loan_lixi
-    (Property.tagged_with('贷款').sum {|p| p.amount_to(:twd)}).abs
+  def self.total_loan_lixi( target_code = :twd )
+    (Property.tagged_with('贷款').sum {|p| p.amount_to(target_code)}).abs
+  end
+
+  # 贷款(只有利息)的总额
+  def self.total_lixi( to_date = Date.today, target_code = :twd )
+    (Property.tagged_with('贷款').sum {|p| p.lixi(target_code,to_date)}).abs
   end
 
   # 贷款(含利息)的总额
