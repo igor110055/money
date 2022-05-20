@@ -80,6 +80,11 @@ def reach_btc_amount_goal
   ((@trezor_btc_amount - $trial_btc_amount_goal).abs < @diff_acceptable) or @trezor_btc_amount - $trial_btc_amount_goal > 0
 end
 
+# 计算在保底前提下 可贷款的余额上限
+def loan_limit_cny
+  ($loan_limit_cny - $loan_save_months*$trial_life_month_cost_cny_admin).to_i
+end
+
 @mine_num_ori = $mine_num # 原有BTC矿机数量
 @mine_num_ori_eth = $mine_num_eth # 原有ETH矿机数量
 cal_btc_capital # 初始化月末值
@@ -113,44 +118,50 @@ total_mine_sell = 0 # 当月挖矿后立刻卖出的累计收益
 mine_income_twd = mine_income_cny = 0 # 挖矿总收益
 invest_index = 0 # 用来判断定投金额
 invest_remain_cny = ($loan_max_twd*twd_to_cny).to_i + $loan_max_cny
+jry_back_base = 300000 # 金如意每三年还本金额(台币)
 yn_back = 13625 # 一诺千金第一年领取金额
 yn_rate = 1.017 # 一诺千金年还本递增率
-trial_invest_next_flag = false # 开启下一波定投旗标
-trial_cost_from_trezor = false # 是否开始以冷钱包支付
+trial_cost_from_trezor = false # 是否以冷钱包支付生活费
+trial_cost_from_fund = true # 是否以储备资金支付生活费
+# 是否开始累计定投贷款金额: 若本月份已执行贷款定投，则试算表第一个月不加入贷款本金
+trial_loan_sum_start = $month_invest_already ? false : true
 trial_loan_sum_cny = Property.total_loan_lixi(:cny).to_i # 累计试算表的贷款本金初始值
 trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
+is_over_month_cost = false # 是否已破产
 %>
 <table width="<%=$default_table_width%>" style="font-size:0.7em">
   <tr class="thead">
-    <td><%= t(:myage)%></td>
-    <td><%= t(:date)%></td>
-    <td><%= t(:begin_price)%></td>
-    <td><%= t(:begin_amount)%></td>
-    <td title="试算每月投资比特币的金额">定投试算</td>
-    <td title="储存在数据库里每月投资比特币的金额">定投目标</td>
-    <td title="每月生活费与矿机的支出(加底线表示以冷钱包支付生活费)"><%= t(:month_cost)%></td>
+    <td>岁</td>
+    <td>日期</td>
+    <td>月初价</td>
+    <td>月初量</td>
+    <td>月初值</td>
+    <% if $month_invest_load == 1 %>
+      <td title="储存在数据库里每月投资比特币的金额">定投目标</td>
+    <% else %>
+      <td title="试算每月投资比特币的金额">定投试算</td>
+    <% end %>
+    <td title="每月生活费与矿机的支出&#10;底线表示以冷钱包支付生活费&#10;删除线表示所有资产已无法支付生活费">支出</td>
     <td>月末量</td>
-    <!-- <td>增减</td> -->
-    <td><%= t(:month_grow_rate)%></td>
-    <td><%= t(:end_price)%></td>
-    <td><%= t(:goal_price)%></td>
-    <td title="<%= t(:end_balance)%>"><%= t(:end_balance)%></td>
-    <!-- <td title="以最高生活费计算的可生活月数">月数</td> -->
-    <% if admin? %>
-      <td title="<%= t(:goal_balance)%>"><%= t(:goal_balance)%></td>
-      <td title="<%= t(:balance_now) %>"><%= t(:balance_now)%></td>
-      <td title="<%= t(:have_reached)%>"><%= t(:have_reached)%></td>
+    <td>增减</td>
+    <td>增长率</td>
+    <td>月末值</td>
+    <td>增长值</td>
+    <td>月末目标</td>
+    <td>目前值</td>
+    <td>距离目标</td>
+    <td>周目标</td>
+    <td>日目标</td>
+    <% if have_mine or have_mine_eth # 如果有矿机收益 %>
+      <td width="50" title="以月末比特币价格估算的当月挖矿收益">当月挖矿</td>
     <% end %>
-    <% # 如果有矿机收益 %>
-    <% if have_mine or have_mine_eth %>
-      <td title="以月末比特币价格估算的当月挖矿收益">当月挖矿</td>
-    <% end %>
-      <td title="新光金如意保单+太平一诺千金资产总额">储备余额</td>
-      <td>贷款本金</td>
-      <td>当月利息</td>
-      <td title="储备余额的可生活月数">生活月数</td>
-      <td title="月末值+储备余额">资产净值</td>
-
+    <td width="50" title="金如意可贷余额+一诺千金可贷余额+金如意还款余额+一诺千金还款余额">储备余额</td>
+    <td width="50">本月贷款</td>
+    <td width="50">贷款本金</td>
+    <td width="40">持仓</td>
+    <td width="40">利息</td>
+    <td width="40" title="储备余额的可生活月数">月数</td>
+    <td width="60" title="月末值+储备余额">资产净值</td>
   </tr>
   <%
   rs_trial.each do |n|
@@ -178,6 +189,14 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
         tr_class = change_row_color('#FFCF00','#FFB6C1')
       end
     end
+    # 本月贷款总额
+    this_month_loan_cny = 0
+    # 检查本月是否已支付生活费
+    is_pay_month_cost = false
+    # 如已破产则则以灰度显示整列
+    if is_over_month_cost
+      tr_class = change_row_color('#A9A9A9','#696969')
+    end
   %>
     <tr <%=tr_class%>>
       <!-- 岁 //-->
@@ -190,6 +209,18 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
       <!-- 月初量 //-->
       <% begin_amount = @btc_total_amount %>
       <td align="right"><%= to_n(@btc_total_amount,4) %></td>
+      <!-- 月初值 //-->
+      <%
+        begin_balance = @btc_capital
+        begin_balance_twd = btc_capital_twd
+        begin_balance_cny = (begin_balance_twd*twd_to_cny).to_i
+        if $show_value_cur == 'TWD'
+          show_begin_balance = begin_balance_twd
+        else
+          show_begin_balance = begin_balance_cny
+        end
+      %>
+      <td align="right"><%= show_begin_balance %></td>
       <% # 如果有BTC矿机收益 %>
       <%  if have_mine
             # 回本后每月得到的币数会减少
@@ -261,87 +292,113 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
             end
           end
         %>
-        <% # 如果有ETH矿机收益 %>
-        <%  if have_mine_eth and this_date <= $mine_end_dates_eth
-              # 回本后每月得到的币数会减少
-              # 只有开始的头一个月需要判断不满一个月的挖矿，其余默认为月初开始挖矿
-              if this_date.year == $mine_start_date_eth.year and this_date.month == $mine_start_date_eth.month
-                pass_days_eth = day_diff($mine_start_date_eth,account_date)
-              elsif this_date > $mine_start_date_eth
-                pass_days_eth = day_diff(this_date,account_date)
+    <% # 如果有ETH矿机收益 %>
+    <%  if have_mine_eth and this_date <= $mine_end_dates_eth
+          # 回本后每月得到的币数会减少
+          # 只有开始的头一个月需要判断不满一个月的挖矿，其余默认为月初开始挖矿
+          if this_date.year == $mine_start_date_eth.year and this_date.month == $mine_start_date_eth.month
+            pass_days_eth = day_diff($mine_start_date_eth,account_date)
+          elsif this_date > $mine_start_date_eth
+            pass_days_eth = day_diff(this_date,account_date)
+          else
+            pass_days_eth = 0
+          end
+          day_unback_eth = $mine_earn_day_eth
+          day_backed_eth = day_unback_eth*$mine_back_rate
+          # 回传已经回本的ETH矿机数量(ETH矿机已全部回本)
+          backed_num_eth = $mine_num_eth
+          # 计算尚未回本的矿机数量
+          unback_num_eth = 0
+          # 每天可挖的币数
+          day_earn_eth = day_unback_eth*unback_num_eth+day_backed_eth*backed_num_eth
+          # 当月可挖的总币数
+          mine_earn += day_earn_eth*pass_days_eth
+          # 生活费换算成比特币
+          month_cost_to_btc = @month_cost/$usdt_to_cny/@btc_price
+          # ETH挖矿不抵扣生活费
+          mine_earn_remain = mine_earn
+          # 累加实际能储存的币
+          mine_amount += mine_earn_remain  if mine_earn_remain > 0
+          mine_income_cny += mine_amount*btc_to_cny(@btc_price)
+          mine_income_twd += (mine_income_cny*@cny2twd).to_i
+          @btc_total_amount += mine_earn_remain
+        else
+          $mine_num_eth = 0
+          have_mine_eth = false
+        end
+      %>
+      <% # 计算定投金额 %>
+      <%
+        this_month_invest_cny = this_month_invest_twd = invest_btc_amount = 0
+        this_month_lixi_cny = (trial_loan_sum_cny*trial_loan_rate).to_i # 本月当缴的贷款利息
+        this_month_invest_from_plan = $trial_month_invest[invest_index%($trial_month_invest.size)]
+        # 日期必须大于开始定投日以及贷款本金小于贷款上限并且储备资金大于0
+        if this_date > $trial_month_invest_begin and trial_loan_sum_cny < loan_limit_cny and invest_remain_cny - this_month_invest_from_plan > 0
+          # 判断本月定投多少
+          if this_date < $trial_month_invest_end
+            this_month_invest_cny = this_month_invest_from_plan
+          end
+          # 如果本月应该定投 + 还有可贷款的余额
+          if this_month_invest_cny > 0
+            this_month_invest_twd = (this_month_invest_cny*cny_to_twd).to_i
+            if trial_loan_sum_cny+this_month_invest_cny < loan_limit_cny
+              # 若本月份已执行贷款定投，则试算表第一个月不加入贷款本金
+              if trial_loan_sum_start
+                invest_btc_amount = this_month_invest_cny/btc_to_cny(@btc_price)
+                @btc_total_amount += invest_btc_amount
+                invest_remain_cny -= this_month_invest_cny # 剩余可贷款总额减少
+                trial_loan_sum_cny += this_month_invest_cny+this_month_lixi_cny # 计算贷款的本金(为了简单采用每月结算利息)
               else
-                pass_days_eth = 0
+                trial_loan_sum_start = true
               end
-              day_unback_eth = $mine_earn_day_eth
-              day_backed_eth = day_unback_eth*$mine_back_rate
-              # 回传已经回本的ETH矿机数量(ETH矿机已全部回本)
-              backed_num_eth = $mine_num_eth
-              # 计算尚未回本的矿机数量
-              unback_num_eth = 0
-              # 每天可挖的币数
-              day_earn_eth = day_unback_eth*unback_num_eth+day_backed_eth*backed_num_eth
-              # 当月可挖的总币数
-              mine_earn += day_earn_eth*pass_days_eth
-              # 生活费换算成比特币
-              month_cost_to_btc = @month_cost/$usdt_to_cny/@btc_price
-              # ETH挖矿不抵扣生活费
-              mine_earn_remain = mine_earn
-              # 累加实际能储存的币
-              mine_amount += mine_earn_remain  if mine_earn_remain > 0
-              mine_income_cny += mine_amount*btc_to_cny(@btc_price)
-              mine_income_twd += (mine_income_cny*@cny2twd).to_i
-              @btc_total_amount += mine_earn_remain
+              fund_note += "贷款定投-¥#{this_month_invest_cny}" if this_month_invest_cny > 0
+              this_month_loan_cny += this_month_invest_cny
+              invest_index += 1
             else
-              $mine_num_eth = 0
-              have_mine_eth = false
+              trial_loan_sum_cny += this_month_lixi_cny if trial_loan_sum_start
+              this_month_invest_cny = 0
+            end
+          end
+        elsif trial_loan_sum_start and (trial_loan_sum_cny > 0)
+            trial_loan_sum_cny += this_month_lixi_cny
+        end
+        if $show_value_cur == 'TWD'
+          show_this_month_invest = this_month_invest_twd
+        else
+          show_this_month_invest = this_month_invest_cny
+        end
+      %>
+      <% if $month_invest_load == 1 %>
+        <!-- 定投目标 //-->
+        <td align="right" class="balance_now">
+          <%
+            if $show_value_cur == 'TWD'
+              show_month_invest_plan = (month_invest*cny_to_twd).to_i
+            else
+              show_month_invest_plan = month_invest
             end
           %>
-      <!-- 定投 //-->
-      <td align="right">
-        <%
-          this_month_invest_cny = this_month_invest_twd = invest_btc_amount = 0
-          this_month_lixi_cny = (trial_loan_sum_cny*trial_loan_rate).to_i # 本月当缴的贷款利息
-          this_month_invest_from_plan = $trial_month_invest[invest_index%($trial_month_invest.size)]
-          # 日期必须大于开始定投日以及贷款本金小于贷款上限并且储备资金大于0
-          if this_date > $trial_month_invest_begin and trial_loan_sum_cny < $loan_limit_cny and invest_remain_cny - [this_month_invest_from_plan,$trial_month_invest_next].max > 0
-            # 判断本月定投多少
-            if this_date < $trial_month_invest_end
-              this_month_invest_cny = this_month_invest_from_plan
-            elsif trial_invest_next_flag
-              this_month_invest_cny = $trial_month_invest_next
-            end
-            invest_btc_amount = this_month_invest_cny/btc_to_cny(@btc_price)
-            @btc_total_amount += invest_btc_amount
-            invest_remain_cny -= this_month_invest_cny # 剩余可贷款总额减少
-            trial_loan_sum_cny += this_month_invest_cny+this_month_lixi_cny # 计算贷款的本金(为了简单采用每月结算利息)
-            fund_note += "定投-¥#{this_month_invest_cny}" if this_month_invest_cny > 0
-            invest_index += 1
-            this_month_invest_twd = (this_month_invest_cny*cny_to_twd).to_i
-          end
-          if $show_value_cur == 'TWD'
-            show_this_month_invest = this_month_invest_twd
-          else
-            show_this_month_invest = this_month_invest_cny
-          end
-        %>
+          <%= show_month_invest_plan %>
+        </td>
+      <% else %>
+        <!-- 定投试算 //-->
+        <td align="right">
           <span title="<%=this_month_invest_twd%> ¥<%=this_month_invest_cny%> ฿<%=invest_btc_amount.floor(5)%>"><%= show_this_month_invest %></span>
-      </td>
-      <!-- 定投计划 //-->
-      <td align="right" class="balance_now">
-        <%
-          if $show_value_cur == 'TWD'
-            show_month_invest_plan = (month_invest*cny_to_twd).to_i
-          else
-            show_month_invest_plan = month_invest
-          end
-        %>
-        <%= show_month_invest_plan %>
-      </td>
+        </td>
+      <% end %>
       <!-- 支出 //-->
       <td align="right">
         <% if this_date > @month_cost_start %>
           <!-- 加底线表示以冷钱包支付生活费 //-->
           <%
+            if trial_cost_from_trezor and (@btc_total_amount - month_sell > 0) # 扣除生活费
+              @btc_total_amount -= month_sell
+              fund_note += "以币生活-฿#{month_sell.floor(6)}"
+              is_pay_month_cost = true
+            else
+              trial_cost_from_trezor = false
+              trial_cost_from_fund = true
+            end
             cost_str = (@month_cost+mine_cost_this_date).to_i
             # 按币别显示
             if $show_value_cur == 'TWD'
@@ -355,11 +412,7 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
           <!-- span title="生活费:¥<%#=@month_cost.to_i%> <%#=buy_num_this_month%>台矿机费:¥<%#=mine_cost_this_date%>(每台¥<%#=mine_cost%>)"></span //-->
         <% end %>
       </td>
-      <!-- 月初额 //-->
-      <% begin_balance = @btc_capital %>
-      <% begin_balance_twd = btc_capital_twd %>
       <!-- 月末量 //-->
-      <% @btc_total_amount -= month_sell if trial_cost_from_trezor # 扣除生活费 %>
       <%
         # 若有输入卖币日期则卖币
         $mine_sell_dates.each_index do |i|
@@ -392,6 +445,7 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
             btc_diff_title += "极客+火币:#{to_n(jike_balance+huobi_balance,8)} 相差:#{to_n(btc_goal_diff,8)}"
           end
       %>
+      <td align="right"><%= to_n(@btc_total_amount-begin_amount,4) %></td>
       <!-- 增长 //-->
       <% month_grow_rate = btc_month_grow_rate*100 %>
       <td align="right"><%= to_n(month_grow_rate) %>%</td>
@@ -409,22 +463,25 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
       %>
       <!-- 月末价 //-->
       <% end_price = @btc_price %>
-      <td align="right" title="¥<%=btc_to_cny(end_price).to_i%>"><%= to_n(end_price,0) %></td>
-      <!-- 目标价 //-->
-      <td align="right" class="balance_now" title="¥<%=btc_to_cny(goal_price).to_i%>"><%= to_n(goal_price,0) %></td>
+      <!--td align="right" class="balance_now" title="¥<%#=btc_to_cny(goal_price).to_i%>"><%#= to_n(goal_price,0) %></td//-->
       <!-- 月末值 //-->
       <%
         end_balance = cal_btc_capital
         end_balance_twd = btc_capital_twd
         end_balance_cny = (end_balance_twd*twd_to_cny).to_i
+        balance_diff_cny = end_balance_cny - begin_balance_cny
+        balance_diff_twd = end_balance_twd - begin_balance_twd
         # 按币别显示
         if $show_value_cur == 'TWD'
           show_end_balance = end_balance_twd
+          show_balance_diff = balance_diff_twd
         else
           show_end_balance = end_balance_cny
+          show_balance_diff = balance_diff_cny
         end
       %>
-      <td class="end_balance" align="right"><%= show_end_balance %></td>
+      <td align="right" class="end_balance"><%= show_end_balance %></td>
+      <td align="right"><%= show_balance_diff %></td>
       <% if admin? %>
         <!-- 月末目标 //-->
         <%
@@ -446,7 +503,7 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
             show_now_value = (@flow_assets_twd*twd_to_cny).to_i
           end
         %>
-        <td align="right" class="<%= show_goal_diff_calss %>"><%= show_now_value %></td>
+        <td align="right" class="<%#= show_goal_diff_calss %>"><%= show_now_value %></td>
         <!-- 距离目标 //-->
         <%
           # 按币别显示
@@ -457,6 +514,17 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
           end
         %>
         <td align="right" class="<%= show_goal_diff_calss %>"><%= show_diff_value %></td>
+        <%
+        # 计算每周完成多少
+        if show_diff_value < 0
+          week_goal = (show_diff_value/4).abs
+          day_goal = (show_diff_value/30).abs
+        else
+          week_goal = day_goal = 0
+        end
+        %>
+        <td align="right"><%= week_goal %></td>
+        <td align="right"><%= day_goal %></td>
       <% end %>
       <% # 如果有矿机收益 %>
       <% if show_mine_td %>
@@ -486,27 +554,66 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
         <%
           # 查看是否为金如意还本年月
           if this_date.month == 12 and this_date.year%3 == 0
-            jry_back = (300000*twd_to_cny).to_i
-            invest_remain_cny += jry_back
+            jry_back = (jry_back_base*twd_to_cny).to_i
             fund_note += "金如意+¥#{jry_back} "
+            # 如有贷款本金 + 在定投结束日之后 + 可用币支付生活 => 则尝试偿还
+            if (trial_loan_sum_cny > 0) and (this_date > $trial_repay_loan_start) and (@btc_total_amount - month_sell > 0)
+              # 偿清贷款
+              if trial_loan_sum_cny - jry_back <= 0
+                jry_back -= trial_loan_sum_cny
+                fund_note += "还贷-¥#{trial_loan_sum_cny} "
+                trial_loan_sum_cny = 0
+                invest_remain_cny += jry_back+trial_loan_sum_cny # 还剩的+已打消的本金(加回可贷款余额)
+              # 偿还部分贷款
+              else
+                trial_loan_sum_cny -= jry_back
+                fund_note += "还贷-¥#{jry_back} "
+                invest_remain_cny += jry_back # 已打消的本金(加回可贷款余额)
+              end
+            else
+              invest_remain_cny += jry_back # 不还的话加入储备余额
+            end
           end
-          # 查看是否为一诺千金还本年月
+          # 查看是否为一诺千金还本年月 如有贷款本金则尝试偿还
           if this_date.month == 10 and this_date.year >= 2030
-            invest_remain_cny += yn_back
             fund_note += "一诺千金+¥#{yn_back}"
+            # 如有贷款本金 + 在定投结束日之后 + 可用币支付生活 => 则尝试偿还
+            if (trial_loan_sum_cny > 0) and (this_date > $trial_repay_loan_start) and (@btc_total_amount - month_sell > 0)
+              # 偿清贷款
+              if trial_loan_sum_cny - yn_back <= 0
+                yn_back -= trial_loan_sum_cny
+                fund_note += "还贷-¥#{trial_loan_sum_cny} "
+                trial_loan_sum_cny = 0
+                invest_remain_cny += yn_back+trial_loan_sum_cny # 还剩的+已打消的本金(加回可贷款余额)
+              # 偿还部分贷款
+              else
+                trial_loan_sum_cny -= yn_back
+                fund_note += "还贷-¥#{yn_back} "
+                invest_remain_cny += yn_back # 已打消的本金(加回可贷款余额)
+              end
+            else
+              invest_remain_cny += yn_back # 不还的话加入储备余额
+            end
             yn_back = (yn_back*yn_rate).to_i
           end
-          # 查看是否需要以储备资产支付生活费
-          if this_date >= $trial_month_cost_start_date_admin and (@btc_capital <= 0 or !trial_cost_from_trezor)
-            invest_remain_cny -= @month_cost
-            fund_note += "生活-¥#{@month_cost}"
+          # 查看是否需要以储备资产支付生活费(必须还有贷款余额)
+          if this_date >= $trial_month_cost_start_date_admin and (@btc_total_amount <= 0 or !trial_cost_from_trezor)
+            if trial_loan_sum_cny+@month_cost < loan_limit_cny
+              invest_remain_cny -= @month_cost
+              trial_loan_sum_cny += @month_cost
+              fund_note += "贷款生活-¥#{@month_cost}"
+              this_month_loan_cny += @month_cost
+              is_pay_month_cost = true
+            end
           end
           # 支付贷款利息
           if this_month_lixi_cny > 0
             # 以储备资金支付利息
-            if invest_remain_cny - this_month_lixi_cny > 0
+            if (invest_remain_cny - this_month_lixi_cny > 0) and (trial_loan_sum_cny + this_month_lixi_cny < loan_limit_cny )
               invest_remain_cny -= this_month_lixi_cny
-              fund_note += "以钱付息-¥#{this_month_lixi_cny}"
+              trial_loan_sum_cny += this_month_lixi_cny
+              fund_note += "贷款付息-¥#{this_month_lixi_cny}"
+              this_month_loan_cny += this_month_lixi_cny
             # 以比特币支付利息
             elsif end_balance_cny - this_month_lixi_cny > 0
               lixi_eq_btc = this_month_lixi_cny/@usdt2cny/@btc_price
@@ -516,37 +623,45 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
           end
           # 计算利息总额 实际已贷款的利息(目前先不计因每月都会执行贷款利息已在定投时扣去)+试算表贷款的利息
           total_lixi_cny = (trial_loan_sum_cny*trial_loan_rate).to_i
+          invest_remain_cny = loan_limit_cny if invest_remain_cny > loan_limit_cny
           # 按币别显示 资产净值=币总值+储备总值-实际利息
           if $show_value_cur == 'TWD'
             show_invest_remain = (invest_remain_cny*cny_to_twd).to_i
+            show_this_month_loan = (this_month_loan_cny*cny_to_twd).to_i
             show_loan = (trial_loan_sum_cny*cny_to_twd).to_i
             show_interest = (total_lixi_cny*cny_to_twd).to_i
             total_balance = ((end_balance_cny+invest_remain_cny-total_lixi_cny)*cny_to_twd).to_i
           else
             show_invest_remain = invest_remain_cny
+            show_this_month_loan = this_month_loan_cny
             show_loan = trial_loan_sum_cny
             show_interest = total_lixi_cny
             total_balance = end_balance_cny+invest_remain_cny-total_lixi_cny
           end
-          # 储备值可生活月数
-          invest_remain_months = (invest_remain_cny/@month_cost).to_i if @month_cost > 0
-          # 是否开启下一波定投
-          if this_date > $trial_month_invest_end and invest_remain_months >= $trial_invest_next_start
-            trial_invest_next_flag = true
-          else
-            trial_invest_next_flag = false
-          end
+          show_invest_remain = raw("<u>#{show_invest_remain}</u>") if trial_cost_from_fund
           # 是否开启以冷钱包支付生活费
-          if invest_remain_months <= $trial_cost_limit_month and @btc_total_amount - month_sell > 0
+          if (this_date > $trial_cost_from_trezor_start) and (@btc_total_amount - month_sell > 0)
             trial_cost_from_trezor = true
-          else
-            trial_cost_from_trezor = false
+            trial_cost_from_fund = false
+          elsif trial_cost_from_fund
+            if trial_loan_sum_cny > loan_limit_cny # 不能再贷款了
+              trial_cost_from_trezor = true
+              trial_cost_from_fund = false
+            end
           end
+          # 确认是否已破产(这个月无法付出生活费)
+          is_over_month_cost = true if !is_pay_month_cost
+          # 储备值可生活月数
+          invest_remain_months = ($loan_limit_cny-trial_loan_sum_cny).to_f/@month_cost if @month_cost > 0
+          # 计算持仓比例
+          hold_ratio = end_balance_cny.to_f/(end_balance_cny+$loan_limit_cny-trial_loan_sum_cny)*100
         %>
-        <td align="right" title="<%=fund_note%>"><%=show_invest_remain%></td>
+        <td align="right" title="<%=fund_note%>" class="end_balance"><%=show_invest_remain%></td>
+        <td align="right"><%=show_this_month_loan%></td>
         <td align="right"><%=show_loan%></td>
-        <td align="right"><%=show_interest%></td>
-        <td align="center" title="总值: <%=%>"><%=invest_remain_months%></td>
+        <td align="right"><%=hold_ratio.floor(1)%>%</td>
+        <td align="right" class="end_balance"><%=show_interest%></td>
+        <td align="right"><%=invest_remain_months.floor(1)%></td>
         <td class="end_balance" align="right"><%=total_balance%></td>
       <% end %>
     </tr>
@@ -571,22 +686,22 @@ trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
     %>
   <% end %>
   <tr class="thead">
-    <td colspan="3" align="center">
+    <td colspan="6" align="center">
       <% # 显示现价与k线图链接 %>
       <%= show_prices_and_chart_links %>
     </td>
-    <td colspan="8" align="left">
+    <td colspan="11" align="left">
       <% # 显示资产净值与走势图链接 %>
       <%= show_net_value_link if admin? %>
     </td>
     <% # 如果有矿机收益 %>
     <% if admin? %>
       <% if show_mine_td %>
-        <td colspan="10" align="right">
+        <td colspan="9" align="right">
       <% end %>
     <% else %>
       <% if show_mine_td %>
-        <td colspan="8" align="right">
+        <td colspan="7" align="right">
       <% end %>
     <% end %>
       <% if admin? %>
