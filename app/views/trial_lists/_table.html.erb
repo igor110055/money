@@ -141,7 +141,7 @@ trial_cost_from_fund = true # 是否以储备资金支付生活费
 # 是否开始累计定投贷款金额: 若本月份已执行贷款定投，则试算表第一个月不加入贷款本金
 trial_loan_sum_start = $month_invest_already ? false : true
 trial_loan_sum_cny = Property.total_loan_lixi(:cny).to_i # 累计试算表的贷款本金初始值
-trial_loan_rate = 0.0597/12 # 试算表的月贷款利率(年5.97%)
+trial_loan_rate = $month_loan_rate # 试算表的月贷款利率
 is_over_month_cost = false # 是否已破产
 %>
 <table width="<%=$default_table_width%>" style="font-size:0.7em">
