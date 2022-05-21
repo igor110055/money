@@ -639,33 +639,6 @@ class ApplicationController < ActionController::Base
     @auto_refresh_sec = $log_refresh_sec > 0 ? $log_refresh_sec : 0
   end
 
-  # 系统参数的更新必须确保每一行以钱号开头以免系统无法运作
-  def pass_system_params_check(text)
-    regx = /^(\$)(\w)+(\s)+(=){1}(\s)+(.)+/
-    text.split("\n").each do |line|
-      return false if (line =~ regx) != 0
-    end
-    return true
-  end
-
-  # 写入系统参数文档
-  def write_to_system_params_file( text )
-    if text and pass_system_params_check(text)
-      File.open($system_params_path, 'w+') do |f|
-        f.write(text)
-      end
-      return true
-    end
-    return false
-  end
-
-  # 置换系统参数内容
-  def replace_system_params_content( from, to )
-    text = get_system_params_content
-    text.sub! from, to
-    write_to_system_params_file text
-  end
-
   # 更新火币2个账号的资产余额
   def exe_update_huobi_assets
     add_system_params_if_none('huobi_acc_id',$huobi_acc_id,true,false)
@@ -748,11 +721,6 @@ class ApplicationController < ActionController::Base
     @usdt2cny = $usdt_to_cny
     @cny2twd = DealRecord.new.cny_to_twd
     @twd2cny = DealRecord.new.twd_to_cny
-  end
-
-  # 取得系统参数文档内容
-  def get_system_params_content
-    File.read($system_params_path)
   end
 
   # 提交同步另一台服务器,请记得更新以下文档,否则会报错!

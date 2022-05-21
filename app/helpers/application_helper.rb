@@ -1218,6 +1218,51 @@ module ApplicationHelper
     Currency.new.btc_to_cny(btc_price)
   end
 
+  # 取得系统参数文档内容
+  def get_system_params_content
+    File.read($system_params_path)
+  end
+
+  # 置换系统参数内容
+  def replace_system_params_content( from, to )
+    text = get_system_params_content
+    text.sub! from, to
+    write_to_system_params_file text
+  end
+
+  # 设定系统参数切换值
+  def switch_system_param( name, value1, value2, is_str = true, msg = nil )
+    eval_str1 = is_str ? "$#{name} == '#{value1}'" : "$#{name} == #{value1}"
+    eval_str2 = is_str ? "$#{name} == '#{value2}'" : "$#{name} == #{value2}"
+    if eval(eval_str1)
+      params = is_str ? ["$#{name} = '#{eval("$"+name)}'", "$#{name} = '#{value2}'"] : ["$#{name} = #{eval("$"+name)}", "$#{name} = #{value2}"]
+    elsif eval(eval_str2)
+      params = is_str ? ["$#{name} = '#{eval("$"+name)}'", "$#{name} = '#{value1}'"] : ["$#{name} = #{eval("$"+name)}", "$#{name} = #{value1}"]
+    end
+    replace_system_params_content(params[0],params[1])
+    put_notice msg if msg
+  end
+
+  # 系统参数的更新必须确保每一行以钱号开头以免系统无法运作
+  def pass_system_params_check(text)
+    regx = /^(\$)(\w)+(\s)+(=){1}(\s)+(.)+/
+    text.split("\n").each do |line|
+      return false if (line =~ regx) != 0
+    end
+    return true
+  end
+
+  # 写入系统参数文档
+  def write_to_system_params_file( text )
+    if text and pass_system_params_check(text)
+      File.open($system_params_path, 'w+') do |f|
+        f.write(text)
+      end
+      return true
+    end
+    return false
+  end
+
   # 回传某个月的生活费预算
   def get_month_cost( input_date = Date.today )
     $trial_month_costs.each do |item|

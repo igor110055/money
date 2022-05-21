@@ -891,39 +891,30 @@ class MainController < ApplicationController
   # 切换以什么币种显示统计总值(CNY|TWD空值时默认)
   def switch_show_value_cur
     switch_system_param 'show_value_cur', 'TWD', 'CNY'
+    redirect_to request.env["HTTP_REFERER"]
   end
 
   # 系统参数页面点击关闭自动报价则自动更新相关参数
   def switch_auto_update_huobi_assets
     switch_system_param 'auto_update_huobi_assets', 0, 1, false, '自动报价(含火币资产更新)切换成功！'
+    redirect_to request.env["HTTP_REFERER"]
   end
 
   # 系统参数页面点击关闭自动报价则自动更新相关参数(不含火币资产)
   def switch_auto_update_btc_price
     switch_system_param 'auto_update_btc_price', 0, 1, false, '自动报价切换成功！'
+    redirect_to request.env["HTTP_REFERER"]
   end
 
   # 参数页面新增开启或关闭每分钟自动更新交易列表
   def switch_auto_refresh_sec
     switch_system_param 'auto_refresh_sec', 0, 60, false, '自动更新交易列表切换成功！'
+    redirect_to request.env["HTTP_REFERER"]
   end
 
   # 参数页面新增开启或关闭多空比的文字显示
   def switch_show_buy_sell_rate
     switch_system_param 'show_buy_sell_rate', 0, 1, false, '多空比显示切换成功！'
-  end
-
-  # 设定系统参数切换值
-  def switch_system_param( name, value1, value2, is_str = true, msg = nil )
-    eval_str1 = is_str ? "$#{name} == '#{value1}'" : "$#{name} == #{value1}"
-    eval_str2 = is_str ? "$#{name} == '#{value2}'" : "$#{name} == #{value2}"
-    if eval(eval_str1)
-      params = is_str ? ["$#{name} = '#{eval("$"+name)}'", "$#{name} = '#{value2}'"] : ["$#{name} = #{eval("$"+name)}", "$#{name} = #{value2}"]
-    elsif eval(eval_str2)
-      params = is_str ? ["$#{name} = '#{eval("$"+name)}'", "$#{name} = '#{value1}'"] : ["$#{name} = #{eval("$"+name)}", "$#{name} = #{value1}"]
-    end
-    replace_system_params_content(params[0],params[1])
-    put_notice msg if msg
     redirect_to request.env["HTTP_REFERER"]
   end
 

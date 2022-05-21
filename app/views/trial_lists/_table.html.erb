@@ -1,4 +1,10 @@
 <%
+# 全局化参数
+@mine_num_ori = $mine_num # 原有BTC矿机数量
+@mine_num_ori_eth = $mine_num_eth # 原有ETH矿机数量
+@today = Date.today # 设定今天日期
+@diff_acceptable = 0.0002 # 如果实际值与目标值相差在几个BTC以内则视为已达成目标
+
 # 回传已经回本的矿机数量
 def cal_mine_backed_num( this_date, back_num = $mine_back_months )
   # 把原有矿机加到计算阵列
@@ -85,10 +91,7 @@ def loan_limit_cny
   ($loan_limit_cny - $loan_save_months*$trial_life_month_cost_cny_admin).to_i
 end
 
-@mine_num_ori = $mine_num # 原有BTC矿机数量
-@mine_num_ori_eth = $mine_num_eth # 原有ETH矿机数量
 cal_btc_capital # 初始化月末值
-@today = Date.today # 设定今天日期
 birthday = "1974-12-02".to_date # 设定生日
 mine_amount = mine_earn_remain = 0 # 挖矿得到的总币数 | 扣除生活费剩余挖矿币数
 total_month_cost_cny = 0 # 每月生活费的总数
@@ -105,14 +108,26 @@ else
   show_mine_td = false
 end
 show_balance_now = link_to_flow_assets_list(:CNY,twd_to_cny,twd_to_btc) # 缓存至变量节省计算时间
+
+# 自动计算BTC第一期利率到预期的价位
+def first_btc_month_grow_rate
+  if !$trial_cal_first_rate.empty?
+    goal_date = $trial_cal_first_rate.split(':')[0].to_date
+    goal_value = $trial_cal_first_rate.split(':')[1].to_f
+    months = (goal_date-@today).to_i/30
+    beishu = goal_value/@btc_price
+    return (beishu**(1.0/months)-1).floor(4)
+  else
+    return $trial_btc_prices[0].split(':')[0].to_f
+  end
+end
 prices_arr = $trial_btc_prices # 设定BTC价格增长幅度
-btc_month_grow_rate = prices_arr[0].split(':')[0].to_f # 初始化BTC价格增长幅度
+btc_month_grow_rate = first_btc_month_grow_rate # 初始化BTC价格增长幅度
 prices_arr.delete_at(0) # 初始化BTC价格增长幅度
 highlight_goal = true # 是否高亮显示已达成目标的月份(有一个月未达成则后面达成也不显示)
 jike_balance = Property.tagged_with('矿场').sum {|p| p.amount_to(:btc)} # 极客挖矿余额
 huobi_balance = Property.tagged_with(get_huobi_acc_id).sum {|p| p.amount_to(:btc)} # 火币余额
 btc_diff_flag = true # 用于一次性显示当月挖矿的收益是否已经达到BTC增减量
-@diff_acceptable = 0.0002 # 如果实际值与目标值相差在几个BTC以内则视为已达成目标
 fix_start_month_cost # 修正生活费计算的错误
 total_mine_sell = 0 # 当月挖矿后立刻卖出的累计收益
 mine_income_twd = mine_income_cny = 0 # 挖矿总收益
@@ -132,14 +147,14 @@ is_over_month_cost = false # 是否已破产
 <table width="<%=$default_table_width%>" style="font-size:0.7em">
   <tr class="thead">
     <td>岁</td>
-    <td>日期</td>
+    <td width="85">日期</td>
     <td>月初价</td>
     <td>月初量</td>
     <td>月初值</td>
     <% if $month_invest_load == 1 %>
-      <td title="储存在数据库里每月投资比特币的金额">定投目标</td>
+      <td title="定投目标:储存在数据库里每月投资比特币的金额">定投</td>
     <% else %>
-      <td title="试算每月投资比特币的金额">定投试算</td>
+      <td title="定投试算:试算每月投资比特币的金额">定投</td>
     <% end %>
     <td title="每月生活费与矿机的支出&#10;底线表示以冷钱包支付生活费&#10;删除线表示所有资产已无法支付生活费">支出</td>
     <td>月末量</td>
@@ -161,7 +176,7 @@ is_over_month_cost = false # 是否已破产
     <td width="40">持仓</td>
     <td width="40">利息</td>
     <td width="40" title="储备余额的可生活月数">月数</td>
-    <td width="60" title="月末值+储备余额">资产净值</td>
+    <td width="60" title="月末值+储备余额-利息">可用净值</td>
   </tr>
   <%
   rs_trial.each do |n|
@@ -556,8 +571,8 @@ is_over_month_cost = false # 是否已破产
           if this_date.month == 12 and this_date.year%3 == 0
             jry_back = (jry_back_base*twd_to_cny).to_i
             fund_note += "金如意+¥#{jry_back} "
-            # 如有贷款本金 + 在定投结束日之后 + 可用币支付生活 => 则尝试偿还
-            if (trial_loan_sum_cny > 0) and (this_date > $trial_repay_loan_start) and (@btc_total_amount - month_sell > 0)
+            # 如有贷款本金且可用币支付生活，则立即偿还
+            if (trial_loan_sum_cny > 0) and (@btc_total_amount - month_sell > 0)
               # 偿清贷款
               if trial_loan_sum_cny - jry_back <= 0
                 jry_back -= trial_loan_sum_cny
@@ -577,8 +592,8 @@ is_over_month_cost = false # 是否已破产
           # 查看是否为一诺千金还本年月 如有贷款本金则尝试偿还
           if this_date.month == 10 and this_date.year >= 2030
             fund_note += "一诺千金+¥#{yn_back}"
-            # 如有贷款本金 + 在定投结束日之后 + 可用币支付生活 => 则尝试偿还
-            if (trial_loan_sum_cny > 0) and (this_date > $trial_repay_loan_start) and (@btc_total_amount - month_sell > 0)
+            # 如有贷款本金且可用币支付生活，则立即偿还
+            if (trial_loan_sum_cny > 0) and (@btc_total_amount - month_sell > 0)
               # 偿清贷款
               if trial_loan_sum_cny - yn_back <= 0
                 yn_back -= trial_loan_sum_cny
@@ -682,6 +697,7 @@ is_over_month_cost = false # 是否已破产
           end_balance_twd: end_balance_twd,
           month_invest: this_month_invest_cny
         )
+        switch_system_param('month_invest_load', 0, 1, false) if $month_invest_load == 0
       end
     %>
   <% end %>
