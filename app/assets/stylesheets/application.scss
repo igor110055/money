@@ -247,3 +247,16 @@ a.invest_param_select:visited {
   color: red;
   font-weight: bold;
 }
+span.frac {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 0.3em;
+}
+span.frac > sup, span.frac > sub {
+  display: block;
+  font: inherit;
+  padding: 0 0.3em;
+}
+span.frac > sup {border-bottom: 0.08em solid;}
+span.frac > span {display: none;}

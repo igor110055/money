@@ -180,6 +180,19 @@
     end
   end
 
+  # 计算每增加0.1%目标的比特币需投入多少人民币
+  def per_btc_to_cur
+    if @btc_price
+      if $show_value_cur == 'TWD'
+        return ($trial_btc_goal*btc_to_cny(@btc_price)*@cny2twd/100*0.1).to_i
+      else
+        return "¥#{($trial_btc_goal*btc_to_cny(@btc_price)/100*0.1).to_i}"
+      end
+    else
+      return 0
+    end
+  end
+
   # 可生活月数
   life_fund = Property.total_life_fund_records_cny.to_f # 储备资金总值
   life_months = life_fund/$trial_life_month_cost_cny_admin # 储备资金/每月生活费
@@ -239,7 +252,7 @@
       <td class='thead' title='¥#{bank_value}(#{(bank_value*@cny2twd).to_i})'>#{link_to '银行','/properties?tags=银行'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(bank_value_p,pos)}%</td> \
       </tr></table> \
     <table width='#{$title_table_width}' style='margin-top:#{@title_table_margin};text-align:right'><tr>#{buy_sell_rate_html} \
-      <td class='thead' title='比特币囤币目标: #{$trial_btc_goal.floor(2)}枚'>囤币</td><td bgcolor='#{@set_bgcolor3}'>#{(get_btc_eth_amounts/$trial_btc_goal*100).floor(1)}%</td>\
+      <td class='thead' title='比特币囤币目标: #{$trial_btc_goal.floor(2)}枚'>囤币 <span class='frac'><sup>#{per_btc_to_cur}</sup><span>&frasl;</span><sub>0.1%</sub></span></td><td bgcolor='#{@set_bgcolor3}'>#{(get_btc_eth_amounts/$trial_btc_goal*100).floor(1)}%</td>\
       <td class='thead' title='#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})'>#{link_to 'BTC','/properties?tags=比特币'}</td><td bgcolor='#{@set_bgcolor2}'>#{p_btc.floor(3)}</td><td bgcolor='#{@set_bgcolor2}'>#{btc_p2.floor(0)}%</td> \
       <td class='thead' title='#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})'>#{link_to 'ETH','/properties?tags=以太坊'}</td><td bgcolor='#{@set_bgcolor2}'>#{p_eth.floor(3)}</td><td bgcolor='#{@set_bgcolor2}'>#{eth_p2.floor(0)}%</td> \
       <td class='thead'>#{link_to '合计', '/properties?extags=&mode=a&pid=28&portfolio_name=比特币加以太坊&tags=比特币+以太坊'}</td><td bgcolor='#{@set_bgcolor2}' title='¥#{@btc_add_eth_cny}(#{@btc_add_eth_twd})'>#{link_to( show_btc_add_eth_value, switch_show_value_cur_path)}</td> \
