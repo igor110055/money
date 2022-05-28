@@ -1013,6 +1013,20 @@ module ApplicationHelper
   def get_int_price( price, pos = 100 )
     ((price/pos).to_i+1)*pos
   end
+  
+  # 从火币网取得某一数字货币的最新报价
+  def get_huobi_price( symbol, fmt = "%.4f" )
+    begin
+      root = JSON.parse(`python py/huobi_price.py symbol=#{symbol} period=1min size=1 from=0 to=0`)
+      if root["data"] and root["data"][0]
+        return format(fmt,root["data"][0]["close"]).to_f
+      else
+        return 0
+      end
+    rescue
+      return 0
+    end
+  end
 
   # 快速读取数字货币报价
   def get_digital_price( code )
@@ -1020,6 +1034,10 @@ module ApplicationHelper
       return 1.0/rate
     elsif item = Currency.find_by_code(code)
       return 1.0/item.exchange_rate
+    elsif item = Currency.find_by_symbol(code)
+      return 1.0/item.exchange_rate
+    elsif price = get_huobi_price(code)
+      return price
     else
       return 0
     end
@@ -1190,10 +1208,10 @@ module ApplicationHelper
   # 显示现价与k线图链接
   def show_prices_and_chart_links
     results = []
-    $show_digital_prices.each do |c|
+    $show_dprices.each do |c|
       code = c.split(':')[0]
       pos = c.split(':')[1].to_i
-      results << kline_chart_link(get_digital_price(code).floor(pos),"#{code.downcase}usdt")
+      results << kline_chart_link(get_digital_price(code).floor(pos),"#{code.downcase}")
     end
     return raw(results.join(' | '))
   end

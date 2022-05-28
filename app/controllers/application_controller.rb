@@ -120,20 +120,6 @@ class ApplicationController < ActionController::Base
     Time.now.strftime("%H:%M")
   end
 
-  # 从火币网取得某一数字货币的最新报价
-  def get_huobi_price( symbol, fmt = "%.4f" )
-    begin
-      root = JSON.parse(`python py/huobi_price.py symbol=#{symbol} period=1min size=1 from=0 to=0`)
-      if root["data"] and root["data"][0]
-        return format(fmt,root["data"][0]["close"]).to_f
-      else
-        return 0
-      end
-    rescue
-      return 0
-    end
-  end
-
   # 更新所有数字货币的汇率值
   def update_digital_exchange_rates( show_notice = false )
     # 必须先更新USDT的汇率，其他的报价换算成美元才能准确
