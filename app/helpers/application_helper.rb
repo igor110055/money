@@ -1013,7 +1013,7 @@ module ApplicationHelper
   def get_int_price( price, pos = 100 )
     ((price/pos).to_i+1)*pos
   end
-  
+
   # 从火币网取得某一数字货币的最新报价
   def get_huobi_price( symbol, fmt = "%.4f" )
     begin
@@ -1036,7 +1036,7 @@ module ApplicationHelper
       return 1.0/item.exchange_rate
     elsif item = Currency.find_by_symbol(code)
       return 1.0/item.exchange_rate
-    elsif price = get_huobi_price(code)
+    elsif $auto_update_btc_price == 1 and price = get_huobi_price(code)
       return price
     else
       return 0
