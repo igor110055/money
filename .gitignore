@@ -34,4 +34,6 @@
 /config/global_variables.txt
 /config/system_params.txt
 /app/views/layouts/global_variables.txt
-/py/*
+
+# Ignore all python code to keep trade secret
+/py/*.*
