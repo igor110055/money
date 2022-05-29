@@ -37,3 +37,4 @@
 
 # Ignore all python code to keep trade secret
 /py/*.*
+/py/__pycache__/*.*
