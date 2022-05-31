@@ -87,9 +87,12 @@
     max_buy_cny = get_invest_params(8).to_i
     buy_when_minutes = get_invest_params(17).to_i
     buy_period_max_price = get_invest_params(31).to_i
-    max_price_str = buy_period_max_price > 0 ? "|<span title=\"买入最低价时的最高价\">#{buy_period_max_price}</span>|<span title=\"单笔买入人民币最小值与最大值\">#{min_buy_cny}~#{max_buy_cny}元</span>" : ""
-    result = "低于#{buy_under_price}|#{every_minute}分|#{min_buy_cny}元" if buy_under_price > 0  # 定投
-    result = "#{buy_when_minutes}低|#{every_minute}分#{max_price_str}" if buy_when_minutes > 0  # 选择低价买入
+    double_buy_point = get_invest_params(33).to_i
+    double_buy_price = get_invest_params(34).to_i
+    max_price_str = buy_period_max_price > 0 ? "|<span title=\"买入最低价时的最高价\">#{buy_period_max_price}</span>|<span title=\"单笔买入人民币最小值与最大值\">#{min_buy_cny}~#{max_buy_cny}</span>" : ""
+    double_buy_str = "|<span title=\"额度翻倍的最大购买价\">#{double_buy_price}</span>~<span title=\"额度翻倍的最高价\">#{double_buy_price-double_buy_point}</span>"
+    result = "低于#{buy_under_price}自动定投|每#{every_minute}分|每次#{min_buy_cny}元" if buy_under_price > 0  # 定投
+    result = "#{buy_when_minutes}低|#{every_minute}分#{max_price_str}#{double_buy_str}" if buy_when_minutes > 0  # 选择低价买入
     result = "<u>#{result}</u>" if DealRecord.enable_to_buy?
     return raw(result)
   end
@@ -138,7 +141,6 @@
   <tr class="thead">
     <td width="15"><%= link_to '🏠', set_btc_as_home_path %></td>
     <td width="280">
-      <%= set_auto_invest_form_link('BTC','策略',dtype:'buy') %>:
       <% # 显示买入策略文字 %>
       <%= show_buy_strategy %>
     </td>
