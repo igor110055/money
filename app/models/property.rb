@@ -114,11 +114,15 @@ class Property < ApplicationRecord
   end
 
   def self.get_invest_param_from( file_path, index, to_number = true )
-    value = File.read(file_path).split(' ')[index]
-    if to_number
-      return value.to_f
-    else
-      return value
+    begin
+      value = File.read(file_path).split(' ')[index]
+      if to_number
+        return value.to_f
+      else
+        return value
+      end
+    rescue
+      return 0
     end
   end
 
@@ -133,8 +137,13 @@ class Property < ApplicationRecord
     record_amount = amount1 + amount2
     real_ave_cost = record_amount > 0 ? record_cost/record_amount : 0
     # 处理交易列表的已实现损益和未实现损益
-    sell_profit1, unsell_profit1, ave_sec_profit1, real_p_24h1, trezor_cost1, trezor_amount1 = get_invest_param_from($auto_sell_btc_params_path,28,false).split(':')
-    sell_profit2, unsell_profit2, ave_sec_profit2, real_p_24h2, trezor_cost2, trezor_amount2 = get_invest_param_from($auto_sell_btc_params_path2,28,false).split(':')
+    begin
+      sell_profit1, unsell_profit1, ave_sec_profit1, real_p_24h1, trezor_cost1, trezor_amount1 = get_invest_param_from($auto_sell_btc_params_path,28,false).split(':')
+      sell_profit2, unsell_profit2, ave_sec_profit2, real_p_24h2, trezor_cost2, trezor_amount2 = get_invest_param_from($auto_sell_btc_params_path2,28,false).split(':')
+    rescue
+      sell_profit1 = unsell_profit1 = ave_sec_profit1 = real_p_24h1 = trezor_cost1 = trezor_amount1 = 0
+      sell_profit2 = unsell_profit2 = ave_sec_profit2 = real_p_24h2 = trezor_cost2 = trezor_amount2 = 0
+    end
     total_real_profit = sell_profit1.to_f + sell_profit2.to_f
     total_unsell_profit = unsell_profit1.to_f + unsell_profit2.to_f
     ave_hour_profit = (ave_sec_profit1.to_f + ave_sec_profit2.to_f)*60*60
