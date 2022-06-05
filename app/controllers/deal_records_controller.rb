@@ -394,7 +394,7 @@ class DealRecordsController < ApplicationController
     end
 
     def make_trezor_count_records
-      DealRecord.make_count_records($send_to_trezor_amount)
+      DealRecord.make_count_records($send_to_trezor_amount, order: 'created_at desc')
     end
 
     def make_balance_count_records

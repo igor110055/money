@@ -351,19 +351,19 @@ class DealRecord < ApplicationRecord
   end
 
   # 新增钱包凑数链接以方便凑齐当日存入到冷钱包的比特币数量
-  def self.make_count_records( count_goal )
+  def self.make_count_records( count_goal, options = { order: 'price asc' } )
     result = []
     sum = 0
     # 由未卖转到钱包
     if count_goal > 0
-      where("#{btc_buy_conditions} auto_sell = 0 and account = '#{get_huobi_acc_id}'").order('price asc').each do |dr|
+      where("#{btc_buy_conditions} auto_sell = 0 and account = '#{get_huobi_acc_id}'").order(options[:order]).each do |dr|
         result << dr
         sum += dr.amount
         return result if sum >= count_goal
       end
     # 由钱包转到未卖
     elsif count_goal < 0
-      where("#{btc_buy_conditions} auto_sell = 1 and real_profit = 0 and account = '#{get_huobi_acc_id}'").order('price desc').each do |dr|
+      where("#{btc_buy_conditions} auto_sell = 1 and real_profit = 0 and account = '#{get_huobi_acc_id}'").order(options[:order]).each do |dr|
         result << dr
         sum += dr.amount
         return result if sum >= count_goal.abs
