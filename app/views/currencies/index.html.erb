@@ -17,7 +17,7 @@
   <% cny_rate = currency.exchange_rate if currency.code == 'CNY' %>
   <tr <%= change_row_color %>>
     <td align="right"><%= n %></td>
-    <td><%= link_edit_to(currency) %> <%= show_ok(currency.auto_update_price,'自动更新报价') %></td>
+    <td><%= link_edit_to(currency) %> <%= show_ok(currency.auto_update_price,'☑️') %></td>
     <td><%= currency.code %></td>
     <td><%= kline_chart_link(currency.symbol,currency.symbol) if currency.symbol %></td>
     <td align="right"><%= to_n(currency.exchange_rate, 8) %></td>

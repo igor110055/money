@@ -14,7 +14,7 @@ end
 <span id="site_title">
     <h1 style="width: <%= $default_table_width %>px">
       <%#= site_logo %>
-      ⏰ <%= link_to get_time_plan, :deal_records %>
+      ⏰ <%= link_to get_time_plan, :trial_lists %>
       <% if admin? %>
          | <a href="<%= session[:home_url] %>"><%= site_name %></a>
         <%= link_to raw($site_slogon)+raw(" <small>#{get_huobi_acc_id}</small>"), $host2 %>
