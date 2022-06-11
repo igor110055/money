@@ -1297,4 +1297,18 @@ module ApplicationHelper
     end
     return 0
   end
+
+  # 当期间大于60分钟后改以小时显示
+  def show_period( minutes )
+    if minutes < 60
+      return "#{minutes}分"
+    else
+      if minutes % 60 == 0
+        return "#{minutes/60}小时"
+      else
+        return "#{(minutes/60.0).floor(1)}小时"
+      end
+    end
+  end
+  
 end

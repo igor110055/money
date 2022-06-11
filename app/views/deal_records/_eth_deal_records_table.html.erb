@@ -39,8 +39,8 @@
     sell_over_price = get_invest_params(27,code).to_i
     sell_when_minutes = get_invest_params(18,code).to_i
     sell_cny = get_invest_params(39,code).to_i
-    result = ">=#{sell_over_price}|每#{every_minute}分|¥#{sell_cny}" if sell_over_price > 0
-    result = "#{sell_when_minutes}高|每#{every_minute}分|¥#{sell_cny}" if sell_when_minutes > 0
+    result = ">=#{sell_over_price}|每隔#{show_period(every_minute)}|¥#{sell_cny}" if sell_over_price > 0
+    result = "#{show_period(sell_when_minutes)}最高价|每隔#{show_period(every_minute)}|¥#{sell_cny}" if sell_when_minutes > 0
     result = "<u>#{result}</u>" if DealRecord.enable_to_sell? code
     return raw(result)
   end
@@ -81,7 +81,7 @@
     <td width="15"><%= link_to '🏠', set_eth_as_home_path %></td>
     <td width="300">
       <% # 显示卖出条件 %>
-      <%= set_auto_invest_form_link("SETH","卖出条件") %>: <%= show_sell_strategy %> | 最低卖价: <%= @min_price_when_sell %>
+      <%= show_sell_strategy %> | 最低卖价 <%= @min_price_when_sell %>
     </td>
     <td>
       <% # 成交价 %>
