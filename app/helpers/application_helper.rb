@@ -88,7 +88,7 @@ module ApplicationHelper
     if !simple
       time.to_s(:db)
     else
-      time.strftime("%y%m%d-%H%M%S")
+      time.strftime("%Y%m%d-%H%M%S")
     end
   end
 

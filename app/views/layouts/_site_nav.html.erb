@@ -1,13 +1,15 @@
 <% if login? %>
   <div id="<%= id %>" style="width:100%">
     <small>
-      <%= link_back_to_properties %> |
       <% if admin? %>
-        <%= link_back_to_deal_records %> |
+        <%= link_to('买入交易',deal_records_path) %> |
+        <%= link_to('卖出交易',deal_records_eth_path) %> |
+        <%= set_auto_invest_form_link('BTC','买参设定',dtype:'buy') %> |
+        <%= set_auto_invest_form_link('SETH','卖参设定') %> |
+        <%= link_back_to_properties %> |
         <%= link_back_to_trial_lists %> |
         <%= link_back_to_portfolios %> |
         <%= system_params_form_link %> |
-        <%= set_auto_invest_form_link('BTC','买参设定',dtype:'buy') %> |
         <%= huobi_assets_link %> |
         <%= link_back_to_currencies %> |
         <%= link_back_to_items %> |

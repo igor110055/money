@@ -79,9 +79,9 @@
 <table width="<%=$default_table_width*table_width_ratio%>" style="font-size:<%=$deal_record_font_size%>">
   <tr class="thead">
     <td width="15"><%= link_to '🏠', set_eth_as_home_path %></td>
-    <td width="320">
-      <% # 显示现价与k线图链接 %>
-      <%= show_prices_and_chart_links %>
+    <td width="300">
+      <% # 显示卖出条件 %>
+      <%= set_auto_invest_form_link("SETH","卖出条件") %>: <%= show_sell_strategy %> | 最低卖价: <%= @min_price_when_sell %>
     </td>
     <td>
       <% # 成交价 %>
@@ -156,8 +156,8 @@
 %>
   <tr class="thead">
     <td colspan="2">
-      <%= set_auto_invest_form_link("SETH","卖出条件") %>: <%= show_sell_strategy %>
-       | 最低卖价: <%= @min_price_when_sell %>
+      <% # 显示现价与k线图链接 %>
+      <%= show_prices_and_chart_links %>
     </td>
     <td align="right">
       <% # 显示成交均价 %>
@@ -182,7 +182,7 @@
     </td>
     <td align="right" colspan="2">
       <% # 显示交易所ETH余额 %>
-      <span title="<%=get_huobi_acc_id%>交易所ETH余额">ETH: <%= to_n(@eth_amount_ex,8) %></span>(¥<%=ex_remain_cny%>可卖|<%=show_eth_level_status%>) |
+      <span title="<%=get_huobi_acc_id%>交易所ETH余额"><%= to_n(@eth_amount_ex,8) %></span>(¥<%=ex_remain_cny%>可卖|<%=show_eth_level_status%>) |
       <% # 显示资产净值与走势图链接 %>
       <%= show_net_value_link %>
     </td>

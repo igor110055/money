@@ -126,7 +126,7 @@ code = "SETH"
     <tr valign="top" class="set_aif_bg_rose">
       <td><%= n %></td>
       <td>卖出几分钟内的最高价</td>
-      <td><%= show_invest_param_value(18,code) %> <%= invest_params_setup_link(code,18,0,60*12,10) %></td>
+      <td><%= show_invest_param_value(18,code) %> <%= invest_params_setup_link(code,18,0,60*12,5,0,false,(0..10).to_a+(20..60).step(10).to_a+(120..1440).step(60).to_a) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
@@ -254,7 +254,7 @@ code = "SETH"
     <tr valign="top" class="set_aif_bg_rose">
       <td><%= n %></td>
       <td>每笔卖出值多少人民币</td>
-      <td><%= show_invest_param_value(39,code) %> <%= invest_params_setup_link(code,39,100,5000,100,0,true) %></td>
+      <td><%= show_invest_param_value(39,code) %> <%= invest_params_setup_link(code,39,50,2000,50,0,true) %></td>
       <% n += 1 %>
     </tr>
   </table>
