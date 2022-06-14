@@ -1310,5 +1310,14 @@ module ApplicationHelper
       end
     end
   end
-  
+
+  # 当期间大于60秒后以分钟显示,60分钟后改以小时显示
+  def show_period_sec( second )
+    if second < 60
+      return "#{second}秒"
+    else
+      return show_period(second/60)
+    end
+  end
+
 end
