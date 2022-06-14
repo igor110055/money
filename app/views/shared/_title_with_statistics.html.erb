@@ -251,7 +251,7 @@
   else
     btc_p2 = eth_p2 = 0
   end
-  # 储备资金+流动资产低于几个月生活费时会显示红色预警
+  # 储备资金+流动资产低于几个月生活费时会显示预警
   if life_months_plus_flow < $life_safe_months
     life_months_plus_flow_class = 'green_bg'
     life_months_plus_flow_warn = "储备资金+流动资产已不足#{$life_safe_months}个月生活费"
@@ -282,7 +282,7 @@
       <td class='thead' title='#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})'>#{link_to 'ETH','/properties?tags=以太坊'}</td><td bgcolor='#{@set_bgcolor2}'>#{p_eth.floor(2)}</td><td bgcolor='#{@set_bgcolor2}'>#{eth_p2.floor(0)}%</td> \
       <td class='thead'>#{link_to '合计', '/properties?extags=&mode=a&pid=28&portfolio_name=比特币加以太坊&tags=比特币+以太坊'}</td><td bgcolor='#{@set_bgcolor2}' title='¥#{@btc_add_eth_cny}(#{@btc_add_eth_twd})'>#{link_to( show_btc_add_eth_value, switch_show_value_cur_path)}</td> \
       <td class='thead' title='#{$level_field_tag}总值: ¥#{hold_shares_value}(#{(hold_shares_value*@cny2twd).to_i})'>#{link_to $level_field_tag,'/properties?tags='+$level_field_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(hold_shares_p,1)}%</td> \
-      <td class='thead' title='#{$reserve_fund_tag}总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_life_month_cost_cny_admin}(#{($trial_life_month_cost_cny_admin*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)'>#{link_to $reserve_fund_tag,'/properties?tags='+$reserve_fund_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(life_fund_plus_p,1)}%</td><td bgcolor='#{@set_bgcolor2}'><span title='可购买比特币总数: #{fund_eq_btc.floor(1)}\n购买后所有比特币总数: #{(p_btc+fund_eq_btc).floor(1)}'>#{fund_eq_btc.floor(1)}</td><td bgcolor='#{@set_bgcolor2}' title='#{$reserve_fund_tag}标签+保单可贷余额的总值(¥#{@life_fund_plus_cny}|#{@life_fund_plus_twd})'>#{link_to( show_life_fund_plus_value, switch_show_value_cur_path)}</td><td class='thead'>月数</td><td bgcolor='#{@set_bgcolor3}'><span title='保单可贷余额的生活月数: #{life_months_loan.floor(1)}\n#{$reserve_fund_tag}+保单可贷余额的生活月数: #{life_months_plus.floor(1)}\n#{$reserve_fund_tag}+保单可贷余额+流动性资产的生活月数: #{life_months_plus_flow.floor(1)}'>#{life_months_plus.to_i}/<span class='#{life_months_plus_flow_class}' title='#{life_months_plus_flow_warn}'>#{life_months_plus_flow.to_i}</span></span></td></tr></table> \
+      <td class='thead' title='#{$reserve_fund_tag}总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_life_month_cost_cny_admin}(#{($trial_life_month_cost_cny_admin*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)'>#{link_to $reserve_fund_tag,'/properties?tags='+$reserve_fund_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(life_fund_plus_p,1)}%</td><td bgcolor='#{@set_bgcolor2}'><span title='可购买比特币总数: #{fund_eq_btc.floor(8)}\n购买后所有比特币总数: #{(p_btc+fund_eq_btc).floor(8)}'>#{fund_eq_btc.floor(2)}</td><td bgcolor='#{@set_bgcolor2}' title='#{$reserve_fund_tag}标签+保单可贷余额的总值(¥#{@life_fund_plus_cny}|#{@life_fund_plus_twd})'>#{link_to( show_life_fund_plus_value, switch_show_value_cur_path)}</td><td class='thead'>月数</td><td bgcolor='#{@set_bgcolor3}'><span title='保单可贷余额的生活月数: #{life_months_loan.floor(1)}\n#{$reserve_fund_tag}+保单可贷余额的生活月数: #{life_months_plus.floor(1)}\n#{$reserve_fund_tag}+保单可贷余额+流动性资产的生活月数: #{life_months_plus_flow.floor(1)}'>#{life_months_plus.to_i}/<span class='#{life_months_plus_flow_class}' title='#{life_months_plus_flow_warn}'>#{life_months_plus_flow.to_i}</span></span></td></tr></table> \
       ") %>
     <% end %>
 </h3>

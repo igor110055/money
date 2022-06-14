@@ -91,8 +91,8 @@
       <% # 成交量 %>
       <%= link_to t(:deal_record_amount)+'(ETH)', order_list_params('amount') %>
     </td>
-    <td>手续费(<%=@target_bi.upcase%>)</td>
-    <td>实得币(<%=@target_bi.upcase%>)</td>
+    <td>手续费(<%=@target_bi[0].upcase%>)</td>
+    <td>实得币(<%=@target_bi[0].upcase%>)</td>
     <td>RMB</td>
     <td>时间</td>
     <td>

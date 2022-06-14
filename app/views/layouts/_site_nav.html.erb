@@ -2,10 +2,10 @@
   <div id="<%= id %>" style="width:100%">
     <small>
       <% if admin? %>
-        <%= link_to('买入交易',deal_records_path) %> |
-        <%= link_to('卖出交易',deal_records_eth_path) %> |
-        <%= set_auto_invest_form_link('BTC','买参设定',dtype:'buy') %> |
-        <%= set_auto_invest_form_link('SETH','卖参设定') %> |
+        <%= link_to('买入',deal_records_path) %> |
+        <%= link_to('卖出',deal_records_eth_path) %> |
+        <%= set_auto_invest_form_link('BTC','买参',dtype:'buy') %> |
+        <%= set_auto_invest_form_link('SETH','卖参') %> |
         <%= link_back_to_properties %> |
         <%= link_back_to_trial_lists %> |
         <%= link_back_to_portfolios %> |

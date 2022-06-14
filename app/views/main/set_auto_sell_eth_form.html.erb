@@ -126,7 +126,7 @@ code = "SETH"
     <tr valign="top" class="set_aif_bg_rose">
       <td><%= n %></td>
       <td>卖出几分钟内的最高价</td>
-      <td><%= show_invest_param_value(18,code) %> <%= invest_params_setup_link(code,18,0,60*12,5,0,false,(0..10).to_a+(20..60).step(10).to_a+(120..1440).step(60).to_a) %></td>
+      <td><%= show_invest_param_value(18,code) %> <%= invest_params_setup_link(code,18,1,60*12,5,0,false,(1..10).to_a+(20..60).step(10).to_a+(120..1440).step(60).to_a) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
@@ -177,10 +177,10 @@ code = "SETH"
       <td>目前只能卖出而不适用</td>
       <% n += 1 %>
     </tr>
-    <tr valign="top" class="set_aif_bg_gold">
+    <tr valign="top">
       <td><%= n %></td>
       <td>多少价位执行强制卖出</td>
-      <td><%= show_invest_param_value(27,code) %> <%= invest_params_setup_link(code,27,start_price,end_price,@price_step,@price_pos,true) %></td>
+      <td>此功能还没有实作完成<%#= show_invest_param_value(27,code) %> <%#= invest_params_setup_link(code,27,start_price,end_price,@price_step,@price_pos,true) %></td>
       <% n += 1 %>
     </tr>
     <tr valign="top">
