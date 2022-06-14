@@ -182,7 +182,7 @@
     </td>
     <td align="right" colspan="2">
       <% # 显示交易所ETH余额 %>
-      <span title="<%=get_huobi_acc_id%>交易所ETH余额"><%= to_n(@eth_amount_ex,8) %></span>(¥<%=ex_remain_cny%>可卖|<%=show_eth_level_status%>) |
+      <span title="<%=get_huobi_acc_id%>交易所ETH余额"><%= to_n(@eth_amount_ex,6) %></span>(<span title="可卖">¥<%=ex_remain_cny%></span>|<%=show_eth_level_status%>) |
       <% # 显示资产净值与走势图链接 %>
       <%= show_net_value_link %>
     </td>
