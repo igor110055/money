@@ -1319,5 +1319,26 @@ module ApplicationHelper
       return show_period(second/60)
     end
   end
+  
+  # 传入货币价格阵列, 计算新的资产总值
+  def cal_assets_value_from_input_prices( assets_tags, curr_prices, target_curr = :cny )
+    result = 0
+    Property.new.get_properties_from_tags(assets_tags,nil,'a').each do |p|
+      # value = p.amount*currency_to_target_curr
+      symbol = p.currency.symbol
+      code = p.currency.code
+      # 如果是数字货币且包含在已输入的价格阵列里
+      if symbol and !symbol.empty? and curr_prices.include?(symbol.sub('usdt','').to_sym)
+        result += p.amount_to(target_curr,curr_prices[:btc],Date.today,{crypto_price: curr_prices[code.downcase.to_sym]})
+      # 如果是数字货币但不包含在已输入的价格阵列里
+    elsif symbol and !symbol.empty?
+        result += p.amount_to(target_curr,curr_prices[:btc],Date.today,{crypto_price: get_digital_price(code)})
+      # 如果是一般法币
+      else
+        result += p.amount_to(target_curr)
+      end
+    end
+    return result.to_i
+  end
 
 end

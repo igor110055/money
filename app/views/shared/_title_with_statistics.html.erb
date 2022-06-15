@@ -209,6 +209,14 @@
     end
   end
 
+  # 试算若币价到达设定价格能生活几个月
+  trial_life_months_str = ''
+  @trial_flow_twd = cal_assets_value_from_input_prices($total_flow_assets_tags,$trial_life_prices,:twd)
+  $trial_life_prices.each do |key,value|
+    trial_life_months_str += "\n#{key.upcase}达到#{value}"
+  end
+  trial_life_months_note = "当价格达到以下目标时所能生活的月数#{trial_life_months_str}\n流动性资产总值预估: ¥#{(@trial_flow_twd*@twd2cny).to_i}(#{@trial_flow_twd})"
+
   # 储备金可生活月数
   life_fund = Property.total_life_fund_records_cny.to_f # 储备资金总值
   life_months = life_fund/$trial_life_month_cost_cny_admin # 储备资金/每月生活费
@@ -221,6 +229,8 @@
   life_fund_plus_p = @life_fund_plus_twd/@flow_plus_loan_twd*100
   # 加上流动性资产的可生活月数
   life_months_plus_flow = (@life_fund_plus_twd+@flow_assets_twd)/($trial_life_month_cost_cny_admin*@cny2twd)
+  # 若币价到达设定价格的可生活月数
+  life_months_plus_trial_flow = (@life_fund_plus_twd+@trial_flow_twd)/($trial_life_month_cost_cny_admin*@cny2twd)
   # 狗狗币
   doge_value = Property.doge_records_cny.to_i
   # 狗狗币占流动性资产比值
@@ -283,7 +293,7 @@
       <td class='thead' title='#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})'>#{link_to 'ETH','/properties?tags=以太坊'}</td><td bgcolor='#{@set_bgcolor2}'>#{p_eth.floor(2)}</td><td bgcolor='#{@set_bgcolor2}'>#{eth_p2.floor(0)}%</td> \
       <td class='thead'>#{link_to '合计', '/properties?extags=&mode=a&pid=28&portfolio_name=比特币加以太坊&tags=比特币+以太坊'}</td><td bgcolor='#{@set_bgcolor2}' title='¥#{@btc_add_eth_cny}(#{@btc_add_eth_twd})'>#{link_to( show_btc_add_eth_value, switch_show_value_cur_path)}</td> \
       <td class='thead' title='#{$level_field_tag}总值: ¥#{hold_shares_value}(#{(hold_shares_value*@cny2twd).to_i})'>#{link_to $level_field_tag,'/properties?tags='+$level_field_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(hold_shares_p,1)}%</td> \
-      <td class='thead' title='#{$reserve_fund_tag}总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_life_month_cost_cny_admin}(#{($trial_life_month_cost_cny_admin*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)'>#{link_to $reserve_fund_tag,'/properties?tags='+$reserve_fund_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(life_fund_plus_p,1)}%</td><td bgcolor='#{@set_bgcolor2}'><span title='可购买比特币总数: #{fund_eq_btc.floor(8)}\n购买后所有比特币总数: #{(p_btc+fund_eq_btc).floor(8)}'>#{fund_eq_btc.floor(2)}</td><td bgcolor='#{@set_bgcolor2}' title='#{$reserve_fund_tag}标签+保单可贷余额的总值(¥#{@life_fund_plus_cny}|#{@life_fund_plus_twd})'>#{link_to( show_life_fund_plus_value, switch_show_value_cur_path)}</td><td class='thead'>月数</td><td bgcolor='#{@set_bgcolor3}'><span title='保单可贷余额的生活月数: #{life_months_loan.floor(1)}\n#{$reserve_fund_tag}+保单可贷余额的生活月数: #{life_months_plus.floor(1)}\n#{$reserve_fund_tag}+保单可贷余额+流动性资产的生活月数: #{life_months_plus_flow.floor(1)}'>#{life_months_plus.to_i}/<span class='#{life_months_plus_flow_class}' title='#{life_months_plus_flow_warn}'>#{life_months_plus_flow.to_i}</span></span></td></tr></table> \
+      <td class='thead' title='#{$reserve_fund_tag}总额:¥#{life_fund.to_i}(#{(life_fund*@cny2twd).to_i})\n每月生活费: ¥#{$trial_life_month_cost_cny_admin}(#{($trial_life_month_cost_cny_admin*@cny2twd).to_i})\n可生活月数: #{life_months.floor(2)}月(#{(life_months*30).to_i}天)'>#{link_to $reserve_fund_tag,'/properties?tags='+$reserve_fund_tag}</td><td bgcolor='#{@set_bgcolor2}'>#{to_n(life_fund_plus_p,1)}%</td><td bgcolor='#{@set_bgcolor2}'><span title='可购买比特币总数: #{fund_eq_btc.floor(8)}\n购买后所有比特币总数: #{(p_btc+fund_eq_btc).floor(8)}'>#{fund_eq_btc.floor(2)}</td><td bgcolor='#{@set_bgcolor2}' title='#{$reserve_fund_tag}标签+保单可贷余额的总值(¥#{@life_fund_plus_cny}|#{@life_fund_plus_twd})'>#{link_to( show_life_fund_plus_value, switch_show_value_cur_path)}</td><td class='thead'>月数</td><td bgcolor='#{@set_bgcolor3}'><span title='保单可贷余额的生活月数: #{life_months_loan.floor(1)}\n#{$reserve_fund_tag}+保单可贷余额的生活月数: #{life_months_plus.floor(1)}\n#{$reserve_fund_tag}+保单可贷余额+流动性资产的生活月数: #{life_months_plus_flow.floor(1)}'>#{life_months_plus.to_i}/<span class='#{life_months_plus_flow_class}' title='#{life_months_plus_flow_warn}'>#{life_months_plus_flow.to_i}</span><span class='gray' title='#{trial_life_months_note}'>/#{life_months_plus_trial_flow.to_i}</span></span></td></tr></table> \
       ") %>
     <% end %>
 </h3>
