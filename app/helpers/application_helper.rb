@@ -275,7 +275,7 @@ module ApplicationHelper
 
   # 彻底清空定投记录链接
   def total_clear_invest_log_link
-    link_to '彻底清空', clear_invest_log_path(path: request.fullpath)
+    link_to '清空', clear_invest_log_path(path: request.fullpath)
   end
 
   # 撤消全部下单并清空记录链接

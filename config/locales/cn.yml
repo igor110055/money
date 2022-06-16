@@ -12,7 +12,7 @@ cn:
   compose: 成员
   edit: 编辑
   keep: 保留
-  trial_list_index: 试算
+  trial_list_index: 计划
   set_to_trezor: 转出到钱包
   all_to_trezor: 本表全转出
   all_to_balance: 本表全消帐
@@ -274,7 +274,7 @@ cn:
   delete_open_order_error: 撤消下单未成功！
   usdt_trade: 可用
   invest_log: 日志
-  clear_invest_log: 清空日志
+  clear_invest_log: 清除
   delete_invest_log_ok: 智投日志已清空！
   delete_two_invest_log_ok: BTC与ETH智投日志已清理完毕！
   clear_invest_log_and_keep: 智投日志已清空至保留
