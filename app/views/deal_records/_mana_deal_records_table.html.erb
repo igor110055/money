@@ -105,7 +105,7 @@
   def show_total_ave_cost_price
     # 目前的成本均价
     ave_cost_price = @total_ave_cost_price
-    ave_cost_price = ave_cost_price.floor(2) if ave_cost_price > 0
+    ave_cost_price = ave_cost_price.floor(3) if ave_cost_price > 0
     # 均价到多少则停止买入
     @buy_limit_ave = get_invest_params(39,@code).to_i
     limit_msg = @buy_limit_ave > 0 ? "(均价到达#{@buy_limit_ave}则停止买入)" : ""
@@ -146,7 +146,7 @@
     <td width="15"><%= link_to '🏠', set_crypto_as_home_path(code:@code) %></td>
     <td width="300">
       <% # 显示买入策略文字 %>
-      <%= show_buy_strategy %>
+      📈 <%= show_buy_strategy %>
     </td>
     <td>
       <% # 成交价 %>
@@ -190,7 +190,7 @@
       </td>
       <td align="right">
         <% # 成交价 %>
-        <%= price = to_n(dr.price) %>
+        <%= price = to_n(dr.price,3) %>
       </td>
       <td align="right">
         <% # 值人民币 %>
@@ -302,7 +302,7 @@
     </td>
     <td align="right" title="额度翻倍的最大购买价: <%= get_invest_params(34,@code) %>">
       <% # 显示成交均价 %>
-      <%#= show_total_ave_cost_price %>
+      <%= show_total_ave_cost_price %>
     </td>
     <td align="right">
       <% # 显示成本总和 %>
@@ -333,7 +333,7 @@
         else
       %>
           <% # 显示CRYPTO总和 %>
-          <span title="交易所的<%= @code.upcase %>总数"><%="#{to_n(@crypto_amount_ex,8)}"%></span>
+          <span title="交易所的<%= @code.upcase %>总数"><%="#{to_n(@crypto_amount_ex,4)}"%></span>
       <%
         end
         # 显示CRYPTO仓位现况 %>

@@ -32,22 +32,6 @@
     raw "<span title='#{get_huobi_acc_id}交易所内以太坊剩余仓位'>#{eth_level}</span>/<span title='保留多少以太仓位不卖'>#{@keep_eth_level}</span>"
   end
 
-  # 显示当前的卖出策略
-  def show_sell_strategy
-    code = "SETH"
-    every_second = get_invest_params(22,code).to_i
-    sell_over_price = get_invest_params(27,code).to_i
-    sell_when_minutes = get_invest_params(18,code).to_i
-    min_sell_price = get_invest_params(38,code).to_i
-    sell_cny = get_invest_params(39,code).to_i
-    # 选择自动定投
-    result = "大于#{sell_over_price}自动卖出 | 每#{show_period_sec(every_second)} | 每次¥#{sell_cny}元" if sell_over_price > 0
-    # 选择高价价卖出
-    result = "#{show_period(sell_when_minutes)}最高价|每#{show_period_sec(every_second)}|¥#{sell_cny}|最低卖价 #{min_sell_price}" if sell_when_minutes > 0
-    result = "<u>#{result}</u>" if DealRecord.enable_to_sell? code
-    return raw(result)
-  end
-
   # 列表种类参数
   def list_page_params
     {
@@ -84,7 +68,7 @@
     <td width="15"><%= link_to '🏠', set_eth_as_home_path %></td>
     <td width="300">
       <% # 显示卖出条件 %>
-      <%= show_sell_strategy %>
+      📉 <%= show_sell_strategy('SETH') %>
     </td>
     <td>
       <% # 成交价 %>

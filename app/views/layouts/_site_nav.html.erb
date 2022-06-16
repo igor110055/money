@@ -4,8 +4,10 @@
       <% if admin? %>
         <%= link_to('BTC',deal_records_path) %> |
         <%= set_auto_invest_form_link('BTC','设定',dtype:'buy') %> |
+        <%= link_to_btc_deal_records %> |
+        <%= set_auto_invest_form_link('SBTC','设定') %> |
         <%= invest_log_link("BTC") %> |
-        <%= link_to('ETH',deal_records_eth_path) %> |
+        <%= link_to('SETH',deal_records_eth_path) %> |
         <%= set_auto_invest_form_link('SETH','设定') %> |
         <%= invest_log_link("ETH") %> |
         <%= link_to('MANA',deal_records_mana_path) %> |

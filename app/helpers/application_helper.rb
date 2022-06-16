@@ -1373,4 +1373,19 @@ module ApplicationHelper
     return result.to_i
   end
 
+  # 显示当前的卖出策略
+  def show_sell_strategy( code )
+    every_second = get_invest_params(22,code).to_i
+    sell_over_price = get_invest_params(27,code).to_i
+    sell_when_minutes = get_invest_params(18,code).to_i
+    min_sell_price = get_invest_params(38,code).to_i
+    sell_cny = get_invest_params(39,code).to_i
+    # 选择自动定投
+    result = "大于#{sell_over_price}自动卖出 | 每#{show_period_sec(every_second)} | 每次¥#{sell_cny}元" if sell_over_price > 0
+    # 选择高价价卖出
+    result = "#{show_period(sell_when_minutes)}最高价|每#{show_period_sec(every_second)}|¥#{sell_cny}|最低卖价 #{min_sell_price}" if sell_when_minutes > 0
+    result = "<u>#{result}</u>" if DealRecord.enable_to_sell? code
+    return raw(result)
+  end
+
 end

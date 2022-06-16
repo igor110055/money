@@ -10,18 +10,6 @@
     raw "<span title='#{get_huobi_acc_id}交易所内BTC剩余仓位'>#{level}</span>/<span title='保留多少BTC仓位不卖'>#{@keep_btc_level}</span>"
   end
 
-  # 显示当前的卖出策略
-  def show_sell_strategy
-    every_minute = get_invest_params(22,get_code).to_i/60
-    sell_over_price = get_invest_params(27,get_code).to_i
-    sell_when_minutes = get_invest_params(18,get_code).to_i
-    sell_cny = get_invest_params(39,get_code).to_i
-    result = ">=#{sell_over_price}|每#{every_minute}分|¥#{sell_cny}" if sell_over_price > 0
-    result = "#{sell_when_minutes}高|每#{every_minute}分|¥#{sell_cny}" if sell_when_minutes > 0
-    result = "<u>#{result}</u>" if DealRecord.enable_to_sell? get_code
-    return raw(result)
-  end
-
   # 列表种类参数
   def list_page_params
     {
@@ -82,9 +70,9 @@
 <table width="<%=$default_table_width*table_width_ratio%>" style="font-size:<%=$deal_record_font_size%>">
   <tr class="thead">
     <td width="15"><%= link_to '🏠', set_sbtc_as_home_path %></td>
-    <td width="320">
-      <% # 显示现价与k线图链接 %>
-      <%= show_prices_and_chart_links %>
+    <td width="300">
+      <% # 显示卖出条件 %>
+      📉 <%= show_sell_strategy('SBTC') %>
     </td>
     <td>
       <% # 成交价 %>
@@ -92,7 +80,7 @@
     </td>
     <td>
       <% # 成交量 %>
-      <%= link_to t(:deal_record_amount)+'(BTC)', order_list_params('amount') %>
+      <%= link_to t(:deal_record_amount), order_list_params('amount') %>
     </td>
     <td>手续费(U)</td>
     <td>实得币(U)</td>
@@ -155,8 +143,8 @@
 %>
   <tr class="thead">
     <td colspan="2">
-      <%= link_to "卖出条件", set_auto_sell_btc_form_path %>: <%= show_sell_strategy %>
-       | 最低卖价: <%= @min_price_when_sell %>
+      <% # 显示现价与k线图链接 %>
+      <%= show_prices_and_chart_links %>
     </td>
     <td align="right">
       <% # 显示成交均价 %>
@@ -181,7 +169,7 @@
     </td>
     <td align="right" colspan="2">
       <% # 显示交易所BTC余额 %>
-      <span title="<%=get_huobi_acc_id%>交易所BTC余额">BTC: <%= to_n(@btc_amount_ex,8) %></span>(¥<%=ex_remain_cny%>可卖|<%=show_btc_level_status%>) |
+      <span title="<%=get_huobi_acc_id%>交易所BTC余额"><%= to_n(@btc_amount_ex,8) %></span>(<span title="可卖">¥<%=ex_remain_cny%></span>|<%=show_btc_level_status%>) |
       <% # 显示资产净值与走势图链接 %>
       <%= show_net_value_link %>
     </td>
