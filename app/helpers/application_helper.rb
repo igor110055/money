@@ -257,11 +257,14 @@ module ApplicationHelper
   end
 
   # 定投记录链接
-  def invest_log_link( code = "BTC" )
+  def invest_log_link( code = "BTC", text = "Log" )
+    code.upcase!
     if code == "BTC" or code == "SBTC"
-      link_to code+t(:invest_log), invest_log_path
+      link_to text, invest_log_path
     elsif code == "ETH" or code == "SETH"
-      link_to code+t(:invest_log), invest_eth_log_path
+      link_to text, invest_eth_log_path
+    elsif code == "MANA" or code == "SMANA"
+      link_to text, invest_mana_log_path
     end
   end
 
@@ -303,6 +306,8 @@ module ApplicationHelper
       link_to link_text, set_auto_sell_btc_form_path(opt), { id: 'set_auto_sell_btc_form' }
     elsif code == "SETH"
       link_to link_text, set_auto_sell_eth_form_path(opt), { id: 'set_auto_sell_eth_form' }
+    elsif code == "MANA"
+      link_to link_text, set_auto_buy_mana_form_path(opt), { id: 'set_auto_buy_mana_form' }
     end
   end
 
@@ -446,6 +451,11 @@ module ApplicationHelper
     Property.tagged_with('以太坊').sum {|p| p.amount}
   end
 
+  # 回传CRYPTO总数
+  def sum_of_crypto(crypto_code)
+    Property.tagged_with(crypto_code.upcase).sum {|p| p.amount}
+  end
+
   # 回传泰达币总数
   def sum_of_usdt
     Property.tagged_with('泰达币').sum {|p| p.amount}
@@ -464,6 +474,16 @@ module ApplicationHelper
       return (@p_eth*eth_price*$usdt_to_cny).to_i
     else
       return (@p_eth*get_eth_price*$usdt_to_cny).to_i
+    end
+  end
+
+  # CRYPTO持有数相当于多少人民币
+  def crypto_eq_cny( crypto_code, crypto_price = 0 )
+    amount = sum_of_crypto(crypto_code)
+    if crypto_price > 0
+      return (amount*crypto_price*$usdt_to_cny).to_i
+    else
+      return (amount*get_crypto_price(crypto_code)*$usdt_to_cny).to_i
     end
   end
 
@@ -737,11 +757,14 @@ module ApplicationHelper
       return $auto_sell_btc_params_path
     elsif code == "ETH" or code == "SETH"
       return $auto_sell_eth_params_path
+    elsif code == "MANA"
+      return $auto_buy_mana_params_path
     end
   end
 
   # 获取定投参数的值
   def get_invest_params( index, code = "BTC" )
+    code.upcase!
     begin
       if code == "BTC"
         return File.read(get_invest_params_path("BTC")).split(' ')[index]
@@ -749,6 +772,8 @@ module ApplicationHelper
         return File.read(get_invest_params_path("SBTC")).split(' ')[index]
       elsif code == "ETH" or code == "SETH"
         return File.read(get_invest_params_path("ETH")).split(' ')[index]
+      elsif code == "MANA"
+        return File.read(get_invest_params_path("MANA")).split(' ')[index]
       end
     rescue
       return '0'
@@ -1046,6 +1071,12 @@ module ApplicationHelper
       return 0
     end
   end
+
+  # 取得CRYPTO现价
+  def get_crypto_price( crypto_code )
+    get_digital_price crypto_code
+  end
+
   # 取得比特币现价
   def get_btc_price
     get_digital_price 'BTC'
@@ -1055,6 +1086,7 @@ module ApplicationHelper
   def get_eth_price
     get_digital_price 'ETH'
   end
+
   # 取得MANA币现价
   def get_mana_price
     get_digital_price 'MANA'
@@ -1319,7 +1351,7 @@ module ApplicationHelper
       return show_period(second/60)
     end
   end
-  
+
   # 传入货币价格阵列, 计算新的资产总值
   def cal_assets_value_from_input_prices( assets_tags, curr_prices, target_curr = :cny )
     result = 0

@@ -48,6 +48,12 @@ class DealRecordsController < ApplicationController
     index_footer
   end
 
+  def index_mana
+    prepare_price_vars
+    @deal_records = get_manas
+    index_footer
+  end
+
   def index_footer
     summary
     @get_max_sell_count = get_max_sell_count
@@ -67,12 +73,12 @@ class DealRecordsController < ApplicationController
 
   def new
     @deal_record = DealRecord.new
-    if params[:code] == "eth"
-      @deal_record.account = '170'
-      @deal_record.deal_type = 'sell-limit'
-      @deal_record.symbol = eth_symbol
-      @deal_record.data_id = 139598283000000+rand(100000-1)+1
-    end
+    # if params[:code] == "eth"
+    #   @deal_record.account = '170'
+    #   @deal_record.deal_type = 'sell-limit'
+    #   @deal_record.symbol = eth_symbol
+    #   @deal_record.data_id = 139598283000000+rand(100000-1)+1
+    # end
   end
 
   def edit
@@ -170,6 +176,7 @@ class DealRecordsController < ApplicationController
   def delete_invest_log
     execute_delete_invest_log $auto_invest_log_path
     execute_delete_invest_log $auto_invest_eth_log_path, "SETH"
+    execute_delete_invest_log $auto_invest_mana_log_path
     put_notice t(:delete_two_invest_log_ok)
     redirect_to invest_log_path
   end
@@ -178,7 +185,8 @@ class DealRecordsController < ApplicationController
   def clear_invest_log
     execute_delete_invest_log $auto_invest_log_path, "BTC", true
     execute_delete_invest_log $auto_invest_eth_log_path, "SETH", true
-    put_notice "BTC与SETH日志已彻底清空!"
+    execute_delete_invest_log $auto_invest_mana_log_path, "MANA", true
+    put_notice "全部日志已彻底清空!"
     redirect_to invest_log_path
   end
 
@@ -363,6 +371,15 @@ class DealRecordsController < ApplicationController
     redirect_to deal_records_eth_path
   end
 
+  # 将CRYPTO交易列表设为一次性首页
+  def set_crypto_as_home
+    crypto_code = params[:code].downcase
+    url_str = "deal_records_#{crypto_code}_path"
+    set_as_home_url(eval(url_str))
+    put_notice "已将#{url_str}设置为本次登入的首页"
+    redirect_to eval(url_str)
+  end
+
   private
 
     # 取得所有的SBTC卖出交易记录
@@ -378,6 +395,16 @@ class DealRecordsController < ApplicationController
     # 取得所有的ETH卖出交易记录
     def get_eths
       rs = DealRecord.where("deal_type = 'sell-limit' and symbol = '#{eth_symbol}' and account = '#{get_huobi_acc_id}'").order('created_at desc')
+      if params[:show_all]
+        return rs
+      else
+        return rs.limit($deal_records_limit)
+      end
+    end
+
+    # 取得所有的Mana买入交易记录
+    def get_manas
+      rs = DealRecord.where("deal_type = 'buy-limit' and symbol = 'manausdt' and account = '#{get_huobi_acc_id}'").order('created_at desc')
       if params[:show_all]
         return rs
       else

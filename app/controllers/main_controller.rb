@@ -729,6 +729,12 @@ class MainController < ApplicationController
     render :read_auto_invest_log
   end
 
+  # 同上，添加读取MANA交易讯息
+  def read_auto_invest_mana_log
+    read_log_func($auto_invest_mana_log_path)
+    render :read_auto_invest_log
+  end
+
   # 依据文档路径读取Log
   def read_log_func(file_path)
     @content = File.read(file_path)
@@ -797,6 +803,14 @@ class MainController < ApplicationController
     end
   end
 
+  # 设置智投参数表单
+  def set_auto_buy_mana_form
+    @invest_params_value = File.read($auto_buy_mana_params_path)
+    @price_now = get_mana_price.floor(8)
+    @price_pos = 3
+    @price_step = 0.002
+  end
+
   # 设置智投参数
   def set_auto_invest_params
     execute_set_auto_invest_params
@@ -832,6 +846,8 @@ class MainController < ApplicationController
       redirect_to set_auto_sell_eth_form_path
     elsif params[:c] == "SBTC"
       redirect_to set_auto_sell_btc_form_path
+    elsif params[:c] == "MANA"
+      redirect_to set_auto_buy_mana_form_path
     else
       redirect_to set_auto_invest_form_path
     end
@@ -851,11 +867,11 @@ class MainController < ApplicationController
       set_invest_params(code,0,swap_sec(code))
       # 如果每隔几点购买额度翻倍 > 0 则必须设定多少价位以下执行买入
       # 取消点击每隔几点购买额度翻倍时自动更新额度翻倍的最大购买价除非它等于零
-      if index.to_i == 33 and value.to_i > 0 and get_invest_params(34,code).to_i == 0
+      if index.to_i == 33 and value.to_f > 0 and get_invest_params(34,code).to_i == 0
         set_invest_params(code,34,get_int_price(get_price_now))
       end
       # 定价的策略和买最低价的策略无法并存
-      if index.to_i == 1 and get_invest_params(1,code).to_i > 0
+      if index.to_i == 1 and get_invest_params(1,code).to_f > 0
         set_invest_params(code,17,0)
       elsif index.to_i == 17 and get_invest_params(17,code).to_i > 0
         set_invest_params(code,1,0)
@@ -947,8 +963,15 @@ class MainController < ApplicationController
 
   # 将原有参与投资的泰达币设定成火币的泰达币资产余额
   def ori_usdt_amount_as_huobi
-    execute_setup_invest_param('BTC',3,Property.find($huobi_usdt_property_id).amount)
-    redirect_to set_auto_invest_form_path
+    code = params[:c] ? params[:c].upcase : 'BTC'
+    if code == 'BTC'
+      execute_setup_invest_param('BTC',3,Property.find($huobi_usdt_property_id).amount)
+      redirect_to set_auto_invest_form_path
+    elsif code == 'MANA'
+      execute_setup_invest_param('MANA',3,Property.find($huobi_usdt_property_id).amount)
+      redirect_to set_auto_buy_mana_form_path
+    end
+
   end
 
   # 将原有参与投资的泰达币设定成火币的泰达币资产余额+原有值

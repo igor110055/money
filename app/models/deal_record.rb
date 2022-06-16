@@ -62,11 +62,27 @@ class DealRecord < ApplicationRecord
     return 0
   end
 
+  # 回传火币账号所有持有的CRYPTO资产
+  def self.twd_of_crypto( crypto_code )
+    twd_of_crypto = 0.0
+    Property.tagged_with(self.get_huobi_acc_id).each {|p| twd_of_crypto = p.amount_to if p.name.include? crypto_code.upcase}
+    return twd_of_crypto
+  end
+
   # 回传火币账号所有持有的BTC资产
   def self.twd_of_btc
     twd_of_btc = 0.0
     Property.tagged_with(self.get_huobi_acc_id).each {|p| twd_of_btc = p.amount_to if p.name.include? 'BTC'}
     return twd_of_btc
+  end
+
+  # 回传目前仓位
+  def self.crypto_level( crypto_code )
+    if self.twd_of_acc_id > 0
+      return (self.twd_of_crypto(crypto_code)/self.twd_of_acc_id)*100
+    else
+      return 0
+    end
   end
 
   # 回传目前仓位
@@ -90,6 +106,14 @@ class DealRecord < ApplicationRecord
   def self.btc_amount
     Property.tagged_with(self.get_huobi_acc_id).each do |p|
       return p.amount if p.name.include? 'BTC'
+    end
+    return 0
+  end
+
+  # 回传交易所内剩余的MANA
+  def self.crypto_amount( crypto_code )
+    Property.tagged_with(self.get_huobi_acc_id).each do |p|
+      return p.amount if p.name.include? crypto_code.upcase
     end
     return 0
   end

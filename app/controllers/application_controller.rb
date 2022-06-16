@@ -625,15 +625,15 @@ class ApplicationController < ActionController::Base
     @auto_refresh_sec = $log_refresh_sec > 0 ? $log_refresh_sec : 0
   end
 
-  # 更新火币2个账号的资产余额
+  # 更新火币135账号的资产余额(170已永久无法使用)
   def exe_update_huobi_assets
     add_system_params_if_none('huobi_acc_id',$huobi_acc_id,true,false)
     `python py/update_assets.py`
-    ori_acc_id = get_huobi_acc_id
-    new_acc_id = swap_acc_id(ori_acc_id)
-    replace_system_params_content("$huobi_acc_id = '#{ori_acc_id}'","$huobi_acc_id = '#{new_acc_id}'")
-    `python py/update_assets.py`
-    replace_system_params_content("$huobi_acc_id = '#{new_acc_id}'","$huobi_acc_id = '#{ori_acc_id}'")
+    # ori_acc_id = get_huobi_acc_id
+    # new_acc_id = swap_acc_id(ori_acc_id)
+    # replace_system_params_content("$huobi_acc_id = '#{ori_acc_id}'","$huobi_acc_id = '#{new_acc_id}'")
+    # `python py/update_assets.py`
+    # replace_system_params_content("$huobi_acc_id = '#{new_acc_id}'","$huobi_acc_id = '#{ori_acc_id}'")
   end
 
   # 交换火币2个账号ID
@@ -678,8 +678,8 @@ class ApplicationController < ActionController::Base
 
   # 更新火币资产
   def update_huobi_assets_core
-    exe_auto_update_prices
     exe_update_huobi_assets
+    # exe_auto_update_prices
     # update_deal_cost_amount
     # update_total_real_profit
   end

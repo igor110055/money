@@ -2,20 +2,23 @@
   <div id="<%= id %>" style="width:100%">
     <small>
       <% if admin? %>
-        <%= link_to('买入',deal_records_path) %> |
-        <%= link_to('卖出',deal_records_eth_path) %> |
-        <%= set_auto_invest_form_link('BTC','买参',dtype:'buy') %> |
-        <%= set_auto_invest_form_link('SETH','卖参') %> |
+        <%= link_to('BTC',deal_records_path) %> |
+        <%= set_auto_invest_form_link('BTC','设定',dtype:'buy') %> |
+        <%= invest_log_link("BTC") %> |
+        <%= link_to('ETH',deal_records_eth_path) %> |
+        <%= set_auto_invest_form_link('SETH','设定') %> |
+        <%= invest_log_link("ETH") %> |
+        <%= link_to('MANA',deal_records_mana_path) %> |
+        <%= set_auto_invest_form_link('MANA','设定') %> |
+        <%= invest_log_link("Mana") %> |
         <%= link_back_to_properties %> |
         <%= link_back_to_trial_lists %> |
         <%= link_back_to_portfolios %> |
         <%= system_params_form_link %> |
         <%= huobi_assets_link %> |
         <%= link_back_to_currencies %> |
-        <%= link_back_to_items %> |
+        <%#= link_back_to_items %>
         <%= link_back_to_interests %> |
-        <%= invest_log_link("BTC") %> |
-        <%= invest_log_link("ETH") %> |
         <%= clear_invest_log_link %> |
         <%= total_clear_invest_log_link %> |
         <%= link_to t(:record_index), records_path %> |

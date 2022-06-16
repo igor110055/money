@@ -162,6 +162,16 @@ class ApplicationRecord < ActiveRecord::Base
     end
   end
 
+  # 人民币换成CRYPTO
+  def cny_to_crypto( crypto_code )
+    # 修复新建数据库时遇到的bug
+    begin
+      target_rate(crypto_code.downcase.to_sym).to_f/target_rate(:cny)
+    rescue
+      1/280000
+    end
+  end
+
   # 新台币换成比特币
   def twd_to_btc
     # 修复新建数据库时遇到的bug
