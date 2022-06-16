@@ -79,26 +79,6 @@
     end
   end
 
-  # 显示当前的买进策略
-  def show_buy_strategy
-    every_minute = get_invest_params(0).to_i/60
-    buy_under_price = get_invest_params(1).to_i
-    min_buy_cny = get_invest_params(7).to_i
-    max_buy_cny = get_invest_params(8).to_i
-    buy_when_minutes = get_invest_params(17).to_i
-    buy_period_max_price = get_invest_params(31).to_i
-    double_buy_point = get_invest_params(33).to_i
-    double_buy_price = get_invest_params(34).to_i
-    max_price_str = buy_period_max_price > 0 ? "→<span title=\"买入最低价时的最高价\">#{buy_period_max_price}</span>|<span title=\"单笔买入人民币最大值与最小值\">#{max_buy_cny}~#{min_buy_cny}</span>" : ""
-    double_buy_str = "|<span title=\"额度翻倍的最高价\">#{double_buy_price-double_buy_point}</span>~<span title=\"额度翻倍的最大购买价\">#{double_buy_price}</span>"
-    # 选择自动定投
-    result = "低于#{buy_under_price}自动定投|每#{show_period(every_minute)}|每次#{min_buy_cny}元" if buy_under_price > 0
-    # 选择低价买入
-    result = "<span title='买入期间内的最低价'>#{show_period(buy_when_minutes)}▼</span>|#{show_period(every_minute)}#{double_buy_str}#{max_price_str}" if buy_when_minutes > 0
-    result = "<u>#{result}</u>" if DealRecord.enable_to_buy?
-    return raw(result)
-  end
-
   # 以符号表示成本均价是否越买越低的功能已开启
   def show_total_ave_cost_price
     # 目前的成本均价
@@ -115,23 +95,6 @@
   # 判断買入下一筆成本均價是否將大於上限(产生BUG而废弃不用)
   def reach_buy_limit_ave
     return false
-    # return true if @buy_limit_ave != 0 and @total_ave_cost_price.to_i >= @buy_limit_ave
-    # unsells = DealRecord.unsell_records
-    # if unsells.size > 0
-    #   sum_cost = sum_amount = 0
-    #   new_price = unsells[-1].price
-    #   new_amount = unsells[-1].amount
-    #   sum_cost = @total_ave_cost_price*@btc_amount_ex + new_price*new_amount
-    #   sum_amount = @btc_amount_ex + new_amount
-    #   cost_ave = (sum_cost/sum_amount).ceil(0)
-    #   if @buy_limit_ave > 0 and cost_ave >= @buy_limit_ave
-    #     return true
-    #   else
-    #     return false
-    #   end
-    # else
-    #   return false
-    # end
   end
 
   # 显示额度翻倍的最大购买价

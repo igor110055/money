@@ -1373,6 +1373,26 @@ module ApplicationHelper
     return result.to_i
   end
 
+  # 显示当前的买进策略
+  def show_buy_strategy( code = 'btc', pos = 0 )
+    every_minute = get_invest_params(0,code).to_i/60
+    buy_under_price = get_invest_params(1,code).to_f.floor(pos)
+    min_buy_cny = get_invest_params(7,code).to_i
+    max_buy_cny = get_invest_params(8,code).to_i
+    buy_when_minutes = get_invest_params(17,code).to_i
+    buy_period_max_price = get_invest_params(31,code).to_f.floor(pos)
+    double_buy_point = get_invest_params(33,code).to_f.floor(pos)
+    double_buy_price = get_invest_params(34,code).to_f.floor(pos)
+    max_price_str = buy_period_max_price > 0 ? "→<span title=\"买入最低价时的最高价\">#{buy_period_max_price}</span>|<span title=\"单笔买入人民币最大值与最小值\">#{max_buy_cny}~#{min_buy_cny}</span>" : ""
+    double_buy_str = "|<span title=\"额度翻倍的最高价\">#{(double_buy_price-double_buy_point).floor(pos)}</span>~<span title=\"额度翻倍的最大购买价\">#{double_buy_price}</span>"
+    # 选择自动定投
+    result = "低于#{buy_under_price}自动定投|每#{show_period(every_minute)}|每次#{min_buy_cny}元" if buy_under_price > 0
+    # 选择低价买入
+    result = "<span title='买入期间内的最低价'>#{show_period(buy_when_minutes)}▼</span>|#{show_period(every_minute)}#{double_buy_str}#{max_price_str}" if buy_when_minutes > 0
+    result = "<u>#{result}</u>" if DealRecord.enable_to_buy?(code)
+    return raw(result)
+  end
+
   # 显示当前的卖出策略
   def show_sell_strategy( code )
     every_second = get_invest_params(22,code).to_i

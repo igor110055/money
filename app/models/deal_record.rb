@@ -32,8 +32,8 @@ class DealRecord < ApplicationRecord
   before_validation :set_default
 
   # BTC交易列表搜索前提
-  def self.btc_buy_conditions
-    "deal_type = 'buy-limit' and symbol = 'btcusdt' and "
+  def self.crypto_buy_conditions( code = 'btc' )
+    "deal_type = 'buy-limit' and symbol = '#{code.downcase}usdt' and "
   end
 
   # ETH交易列表搜索前提
@@ -143,28 +143,28 @@ class DealRecord < ApplicationRecord
   # 回传剩余比特币
   def self.total_amount
     total_amount = 0
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").each {|dr| total_amount += dr.amount-dr.fees}
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").each {|dr| total_amount += dr.amount-dr.fees}
     return total_amount
   end
 
   # 回传总成本
   def self.total_cost
     total_cost = 0
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").each {|dr| total_cost += dr.price*dr.amount}
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").each {|dr| total_cost += dr.price*dr.amount}
     return total_cost
   end
 
   # 回传所有交易的总成本(跨越不同账号)
   def self.sum_of_total_cost
     total_cost = 0
-    where("#{btc_buy_conditions} auto_sell = 0").each {|dr| total_cost += dr.price*dr.amount}
+    where("#{crypto_buy_conditions} auto_sell = 0").each {|dr| total_cost += dr.price*dr.amount}
     return total_cost
   end
 
   # 回传所有交易的均价(跨越不同账号)
   def self.total_ave_cost
     total_amount = 0
-    where("#{btc_buy_conditions} auto_sell = 0").each {|dr| total_amount += dr.amount}
+    where("#{crypto_buy_conditions} auto_sell = 0").each {|dr| total_amount += dr.amount}
     if total_amount > 0
       return self.sum_of_total_cost/total_amount
     else
@@ -175,7 +175,7 @@ class DealRecord < ApplicationRecord
   # 回传均价
   def self.ave_cost
     total_amount = 0
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").each {|dr| total_amount += dr.amount - dr.fees}
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").each {|dr| total_amount += dr.amount - dr.fees}
     if total_amount > 0
       return self.total_cost/total_amount
     else
@@ -203,7 +203,7 @@ class DealRecord < ApplicationRecord
   def self.total_unsell_profit
     result = 0
     price_now = new.get_btc_price
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").each do |dr|
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").each do |dr|
       result += (price_now-dr.price)*(dr.amount*(1-$fees_rate))
     end
     return result*(DealRecord.new.usdt_to_cny)
@@ -211,23 +211,23 @@ class DealRecord < ApplicationRecord
 
   # 获取未卖出的交易笔数
   def self.unsell_count
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").size
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").size
   end
 
   # 获取未卖出且标示为优先卖出的交易笔数
   def self.first_unsell_count
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0 and first_sell = 1").size
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0 and first_sell = 1").size
   end
 
   # 获取已卖出的交易笔数
   def self.sell_count
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1").size
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1").size
   end
 
   # 获取已卖出的交易记录
   def self.sell_records( code = "BTC" )
     if code == "BTC" or code == "SBTC"
-      where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1 and real_profit != 0")
+      where("#{crypto_buy_conditions(code)} account = '#{self.get_huobi_acc_id}' and auto_sell = 1 and real_profit != 0")
     elsif code == "SETH"
       where("#{eth_sell_conditions} account = '#{self.get_huobi_acc_id}'")
     end
@@ -235,14 +235,14 @@ class DealRecord < ApplicationRecord
 
   # 获取已卖出的交易记录
   def self.trezor_records
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1 and real_profit = 0")
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1 and real_profit = 0")
   end
 
   # 计算最初几笔未卖出交易记录的损益值(¥)
   def self.top_n_profit( n, attr = :earn_or_loss )
     if self.unsell_count > 0
       result = 0
-      where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").order('first_sell desc,price').limit(n).each do |dr|
+      where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").order('first_sell desc,price').limit(n).each do |dr|
         result += dr.send(attr).to_f
       end
       return result
@@ -259,7 +259,7 @@ class DealRecord < ApplicationRecord
   # 尚未合并的已实现损益总值
   def self.uncombined_real_profit
     result = 0
-    sql = "#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1"
+    sql = "#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1"
     count = sell_count
     select_count = (count != 1) ? count-1 : 1
     where(sql).order('created_at desc').limit(select_count).each do |dr|
@@ -269,13 +269,13 @@ class DealRecord < ApplicationRecord
   end
 
   # 回传未卖出交易
-  def self.unsell_records
-    return where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0")
+  def self.unsell_records(code)
+    return where("#{crypto_buy_conditions(code)} account = '#{self.get_huobi_acc_id}'")
   end
 
   # 清空未卖出交易
   def self.clear_unsell_records
-    where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").delete_all
+    where("#{crypto_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 0").delete_all
   end
 
   # 清空BTC交易记录
@@ -299,7 +299,7 @@ class DealRecord < ApplicationRecord
   # 是否已经达到可以再次卖出的时间
   def self.over_sell_time?( code = "BTC" )
     sell_sec = get_invest_params(22,code).to_i
-    last_sell_time = where("#{btc_buy_conditions} account = '#{self.get_huobi_acc_id}' and auto_sell = 1").where.not(order_id: [nil, ""]).order("updated_at desc").first.updated_at
+    last_sell_time = where("#{crypto_buy_conditions(code)} account = '#{self.get_huobi_acc_id}' and auto_sell = 1").where.not(order_id: [nil, ""]).order("updated_at desc").first.updated_at
     pass_sec = (Time.now - last_sell_time).to_i
     if pass_sec > sell_sec
       return true
@@ -317,10 +317,10 @@ class DealRecord < ApplicationRecord
   def self.over_buy_time_sec( code = 'BTC' )
     buy_sec = self.new.get_invest_params(0,code).to_i
     begin
-      last_buy_time = unsell_records.order("created_at desc").first.created_at
+      last_buy_time = unsell_records(code).order("created_at desc").first.created_at
     rescue
       if real_sell_records.size > 1
-        last_buy_time = real_sell_records.order("updated_at desc").first.updated_at
+        last_buy_time = real_sell_records(code).order("updated_at desc").first.updated_at
       else
         last_buy_time = '2019-12-31 12:00:00'.to_time
       end
@@ -380,14 +380,14 @@ class DealRecord < ApplicationRecord
     sum = 0
     # 由未卖转到钱包
     if count_goal > 0
-      where("#{btc_buy_conditions} auto_sell = 0 and account = '#{get_huobi_acc_id}'").order(options[:order]).each do |dr|
+      where("#{crypto_buy_conditions} auto_sell = 0 and account = '#{get_huobi_acc_id}'").order(options[:order]).each do |dr|
         result << dr
         sum += dr.amount
         return result if sum >= count_goal
       end
     # 由钱包转到未卖
     elsif count_goal < 0
-      where("#{btc_buy_conditions} auto_sell = 1 and real_profit = 0 and account = '#{get_huobi_acc_id}'").order(options[:order]).each do |dr|
+      where("#{crypto_buy_conditions} auto_sell = 1 and real_profit = 0 and account = '#{get_huobi_acc_id}'").order(options[:order]).each do |dr|
         result << dr
         sum += dr.amount
         return result if sum >= count_goal.abs
