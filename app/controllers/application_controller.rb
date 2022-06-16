@@ -714,18 +714,19 @@ class ApplicationController < ActionController::Base
   # routes.rb --> 设定新方法名的路由
   # application_controller.rb --> 让新方法名可以不需要登入
   def send_sync_request( url )
-    begin
-      resp = Net::HTTP.get_response(URI(url))
-      # return "#{url}:#{resp}"
-      h = eval(resp.body)
-      if h[:status].include? 'ok'
-        return "(同步另一台服务器成功!)"
-      else
-        return "(同步另一台服务器失败!请确认设置了正确的同步码:#{sync_code})"
-      end
-    rescue
-      return "(同步另一台服务器失败!请确认 #{url} 连线正常或只含ASCII字符"
-    end
+    # 2022.06.16 关闭同步功能
+    return ''
+    # begin
+    #   resp = Net::HTTP.get_response(URI(url))
+    #   h = eval(resp.body)
+    #   if h[:status].include? 'ok'
+    #     return "(同步另一台服务器成功!)"
+    #   else
+    #     return "(同步另一台服务器失败!请确认设置了正确的同步码:#{sync_code})"
+    #   end
+    # rescue
+    #   return "(同步另一台服务器失败!请确认 #{url} 连线正常或只含ASCII字符"
+    # end
   end
 
   # 依照栏位数取得符合条件的数据
