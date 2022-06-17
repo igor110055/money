@@ -325,7 +325,7 @@ class Property < ApplicationRecord
 
   # 流动性资产总值数据集
   def self.flow_assets_records
-    new.get_properties_from_tags($link_to_flow_assets_list_tags,nil,$link_to_flow_assets_list_mode)
+    new.get_properties_from_tags($total_flow_assets_tags,nil,$link_to_flow_assets_list_mode)
   end
 
   # 流动性资产总值台币现值

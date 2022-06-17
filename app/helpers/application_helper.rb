@@ -349,9 +349,9 @@ module ApplicationHelper
     link_to t(:level_trial_list), controller: :main, action: :level_trial_list
   end
 
-  # 涨跌试算表链接
-  def rise_fall_list_link
-    link_to t(:rise_fall_list), controller: :main, action: :rise_fall_list
+  # 买跌试算表链接
+  def buy_fall_list_link
+    link_to t(:buy_fall_list), controller: :main, action: :buy_fall_list
   end
 
   # 资产标签云
@@ -1352,10 +1352,13 @@ module ApplicationHelper
     end
   end
 
-  # 传入货币价格阵列, 计算新的资产总值
-  def cal_assets_value_from_input_prices( assets_tags, curr_prices, target_curr = :cny )
+  # 传入货币价格阵列, 计算新的资产总值, changes为传入模拟资产的变化
+  # changes = [{'Property_id':+-amount_change},{'25':+2},{'52':-10}]
+  def dynamic_assets_twd( curr_prices,assets_tags,target_curr,changes )
     result = 0
     Property.new.get_properties_from_tags(assets_tags,nil,'a').each do |p|
+      # 处理模拟资产的变化
+      changes.each {|a| p.amount += a[:amount] if p.id == a[:id]} if !changes.empty?
       # value = p.amount*currency_to_target_curr
       symbol = p.currency.symbol
       code = p.currency.code
@@ -1419,4 +1422,42 @@ module ApplicationHelper
     end
   end
 
+  # 计算资产的可生活月数
+  def cal_life_months( opt = {} )
+    r = {}
+    cny2twd = DealRecord.new.cny_to_twd
+      # 储备金可生活月数
+    r[:life_fund] = Property.total_life_fund_records_cny.to_f # 储备资金总值
+    r[:life_months] = r[:life_fund]/$trial_life_month_cost_cny_admin # 储备资金/每月生活费
+    r[:life_months_loan] = total_loan_max_cny/$trial_life_month_cost_cny_admin # 保单可贷总额/每月生活费
+    # 加上贷款额度后的可生活月数
+    life_fund_plus = r[:life_fund]+total_loan_max_cny # 储备资金+保单可贷总额
+    life_fund_plus -= opt[:loan] if opt[:loan] # 如果有贷款参数输入则扣除
+    r[:life_months_plus] = (life_fund_plus/$trial_life_month_cost_cny_admin)
+    r[:life_fund_plus_cny] = life_fund_plus.to_i
+    r[:life_fund_plus_twd] = (life_fund_plus*cny2twd).to_i
+    r[:total_loan_max_twd] = total_loan_max_twd
+    r[:flow_plus_loan_twd] = (Property.total_flow_assets_twd+r[:total_loan_max_twd]) #流动资产+可贷款总额
+    r[:life_fund_plus_p] = r[:life_fund_plus_twd]/r[:flow_plus_loan_twd]*100
+    # 加上流动性资产的可生活月数
+    r[:flow_assets_twd] = Property.flow_assets_records.sum {|p| p.amount_to(:twd)}
+    r[:life_months_plus_flow] = (r[:life_fund_plus_twd]+r[:flow_assets_twd])/($trial_life_month_cost_cny_admin*cny2twd)
+    # 若币价到达设定价格的可生活月数
+    opt[:curr_prices] = $trial_life_prices if opt[:curr_prices].nil?
+    opt[:assets_tags] = $total_flow_assets_tags if opt[:assets_tags].nil?
+    opt[:currency] = 'twd' if opt[:currency].nil?
+    opt[:changes] = [] if opt[:changes].nil?
+    r[:flow_twd] = dynamic_assets_twd(opt[:curr_prices],opt[:assets_tags],opt[:currency].to_sym,opt[:changes])
+    r[:life_months_plus_trial_flow] = (r[:life_fund_plus_twd]+r[:flow_twd])/($trial_life_month_cost_cny_admin*cny2twd)
+    return r
+  end
+
+  def exe_cal_buy_sell_rate
+    # 计算买卖双方成交量比值
+    if $show_buy_sell_rate > 0
+      @price_now, @buy_amount, @sell_amount, @buy_sell_rate = cal_buy_sell_rate
+    else
+      @price_now, @buy_amount, @sell_amount, @buy_sell_rate = 0,0,0,0
+    end
+  end
 end

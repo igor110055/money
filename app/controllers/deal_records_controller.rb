@@ -56,13 +56,8 @@ class DealRecordsController < ApplicationController
 
   def index_footer
     summary
+    exe_cal_buy_sell_rate
     @get_max_sell_count = get_max_sell_count
-    # 计算买卖双方成交量比值
-    if $show_buy_sell_rate > 0
-      @price_now, @buy_amount, @sell_amount, @buy_sell_rate = cal_buy_sell_rate
-    else
-      @price_now, @buy_amount, @sell_amount, @buy_sell_rate = 0,0,0,0
-    end
     if $auto_update_huobi_assets > 0
       update_huobi_assets_core  # 执行更新火币资产
       $auto_update_btc_price = 0  # 执行更新火币资产时已更新报价故无须重复

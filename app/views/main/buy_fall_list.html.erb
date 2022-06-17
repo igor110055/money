@@ -1,0 +1,92 @@
+<style>
+.bg1 {
+  background-color: #f1cced; }
+.bg2 {
+  background-color: #c6e6c0; }
+.bg3 {
+  background-color: #c8e3f0; }
+.bg4 {
+  background-color: #f3f094; }
+</style>
+<%
+# 初始化参数
+life = cal_life_months
+pos = 1 # 可生活月数显示到几位小数
+beishu = $rise_fall_beishu # 可生活年数显示到几倍
+start_price = (@price_now*(1-$rise_fall_rate)).to_i/100*100
+start_price = 100 if start_price < 100
+end_price = @price_now.to_i/100*100
+@price_step = $rise_fall_price_step
+@price_now_flag = false # 判断是否到达现价区间旗标
+@goal_amount_flag = false # 判断是否到达可买币数目标的旗标
+@trial_life_price = $trial_life_prices[:btc]
+@flow_assets_twd = Property.flow_assets_twd # 流动资产总值
+@life_fund_plus_cny = life[:life_fund_plus_cny] # 储备金+可贷款总额
+@life_months = life[:life_months_plus_trial_flow] # 币价回到目标价的可生活月数
+@usdt2cny = $usdt_to_cny
+@cny2twd = DealRecord.new.cny_to_twd
+@twd2cny = DealRecord.new.twd_to_cny
+
+# 依据价格显示对应的背景色
+def style_class( price )
+  # 高亮现价
+  if !@price_now_flag and (price/@price_step).to_i == (@price_now/@price_step).to_i
+    @price_now_flag = true
+    return raw "class=\"price_now\""
+  end
+  # 高亮到达可买币数目标
+  if !@goal_amount_flag and cal_buy_amount(price) >= $rise_fall_goal_amount
+    @goal_amount_flag = true
+    return raw "class=\"goal_amount\""
+  end
+  return change_row_color
+end
+
+# 计算可买币数
+def cal_buy_amount( price )
+  buy_fund = @life_fund_plus_cny - $trial_life_month_cost_cny_admin*$loan_save_months
+  (buy_fund/$usdt_to_cny/price).floor(6)
+end
+%>
+<h2>BTC <%= ($rise_fall_rate*100).to_i %>% 降幅买入试算表</h2>
+<table width="<%=$default_table_width*0.8%>">
+  <tr class="thead">
+    <td>BTC价格</td>
+    <td colspan="6">扣除<%=$loan_save_months%>个月生活费后的可买币数与买后总数</td>
+    <td colspan="<%= beishu*2 %>">币价回到<%=@trial_life_price%>的可生活年数(不买: <%=(@life_months/12).floor(pos)%>)</td>
+  </tr>
+  <% pre_profit_twd = 0 %>
+  <% (end_price..start_price).step(@price_step*-1).each do |price| %>
+  <%  # 可买币数
+      add_amount = cal_buy_amount(price)
+      # 每次买入所需成本
+      buy_cost_cny = (add_amount*price*@usdt2cny).to_i
+      buy_cost_twd = (add_amount*price*@usdt2cny*@cny2twd).to_i
+      # 累计币数
+      sum_amount = @acc_btc_amount + add_amount
+      sum_amount_cny = (sum_amount*price*@usdt2cny).to_i
+      sum_amount_twd = (sum_amount*price*@usdt2cny*@cny2twd).to_i
+      # 可生活月数
+      life_years = []
+      (1..beishu).each do |n|
+        life_years << (cal_life_months(
+          'curr_prices': {'btc':$trial_life_prices[:btc]*n},
+          'loan':buy_cost_cny,
+          'changes':[{'id':25,'amount':add_amount}])[:life_months_plus_trial_flow])/12
+      end
+  %>
+    <tr <%=change_row_color('#FFD700','#a5d8f8')%>>
+      <td align="right" noclass="bg1"><%= price %></td>
+      <td align="right" noclass="bg2">₿<%= to_n(add_amount,3) %></td>
+      <td align="right" noclass="bg2">¥<%= buy_cost_cny %></td>
+      <td align="right" noclass="bg2">NT$<%= buy_cost_twd %></td>
+      <td align="right" noclass="bg3">₿<%= to_n(sum_amount,6) %></td>
+      <td align="right" noclass="bg3">¥<%= sum_amount_cny %></td>
+      <td align="right" noclass="bg3">NT$<%= sum_amount_twd %></td>
+    <% (1..beishu).each do |n| %>
+      <td align="right" noclass="bg4" title="当比特币到达<%=@trial_life_price*n%>">X<%=n%>:</td>
+      <td align="center" noclass="bg4"><%= life_years[n-1].floor(pos) %></td>
+    <% end %>
+    </tr>
+  <% end %>
+</table>

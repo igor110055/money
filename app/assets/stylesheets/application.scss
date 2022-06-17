@@ -251,6 +251,17 @@ a.invest_param_select:visited {
 .gray {
   color: #D3D3D3;
 }
+.price_now {
+  background-color: #87CEFA;
+}
+.start_neg_profit {
+  background-color: #FF4500;
+  color: white;
+}
+.goal_amount {
+  background-color: #2E8B57;
+  color: white;
+}
 span.frac {
   display: inline-block;
   text-align: center;

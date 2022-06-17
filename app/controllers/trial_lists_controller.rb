@@ -7,6 +7,7 @@ class TrialListsController < ApplicationController
       exe_auto_update_prices if $auto_update_btc_price > 0 # 执行自动更新报价
       update_huobi_assets_core if $auto_update_huobi_assets > 0
       prepare_price_vars
+      exe_cal_buy_sell_rate
     end
 
     def new
