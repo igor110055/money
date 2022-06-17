@@ -275,8 +275,8 @@
 <h3>
   <% if admin? %>
   <% # 显示宏观统计数据 %>
-    <% if @buy_sell_rate.to_f > 0 %>
-      <% buy_sell_rate_html = "<td class='thead' title='买卖多空比(#{$default_chart_period})'>多空</td><td>#{to_n(@buy_sell_rate,2)}</td>" %>
+    <% if @buy_sell_rate > 0 %>
+      <% buy_sell_rate_html = "<td class='thead' title='买卖多空比(#{$default_chart_period})'>多空</td><td>#{show_buy_sell_rate(@buy_sell_rate)}</td>" %>
     <% else %>
       <% buy_sell_rate_html = '' %>
     <% end %>

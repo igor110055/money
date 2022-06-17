@@ -558,7 +558,7 @@ class ApplicationController < ActionController::Base
         sell_amount += item["amount"].to_f if item["close"].to_f < item["open"].to_f
       end
       price_now = data[-1]["close"].to_f
-      return price_now, buy_amount.to_i, sell_amount.to_i, format("%.2f",buy_amount/sell_amount)
+      return price_now, buy_amount.to_i, sell_amount.to_i, format("%.6f",buy_amount/sell_amount).to_f
     else
       return 0, 0, 0, 0
     end

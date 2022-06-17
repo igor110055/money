@@ -1408,4 +1408,15 @@ module ApplicationHelper
     return raw(result)
   end
 
+  # 买卖比若超过或低于所设定的值则会以高亮显示
+  def show_buy_sell_rate( rate_value, pos = 2 )
+    if rate_value >= $buysell_high_rate
+      "<span class='red_bg'>#{rate_value.floor(pos)}</span>"
+    elsif rate_value <= $buysell_low_rate
+      "<span class='green_bg'>#{rate_value.floor(pos)}</span>"
+    else
+      rate_value.floor(pos)
+    end
+  end
+
 end
