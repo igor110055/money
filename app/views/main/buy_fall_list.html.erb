@@ -1,23 +1,16 @@
 <style>
-.bg1 {
-  background-color: #f1cced; }
-.bg2 {
-  background-color: #c6e6c0; }
-.bg3 {
-  background-color: #c8e3f0; }
-.bg4 {
-  background-color: #f3f094; }
+.goal_amount {
+  background-color: DarkGoldenRod; }
 </style>
 <%
 # 初始化参数
 life = cal_life_months
-pos = 1 # 可生活月数显示到几位小数
+pos = 1 # 可生活年数显示到几位小数
 beishu = $rise_fall_beishu # 可生活年数显示到几倍
 start_price = (@price_now*(1-$rise_fall_rate)).to_i/100*100
 start_price = 100 if start_price < 100
 end_price = @price_now.to_i/500*500
 @price_step = $rise_fall_price_step
-@price_now_flag = false # 判断是否到达现价区间旗标
 @goal_amount_flag = false # 判断是否到达可买币数目标的旗标
 @trial_life_price = $trial_life_prices[:btc]
 @flow_assets_twd = Property.flow_assets_twd # 流动资产总值
@@ -29,17 +22,12 @@ end_price = @price_now.to_i/500*500
 
 # 依据价格显示对应的背景色
 def style_class( price )
-  # 高亮现价
-  if !@price_now_flag and (price/@price_step).to_i == (@price_now/@price_step).to_i
-    @price_now_flag = true
-    return raw "class=\"price_now\""
-  end
-  # 高亮到达可买币数目标
-  if !@goal_amount_flag and cal_buy_amount(price) >= $rise_fall_goal_amount
+  # 当买后总数到达比特币囤币目标则以高亮显示
+  if !@goal_amount_flag and cal_buy_amount(price)+@acc_btc_amount >= $trial_btc_goal
     @goal_amount_flag = true
     return raw "class=\"goal_amount\""
   end
-  return change_row_color
+  return change_row_color('#FFD700','#fff')
 end
 
 # 计算可买币数
@@ -75,19 +63,19 @@ end
           'changes':[{'id':25,'amount':add_amount}])[:life_months_plus_trial_flow])/12
       end
   %>
-    <tr <%=change_row_color('#FFD700','#fff')%>>
-      <td align="right" noclass="bg1"><%= price %></td>
-      <td align="right" noclass="bg1">¥<%= (price*$usdt_to_cny).to_i %></td>
-      <td align="right" noclass="bg1">NT$<%= (price*$usdt_to_twd).to_i %></td>
-      <td align="right" noclass="bg2">₿<%= to_n(add_amount,3) %></td>
-      <td align="right" noclass="bg2">¥<%= buy_cost_cny %></td>
-      <td align="right" noclass="bg2">NT$<%= buy_cost_twd %></td>
-      <td align="right" noclass="bg3">₿<%= to_n(sum_amount,6) %></td>
-      <td align="right" noclass="bg3">¥<%= sum_amount_cny %></td>
-      <td align="right" noclass="bg3">NT$<%= sum_amount_twd %></td>
+    <tr <%=style_class(price)%>>
+      <td align="right"><%= price %></td>
+      <td align="right">¥<%= (price*$usdt_to_cny).to_i %></td>
+      <td align="right">NT$<%= (price*$usdt_to_twd).to_i %></td>
+      <td align="right">₿<%= to_n(add_amount,3) %></td>
+      <td align="right">¥<%= buy_cost_cny %></td>
+      <td align="right">NT$<%= buy_cost_twd %></td>
+      <td align="right">₿<%= to_n(sum_amount,6) %></td>
+      <td align="right">¥<%= sum_amount_cny %></td>
+      <td align="right">NT$<%= sum_amount_twd %></td>
     <% (1..beishu).each do |n| %>
-      <td align="right" noclass="bg4" title="当比特币到达<%=@trial_life_price*n%>">X<%=n%>:</td>
-      <td align="center" noclass="bg4"><%= life_years[n-1].floor(pos) %></td>
+      <td align="right" title="当比特币到达<%=@trial_life_price*n%>">X<%=n%>:</td>
+      <td align="center"><%= life_years[n-1].floor(pos) %></td>
     <% end %>
     </tr>
   <% end %>
