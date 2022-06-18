@@ -71,7 +71,7 @@ class CurrenciesController < ApplicationController
 
   # 更新比特币及以太坊的汇率值
   def update_btc_exchange_rates
-    put_notice t(:get_price_error) if !(update_digital_exchange_rates > 0)
+    put_notice "此功能有BUG暂停使用！" # if !(update_digital_exchange_rates > 0)
     go_back
   end
 
