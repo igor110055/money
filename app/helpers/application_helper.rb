@@ -1397,11 +1397,11 @@ module ApplicationHelper
   end
 
   # 显示当前的卖出策略
-  def show_sell_strategy( code )
+  def show_sell_strategy( code, pos = 0 )
     every_second = get_invest_params(22,code).to_i
-    sell_over_price = get_invest_params(27,code).to_i
+    sell_over_price = get_invest_params(27,code).to_f.floor(pos)
     sell_when_minutes = get_invest_params(18,code).to_i
-    min_sell_price = get_invest_params(38,code).to_i
+    min_sell_price = get_invest_params(38,code).to_f.floor(pos)
     sell_cny = get_invest_params(39,code).to_i
     # 选择自动定投
     result = "大于#{sell_over_price}自动卖出 | 每#{show_period_sec(every_second)} | 每次¥#{sell_cny}元" if sell_over_price > 0
@@ -1409,6 +1409,15 @@ module ApplicationHelper
     result = "#{show_period(sell_when_minutes)}最高价|每#{show_period_sec(every_second)}|¥#{sell_cny}|最低卖价 #{min_sell_price}" if sell_when_minutes > 0
     result = "<u>#{result}</u>" if DealRecord.enable_to_sell? code
     return raw(result)
+  end
+
+  # 显示卖出ETH交易策略
+  def sell_eth_strategy
+    if get_invest_params(1,'SETH') == 'btc'
+      return show_sell_strategy('SETH',5)
+    else
+      return show_sell_strategy('SETH')
+    end
   end
 
   # 买卖比若超过或低于所设定的值则会以高亮显示
