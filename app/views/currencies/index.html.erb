@@ -1,6 +1,6 @@
 <h2><%= t(:currency_index) %></h2>
 
-<table width="<%= $title_table_width*1.25 %>">
+<table width="<%= $title_table_width*0.9 %>">
   <tr class="thead">
     <td width="15"></td>
     <td width="100"><%= t(:currency_name) %></td>
@@ -27,7 +27,6 @@
   </tr>
   <% n += 1 %>
 <% end %>
-<%= show_summary_tr(8) %>
 </table>
 <br/>
 <%= link_back_to_properties %>

@@ -429,6 +429,11 @@ class Property < ApplicationRecord
     doge_records.sum {|p| p.amount_to(:cny)}
   end
 
+  # 计算某项资产的人民币现值
+  def self.cny_value_of( tag )
+    Property.tagged_with(tag).sum {|p| p.amount_to(:cny)}
+  end
+
   # UNI币的现值
   def self.uni_records
     Property.tagged_with('UNI')

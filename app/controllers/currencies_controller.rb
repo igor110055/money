@@ -4,7 +4,7 @@ class CurrenciesController < ApplicationController
 
   # 货币列表
   def index
-    @currencies = Currency.all
+    @currencies = Currency.all.order('updated_at desc')
   end
 
   # 新建货币表单
