@@ -269,12 +269,14 @@
 %>
 <h3>
   <% if admin? %>
-  <% # 显示宏观统计数据 %>
+    <% # 显示宏观统计数据 %>
     <% if @buy_sell_rate > 0 %>
       <% buy_sell_rate_html = "<td class='thead' title='买卖多空比(#{$default_chart_period})'>多空</td><td>#{show_buy_sell_rate(@buy_sell_rate)}</td>" %>
     <% else %>
       <% buy_sell_rate_html = '' %>
     <% end %>
+    <% # 显示囤币进度 %>
+    <% hold_btc_levle = get_btc_eth_amounts/$trial_btc_goal*100 %>
     <%= raw("\
     <table width='#{$title_table_width}' style='text-align:right'><tr> \
       #{buy_sell_rate_html} \
@@ -286,7 +288,7 @@
       <td class='thead' title='¥#{bank_value}(#{(bank_value*@cny2twd).to_i})'>#{link_to '银行','/properties?tags=银行'}</td><td bgcolor='#{@set_bgcolor1}'>#{to_n(bank_value_p,pos)}%</td> \
       </tr></table> \
     <table width='#{$title_table_width}' style='margin-top:#{@title_table_margin};text-align:right'><tr> \
-      <td class='thead' title='比特币囤币目标: #{$trial_btc_goal.floor(2)}枚'><span class='frac'><sup>#{per_btc_to_cur}</sup><span>&frasl;</span><sub>0.1%</sub></span> <span class='frac'><sup>#{safe_invest}</sup><span>&frasl;</span><sub>Day</sub></span></td><td bgcolor='#{@set_bgcolor3}'>#{(get_btc_eth_amounts/$trial_btc_goal*100).floor(1)}%</td>\
+      <td class='thead'><span class='frac' title='分子:每增加0.1%所需花费\n分母:金如意还本日前能偿清贷款的每日贷款额度'><sup>#{per_btc_to_cur}</sup><span>&frasl;</span><sub>#{safe_invest}</sub></span></td><td bgcolor='#{@set_bgcolor3}' title='比特币囤币目标: #{$trial_btc_goal.floor(2)}枚\n目前的囤币进度: #{hold_btc_levle.floor(4)}%'>#{hold_btc_levle.to_i}%</td>\
       <td class='thead' title='#{p_btc}:¥#{btc_eq_cny}(#{btc_eq_twd})'>#{link_to 'BTC','/properties?tags=比特币'}</td><td bgcolor='#{@set_bgcolor2}'>#{p_btc.floor(2)}</td><td bgcolor='#{@set_bgcolor2}'>#{btc_p2.floor(0)}%</td> \
       <td class='thead' title='#{p_eth}:¥#{eth_eq_cny}(#{eth_eq_twd})'>#{link_to 'ETH','/properties?tags=以太坊'}</td><td bgcolor='#{@set_bgcolor2}'>#{p_eth.floor(2)}</td><td bgcolor='#{@set_bgcolor2}'>#{eth_p2.floor(0)}%</td> \
       <td class='thead'>#{link_to 'MANA','/properties?tags=MANA'}</td><td bgcolor='#{@set_bgcolor2}'>#{mana_p2.round(1)}%</td> \
